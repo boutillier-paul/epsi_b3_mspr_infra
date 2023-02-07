@@ -1,4 +1,15 @@
 from pydantic import BaseModel
+from datetime import datetime
+
+
+# Token data
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    login: str | None = None
+
 
 # User
 class UserBase(BaseModel):
@@ -9,23 +20,32 @@ class UserBase(BaseModel):
     num_adress: int
     street: str
     code: int
-    phone: int
-
-class User(UserBase):
-    id: int
-    role_id: int
-
-    class Config:
-        orm_mode = True
+    phone: str
 
 class UserCreate(UserBase):
     login: str
     password: str
 
+class UserLogin(BaseModel):
+    login: str
+    password: str
+
+class User(UserBase):
+    id: int
+    role_id: int | None = None
+
+    class Config:
+        orm_mode = True
+
+# class UserUpdate(BaseModel):
+
 
 # Role
 class RoleBase(BaseModel):
     name: str
+
+class RoleCreate(RoleBase):
+    pass
 
 class Role(RoleBase):
     id: int
@@ -33,26 +53,105 @@ class Role(RoleBase):
     class Config:
         orm_mode = True
 
-class RoleCreate(RoleBase):
-    pass
-
 
 # Authorization
 class AuthorizationBase(BaseModel):
     name: str
 
+class AuthorizationCreate(AuthorizationBase):
+    pass
+
 class Authorization(AuthorizationBase):
     id: int
 
-class AuthorizationCreate(AuthorizationBase):
-    pass
+    class Config:
+        orm_mode = True
 
 
 # Role_Authorization
 class Role_AuthorizationBase(BaseModel):
     pass
 
+class Role_AuthorizationCreate(Role_AuthorizationBase):
+    pass
+
 class Role_Authorization(Role_AuthorizationBase):
+    role_id: int
+    authorization_id: int
+
+    class Config:
+        orm_mode = True
+
+
+# Plant
+class PlantBase(BaseModel):
+    name: str
+    species: str
+    photo: str
+
+class PlantCreate(PlantBase):
+    pass
+
+class Plant(PlantBase):
+    id: int
+    user_id: int
+
+    class Config:
+        orm_mode = True
+
+class PlantUpdate(PlantBase):
     pass
 
 
+# Guard
+class GuardBase(BaseModel):
+    end_at: datetime | None = None
+
+class GuardCreate(GuardBase):
+    pass
+
+class GuardUpdate(GuardBase):
+    end_at: datetime
+
+class Guard(GuardBase):
+    id: int
+    start_at: datetime
+    user_id: int
+    plant_id: int
+
+    class Config:
+        orm_mode = True
+
+
+# Care Session
+class CareSessionBase(BaseModel):
+    photo: str
+    report: str | None = None
+
+class CareSessionCreate(CareSessionBase):
+    pass
+
+class CareSession(CareSessionBase):
+    id: int
+    created_at: datetime
+    guard_id: int
+    
+    class Config:
+        orm_mode = True
+
+
+# Message
+class MessageBase(BaseModel):
+    content: str
+
+class MessageCreate(MessageBase):
+    pass
+
+class Message(MessageBase):
+    id: int
+    created_at: datetime
+    sender_id: int
+    reciever_id: int
+    
+    class Config:
+        orm_mode = True
