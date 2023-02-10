@@ -18,7 +18,6 @@ jobs:
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           ALGORITHM: ${{ secrets.ALGORITHM }}
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -42,25 +41,27 @@ jobs:
         tags: ghcr.io/${{ github.repository }}/app:latest
 
   deploy:
-  - name: Deploy to Server via SSH action
-    uses: appleboy/ssh-action@master
-    with:
-      host: ${{ secrets.HOST }}
-      username: ${{ secrets.HOST_USER }}
-      key: ${{ secrets.HOST_PASSWORD }}
-      port: 22
-      script: |
-        # Stop all running Docker Containers
-        docker kill $(docker ps -q)
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to Server via SSH action
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.HOST_USER }}
+        key: ${{ secrets.HOST_PASSWORD }}
+        port: 22
+        script: |
+          # Stop all running Docker Containers
+          docker kill $(docker ps -q)
 
-        # Free up space
-        docker system prune -a
+          # Free up space
+          docker system prune -a
 
-        # Login to Github Container Registry
-        docker login https://ghcr.io -u ${{ github.repository_owner }} -p ${{ secrets.REGISTRY_TOKEN }}
+          # Login to Github Container Registry
+          docker login https://ghcr.io -u ${{ github.repository_owner }} -p ${{ secrets.REGISTRY_TOKEN }}
 
-        # Pull the Docker Image 
-        docker pull ghcr.io/${{ github.repository }}/app:latest
+          # Pull the Docker Image 
+          docker pull ghcr.io/${{ github.repository }}/app:latest
 
-        # Run a new container from a new image
-        docker run -d -p 80:8080 -p 443:443 -t ghcr.io/${{ github.repository }}/app:latest
+          # Run a new container from a new image
+          docker run -d -p 80:8080 -p 443:443 -t ghcr.io/${{ github.repository }}/app:latest
