@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  back:
+  backend:
     build: ./backend/
     ports:
       - "8000:8000"
