@@ -12,6 +12,12 @@ jobs:
     permissions:
       contents: read
       packages: write
+    env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          ALGORITHM: ${{ secrets.ALGORITHM }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
     steps:
     - name: Checkout repository
@@ -30,12 +36,6 @@ jobs:
         context: .
         push: true
         tags: "${{ github.repository }}:${{ env.GITHUB_SHA }}"
-        env:
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          ALGORITHM: ${{ secrets.ALGORITHM }}
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
     - name: Publish to GitHub Package Registry
       uses: docker/publish-action@v1
