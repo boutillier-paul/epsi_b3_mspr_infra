@@ -30,18 +30,16 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.REGISTRY_TOKEN }}
 
-    - name: Build Docker Image
-      uses: docker/compose-action@v1
-      with:
-        context: .
-        push: true
-        tags: "${{ github.repository }}:${{ env.GITHUB_SHA }}"
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
 
-    - name: Publish to GitHub Package Registry
-      uses: docker/publish-action@v1
+    - name: Build and push
+      uses: docker/build-push-action@v4
       with:
-        tags: "${{ github.repository }}:${{ env.GITHUB_SHA }}"
-        registry: ghcr.io
+        context: ./backend
+        file: ./Dockerfile
+        push: true
+        tags: "${{ github.repository }}/app:latest"
 
 #  deploy:
 #    - name: Deploy to server
