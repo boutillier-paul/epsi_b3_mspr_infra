@@ -18,7 +18,7 @@ jobs:
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           ALGORITHM: ${{ secrets.ALGORITHM }}
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -55,7 +55,9 @@ jobs:
         port: 22
         script: |
           # Stop all running Docker Containers
-          docker kill $(docker ps -q)
+          if [ "$(docker ps -q)" ]; then
+            docker kill $(docker ps -q)
+          fi
 
           # Free up space
           docker system prune -a
