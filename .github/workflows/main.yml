@@ -39,22 +39,4 @@ jobs:
         context: ./backend
         file: backend/Dockerfile
         push: true
-        tags: "${{ github.repository }}/app:latest"
-
-#  deploy:
-#    - name: Deploy to server
-#      uses: appleboy/ssh-action@master
-#      env:
-#        GITHUB_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
-#        GITHUB_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
-#      with:
-#        host: ${{ secrets.HOST }}
-#        username: ${{ secrets.HOST_USER }}
-#        password: ${{ secrets.HOST_PASSWORD }}
-#        envs: GITHUB_USERNAME, GITHUB_TOKEN
-#          script: |
-#            docker login ghcr.io -u $GITHUB_USERNAME -p $GITHUB_TOKEN
-#            docker pull ghcr.io/my_github_username/my_repository_name/my_image_name:latest
-#            docker stop containername
-#            docker system prune -f
-#            docker run --name containername -dit -p 3000:3000 ghcr.io/my_github_username/my_repository_name/my_image_name:latest
+        tags: ghcr.io/${{ github.repository }}/app:latest
