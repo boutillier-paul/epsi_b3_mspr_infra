@@ -19,38 +19,18 @@ class User(Base):
     code = Column(Integer, nullable=False)
     phone = Column(String, nullable=False)
 
-#     role_id = Column(Integer, ForeignKey("roles.id"))
-#     role = relationship("Role", back_populates="roles")
+    role_id = Column(Integer, ForeignKey("roles.id"), default=1)
+    role = relationship("Role", back_populates="users")
 
     plants = relationship("Plant", back_populates="user")
     guards = relationship("Guard", back_populates="user")
-# 
-# 
-# class Role(Base):
-#     __tablename__ = "roles"
-# 
-#     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-#     name = Column(String, unique=True, nullable=False)
-#     users = relationship("User", back_populates="role")
-# 
-# 
-# class Authorization(Base):
-#     __tablename__ = "authorizations"
-# 
-#     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-#     name = Column(String, unique=True, nullable=False)
-#     roles = relationship("Role", back_populates="role")
-# 
-# 
-# class Role_Authorization():
-#     __tablename__ = "role_authorizations"
-# 
-#     role_id = Column(Integer, ForeignKey("roles.id"))
-#     role = relationship("Role", back_populates="roles")
-# 
-#     authorization_id = Column(Integer, ForeignKey("authorizations.id"))
-#     authorization = relationship("Authorization", back_populates="authorizations")
 
+class Role(Base):
+    __tablename__ = "roles"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    name = Column(String, unique=True, nullable=False)
+    users = relationship("User", back_populates="role")
 
 class Plant(Base):
     __tablename__ = "plants"

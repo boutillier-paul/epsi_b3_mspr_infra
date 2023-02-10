@@ -10,6 +10,24 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     login: str | None = None
 
+# Plant
+class PlantBase(BaseModel):
+    name: str
+    species: str
+    photo: str
+
+class PlantCreate(PlantBase):
+    pass
+
+class Plant(PlantBase):
+    id: int
+    user_id: int
+
+    class Config:
+        orm_mode = True
+
+class PlantUpdate(PlantBase):
+    pass
 
 # User
 class UserBase(BaseModel):
@@ -33,12 +51,13 @@ class UserLogin(BaseModel):
 class User(UserBase):
     id: int
     role_id: int | None = None
+    # plants: list[Plant]
 
     class Config:
         orm_mode = True
 
-# class UserUpdate(BaseModel):
-
+class UserUpdate(UserBase):
+    pass
 
 # Role
 class RoleBase(BaseModel):
@@ -52,56 +71,6 @@ class Role(RoleBase):
 
     class Config:
         orm_mode = True
-
-
-# Authorization
-class AuthorizationBase(BaseModel):
-    name: str
-
-class AuthorizationCreate(AuthorizationBase):
-    pass
-
-class Authorization(AuthorizationBase):
-    id: int
-
-    class Config:
-        orm_mode = True
-
-
-# Role_Authorization
-class Role_AuthorizationBase(BaseModel):
-    pass
-
-class Role_AuthorizationCreate(Role_AuthorizationBase):
-    pass
-
-class Role_Authorization(Role_AuthorizationBase):
-    role_id: int
-    authorization_id: int
-
-    class Config:
-        orm_mode = True
-
-
-# Plant
-class PlantBase(BaseModel):
-    name: str
-    species: str
-    photo: str
-
-class PlantCreate(PlantBase):
-    pass
-
-class Plant(PlantBase):
-    id: int
-    user_id: int
-
-    class Config:
-        orm_mode = True
-
-class PlantUpdate(PlantBase):
-    pass
-
 
 # Guard
 class GuardBase(BaseModel):

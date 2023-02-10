@@ -10,12 +10,13 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 120
 
 router = APIRouter()
 
+
 @router.get("/")
 async def api_root():
     return {"message": "Welcome on API root url"}
 
 @router.post("/signup")
-async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+async def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user_email = controllers.get_user_by_email(db, user_email=user.email)
     db_user_login = controllers.get_user_by_login(db, user_login=user.login)
 
@@ -32,7 +33,7 @@ async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
         return {}
 
 @router.post("/login")
-async def user_login(user: schemas.UserLogin, db: Session = Depends(get_db)):
+async def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     db_user = controllers.get_user_by_login(db, user_login=user.login)
     if not db_user:
         raise HTTPException(
@@ -48,7 +49,7 @@ async def user_login(user: schemas.UserLogin, db: Session = Depends(get_db)):
         )
 
 @router.get("/users/me", response_model=schemas.User, dependencies=[Depends(JWTBearer)])
-async def read_me(db: Session = Depends(get_db), Authorization: str = Header(None)):
+async def get_current_user(db: Session = Depends(get_db), Authorization: str = Header(None)):
 
     token = Authorization.split(" ")[1]
     decoded_token = security.decodeJWT(token)

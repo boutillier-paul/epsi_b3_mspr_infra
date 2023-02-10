@@ -55,29 +55,6 @@ def get_role(db: Session, role_id: int):
 def get_role_by_name(db: Session, role_name: str):
     return db.query(models.Role).filter(models.Role.name == role_name).first()
 
-# AUTHORIZATION
-def get_authorization(db: Session, authorization_id: int):
-    return db.query(models.Authorization).filter(models.Authorization.id == authorization_id).first()
-
-def get_authorization_by_name(db: Session, authorization_id_name: str):
-    return db.query(models.Authorization).filter(models.Authorization.name == authorization_id_name).first()
-
-
-# ROLE_AUTHORIZATION
-def create_role_authorization(db: Session, role_authorization: schemas.Role_AuthorizationCreate):
-    db_role_authorization = models.Plant(role_id=role_authorization.role_id, authorization_id=role_authorization.authorization.id)
-    db.add(db_role_authorization)
-    db.commit()
-    db.refresh(db_role_authorization)
-    return db_role_authorization
-
-def get_role_authorization(db: Session, role_id: int):
-    return db.query(models.Authorization).join(models.Role_Authorization, models.Authorization.id)\
-        .join(models.Role, models.Role_Authorization.role_id)\
-        .filter(models.Role == role_id)
-
-
-
 # PLANT
 def get_plant(db: Session, plant_id: int):
     return db.query(models.Plant).filter(models.Plant.id == plant_id).filter()
