@@ -63,10 +63,10 @@ jobs:
           docker system prune -a
 
           # Login to Github Container Registry
-          docker login https://ghcr.io -u ${{ github.repository_owner }} -p ${{ secrets.REGISTRY_TOKEN }}
+          echo ${{ secrets.REGISTRY_TOKEN }} | docker login https://ghcr.io -u ${{ github.repository_owner }} --password-stdin
 
           # Pull the Docker Image 
           docker pull ghcr.io/${{ github.repository }}/app:latest
 
           # Run a new container from a new image
-          docker run -d -p 80:8080 -t ghcr.io/${{ github.repository }}/app:latest --password-stdin
+          docker run -d -p 80:8080 -t ghcr.io/${{ github.repository }}/app:latest
