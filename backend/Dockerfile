@@ -14,5 +14,4 @@ COPY . .
 # set environment variables
 ENV PYTHONUNBUFFERED 1
 
-# run the application
-CMD ["alembic upgrade head", "&&", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+EXPOSE 8000
