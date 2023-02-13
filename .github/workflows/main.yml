@@ -69,4 +69,4 @@ jobs:
           docker pull ghcr.io/${{ github.repository }}/app:latest
 
           # Run a new container from a new image
-          docker run -d -p 8000:8000 -p 5432:5432 -t ghcr.io/${{ github.repository }}/app:latest
+          docker run -d -p 8000:8000 -t ghcr.io/${{ github.repository }}/app:latest
