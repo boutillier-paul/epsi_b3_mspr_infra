@@ -50,14 +50,14 @@ class Guard(Base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True, nullable=False)
 
-    user_id = Column(Integer,  ForeignKey("users.id"))
+    user_id = Column(Integer,  ForeignKey("users.id"), nullable=True)
     user = relationship("User", back_populates="guards")
 
     plant_id = Column(Integer,  ForeignKey("plants.id"))
     plant = relationship("Plant", back_populates="guards")
 
     start_at = Column(DateTime, default=func.now())
-    end_at = Column(DateTime, nullable=True)
+    end_at = Column(DateTime, nullable=False)
 
     care_sessions = relationship("Care_Session", back_populates="guard")
 

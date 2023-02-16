@@ -57,7 +57,7 @@ def get_role_by_name(db: Session, role_name: str):
 
 # PLANT
 def get_plant(db: Session, plant_id: int):
-    return db.query(models.Plant).filter(models.Plant.id == plant_id).filter()
+    return db.query(models.Plant).filter(models.Plant.id == plant_id).first()
 
 def get_plants(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Plant).offset(skip).limit(limit).all()
@@ -72,8 +72,17 @@ def create_plant(db: Session, plant: schemas.PlantCreate):
     db.refresh(db_plant)
     return db_plant
 
+def get_plant_last_photo(db: Session, plant_id: int):
+    return db.query(models.Care_Session.photo).join(models.Guard, models.Care_Session.guard_id == models.Guard.id)\
+        .filter(models.Guard.plant_id == plant_id).order_by(models.Care_Session.created_at.desc()).first()
+        
+def get_plant_by_owner(db: Session, user_id: int):
+    return db.query(models.Plant).filter(models.Plant.user_id == user_id).all()
 
-
+def get_plant_by_guardian(db: Session, user_id: int):
+    return db.query(models.Plant).join(models.Guard, models.Plant.id == models.Guard.plant_id)\
+        .filter(models.Guard.user_id == user_id).all()
+    
 # GUARD
 
 def get_guard(db: Session, guard_id:int):
@@ -89,10 +98,20 @@ def get_guards(db: Session, skip:int = 0, limit: int = 100):
     return db.query(models.Guard).offset(skip).limit(limit).all()
     
 def create_guard(db: Session, guard: schemas.GuardCreate):
-    db_guard = models.Guard(plant_id = guard.plant_id, user_id = guard.user_id)
+    db_guard = models.Guard(plant_id = guard.plant_id, start_at = guard.start_at, end_at = guard.end_at)
     db.add(db_guard)
     db.commit()
     db.refresh(db_guard)
+    return db_guard
+
+def accept_guard(db: Session, user_id: int):
+    db_guard = get_guard(db, user_id)
+
+    if db_guard:
+        db_guard.user_id = user_id
+        db.commit()
+        db.refresh(db_guard)
+
     return db_guard
 
 
@@ -125,8 +144,9 @@ def get_message_by_reciever(db: Session, reciever_id: int):
     return db.query(models.Message).filter(models.Message.reciever_id == reciever_id).all()
 
 def get_message_conversation(db: Session, sender_id: int, reciever_id: int):
-    return db.query(models.Message).filter(models.Message.sender_id == sender_id, models.Message.reciever_id == reciever_id)\
-        .order_by(models.Message.created_at).all()
+    return db.query(models.Message).filter((models.Message.sender_id == sender_id, models.Message.reciever_id == reciever_id)\
+                                        | (models.Message.sender_id == reciever_id, models.Message.reciever_id == sender_id))\
+        .order_by(models.Message.created_at.desc()).all()
 
 def create_message(db: Session, message: schemas.MessageCreate):
     db_message = models.Message(content= message.content, sender_id=message.sender_id, reciever_id=message.reciever_id)

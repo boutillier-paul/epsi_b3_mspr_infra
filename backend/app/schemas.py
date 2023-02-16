@@ -74,18 +74,17 @@ class Role(RoleBase):
 
 # Guard
 class GuardBase(BaseModel):
-    end_at: datetime | None = None
+    start_at: datetime
+    end_at: datetime
 
 class GuardCreate(GuardBase):
     pass
 
 class GuardUpdate(GuardBase):
-    end_at: datetime
+    user_id: int | None
 
 class Guard(GuardBase):
     id: int
-    start_at: datetime
-    user_id: int
     plant_id: int
 
     class Config:
