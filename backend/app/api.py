@@ -141,7 +141,7 @@ async def create_plant(plant: schemas.PlantCreate, db: Session = Depends(get_db)
     return db_plant
 
 @router.get("/plants/owner/{user_id}", dependencies=[Depends(JWTBearer())])
-async def read_plant_details(user_id= int, db: Session = Depends(get_db), Authorization: str = Header(None)):
+async def read_plant_by_owner(user_id= int, db: Session = Depends(get_db), Authorization: str = Header(None)):
     
     token = Authorization.split(" ")[1]
     decoded_token = security.decodeJWT(token)
@@ -162,7 +162,7 @@ async def read_plant_details(user_id= int, db: Session = Depends(get_db), Author
 
 
 @router.get("/plants/guardian/{user_id}", dependencies=[Depends(JWTBearer())])
-async def read_plant_details(user_id= int, db: Session = Depends(get_db), Authorization: str = Header(None)):
+async def read_plant_by_guardian(user_id= int, db: Session = Depends(get_db), Authorization: str = Header(None)):
     
     token = Authorization.split(" ")[1]
     decoded_token = security.decodeJWT(token)
@@ -182,7 +182,7 @@ async def read_plant_details(user_id= int, db: Session = Depends(get_db), Author
     return db_plants
 
 @router.post("/guards", dependencies=[Depends(JWTBearer())])
-async def create_plant(guard: schemas.GuardCreate, db: Session = Depends(get_db), Authorization: str = Header(None)):
+async def create_guard(guard: schemas.GuardCreate, db: Session = Depends(get_db), Authorization: str = Header(None)):
     
     token = Authorization.split(" ")[1]
     decoded_token = security.decodeJWT(token)
@@ -319,7 +319,6 @@ async def read_sessions(user_id: int,db: Session = Depends(get_db), Authorizatio
         )
     
     return db_sessions
-
     
 
 @router.get("/plants/{plant_id}", response_model=schemas.Plant)

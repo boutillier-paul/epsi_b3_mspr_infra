@@ -119,11 +119,11 @@ def accept_guard(db: Session, user_id: int):
 def get_care_session(db: Session, care_session_id: int):
    return db.query(models.Care_Session).filter(models.Care_Session.id == care_session_id).first()
 
-def get_care_session_guard_id(db : Session, guard_id: int):
-    return db.query(models.Care_Session).filter(models.Care_Session.guard_id == guard_id).first()
+def get_care_session_guard_id(db : Session, guard_id: int, skip: int = 0, limit: int = 100):
+    return db.query(models.Care_Session).offset(skip).limit(limit).filter(models.Care_Session.guard_id == guard_id).order_by(models.Care_Session.created_at.desc()).all()
 
 def get_care_sessions(db: Session, skip: int = 0, limit: int = 100):
-   return db.query(models.Care_Session).offset(skip).limit(limit).all()
+   return db.query(models.Care_Session).offset(skip).limit(limit).order_by(models.Care_Session.created_at.desc()).all()
 
 def create_care_session(db: Session, care_session: schemas.CareSessionCreate):
     db_care_session = models.CareSession(guard_id = care_session.guard_id, photo = care_session.photo)
@@ -131,7 +131,6 @@ def create_care_session(db: Session, care_session: schemas.CareSessionCreate):
     db.commit()
     db.refresh(db_care_session)
     return db_care_session
-
 
 # MESSAGE
 def get_message(db: Session, message_id: int):
