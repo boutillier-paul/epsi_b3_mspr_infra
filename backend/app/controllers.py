@@ -79,6 +79,10 @@ def get_plant_last_photo(db: Session, plant_id: int):
 def get_plant_by_owner(db: Session, user_id: int):
     return db.query(models.Plant).filter(models.Plant.user_id == user_id).all()
 
+# def get_free_plant_by_owner(db: Session, user_id: int, guard_ids: list[int]):
+#     return db.query(models.Plant).join(models.Guard, models.Guard.plant_id == models.Plant.id)\
+#         .filter(models.Plant.user_id == user_id, models.Guard.id.not_in(guard_ids)).all()
+
 def get_plant_by_guardian(db: Session, user_id: int):
     return db.query(models.Plant).join(models.Guard, models.Plant.id == models.Guard.plant_id)\
         .filter(models.Guard.user_id == user_id).all()
@@ -114,6 +118,10 @@ def accept_guard(db: Session, user_id: int):
 
     return db_guard
 
+# def get_guard_id_by_user(db: Session, user_id: int):
+#     return db.query(models.Guard.id).join(models.Plant, models.Guard.plant_id == models.Plant.id)\
+#         .filter(models.Plant.user_id == user_id, models.Guard.start_at <= now , models.Guard.end_at >= now ).all()
+
 
 #CARE SESSION 
 def get_care_session(db: Session, care_session_id: int):
@@ -131,6 +139,15 @@ def create_care_session(db: Session, care_session: schemas.CareSessionCreate):
     db.commit()
     db.refresh(db_care_session)
     return db_care_session
+
+def get_session_by_plant(db: Session, plant_id: int, skip: int = 0, limit: int = 5):
+    return db.query(models.Care_Session).join(models.Guard, models.Guard.id == models.Care_Session.guard_id)\
+        .join(models.Plant, models.Guard.plant_id == models.Plant.id)\
+            .filter(models.Plant.id == plant_id)\
+                .order_by(models.Care_Session.created_at)\
+                    .offset(skip).limit(limit)\
+                    .all()
+        
 
 # MESSAGE
 def get_message(db: Session, message_id: int):

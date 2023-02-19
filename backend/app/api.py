@@ -160,6 +160,26 @@ async def read_plant_by_owner(user_id= int, db: Session = Depends(get_db), Autho
     
     return db_plants
 
+@router.get("/plants/owner/free/{user_id}", dependencies=[Depends(JWTBearer())])
+async def read_free_plant_by_owner(user_id= int, db: Session = Depends(get_db), Authorization: str = Header(None)):
+    
+    token = Authorization.split(" ")[1]
+    decoded_token = security.decodeJWT(token)
+    if not decoded_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="Token expired"
+        )
+    
+    db_plants = controllers.get_plant_by_owner(db, user_id=user_id)
+    if db_plants is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No free plant found for this user",
+        )
+    
+    return db_plants
+
 
 @router.get("/plants/guardian/{user_id}", dependencies=[Depends(JWTBearer())])
 async def read_plant_by_guardian(user_id= int, db: Session = Depends(get_db), Authorization: str = Header(None)):
