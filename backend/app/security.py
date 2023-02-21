@@ -14,6 +14,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 JWT_SECRET = os.getenv("SECRET_KEY")
 JWT_ALGORITHM = os.getenv("ALGORITHM")
 
+
 def verify_password(plain_password, password):
     return pwd_context.verify(plain_password, password)
 

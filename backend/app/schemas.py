@@ -1,15 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
 
-
-# Token data
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-class TokenData(BaseModel):
-    login: str | None = None
-
 # Plant
 class PlantBase(BaseModel):
     name: str
