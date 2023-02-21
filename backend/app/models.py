@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Text, func
+from sqlalchemy import Column, ForeignKey, Integer, Float, String, DateTime, Text, func
 from sqlalchemy.orm import relationship
 
 from .database import Base
@@ -13,17 +13,14 @@ class User(Base):
     email = Column(String, unique=True, nullable=False)
     login = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
-    city = Column(String, nullable=False)
-    num_adress = Column(Integer, nullable=False)
-    street = Column(String, nullable=False)
-    code = Column(Integer, nullable=False)
-    phone = Column(String, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=func.now())
 
     role_id = Column(Integer, ForeignKey("roles.id"), default=1)
     role = relationship("Role")
 
     plants = relationship("Plant", back_populates="user")
     guards = relationship("Guard", back_populates="user")
+    advices = relationship("Advice", back_populates="user")
 
 class Role(Base):
     __tablename__ = "roles"
@@ -38,6 +35,9 @@ class Plant(Base):
     name = Column(String, nullable=False)
     spicies = Column(String, nullable=False)
     photo = Column(String, unique=True, nullable=True)
+    pos_lat = Column(Float, nullable=False)
+    pos_lng = Column(Float, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=func.now())
 
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="plants")
@@ -49,14 +49,16 @@ class Guard(Base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True, nullable=False)
 
-    user_id = Column(Integer,  ForeignKey("users.id"))
+    user_id = Column(Integer,  ForeignKey("users.id"), nullable=True)
     user = relationship("User", back_populates="guards")
 
     plant_id = Column(Integer,  ForeignKey("plants.id"))
     plant = relationship("Plant", back_populates="guards")
 
     start_at = Column(DateTime, default=func.now())
-    end_at = Column(DateTime, nullable=True)
+    end_at = Column(DateTime, nullable=False)
+
+    created_at = Column(DateTime, nullable=False, default=func.now())
 
     care_sessions = relationship("Care_Session", back_populates="guard")
 
@@ -88,3 +90,16 @@ class Message(Base):
     reciever = relationship("User", foreign_keys=[reciever_id])
 
     created_at = Column(DateTime, default=func.now())
+
+
+class Advice(Base):
+    __tablename__ = "advices"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True, nullable=False)
+    title = Column(String, nullable=False)
+    content = Column(Text, nullable=False)
+    photo = Column(String, unique=True, nullable=False)
+    created_at = Column(DateTime, default=func.now())
+
+    user_id = Column(Integer,  ForeignKey("users.id"), nullable=True)
+    user = relationship("User", back_populates="advices")

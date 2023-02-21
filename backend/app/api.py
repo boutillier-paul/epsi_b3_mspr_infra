@@ -15,6 +15,7 @@ router = APIRouter()
 async def api_root():
     return {"message": "Welcome on API root url"}
 
+# REGISTER ENDPOINT
 @router.post("/signup")
 async def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user_email = controllers.get_user_by_email(db, user_email=user.email)
@@ -32,6 +33,7 @@ async def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
     else:
         return {}
 
+# LOGIN ENDPOINT
 @router.post("/login")
 async def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     db_user = controllers.get_user_by_login(db, user_login=user.login)
@@ -48,6 +50,7 @@ async def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
             detail="Incorrect login or password",
         )
 
+# USER ENDPOINTS
 @router.get("/users/me", response_model=schemas.User, dependencies=[Depends(JWTBearer)])
 async def get_current_user(db: Session = Depends(get_db), Authorization: str = Header(None)):
 
@@ -71,9 +74,20 @@ async def read_user(user_id: int, db: Session = Depends(get_db)):
         )
     return db_user
 
-# @router.get("/plant/{plant_id}", response_model=schemas.Plant)
-# async def read_plant(plant_id: int, db: Session = Depends(get_db)):
-#     db_plant = controllers.get_plant(db, plant_id=plant_id)
-#     if db_plant is None:
-#         raise HTTPException(status_code=404, detail="Plant not found")
-#     return db_plant
+@router.get("/users/", response_model=list[schemas.User], dependencies=[Depends(JWTBearer())])
+async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), Authorization: str = Header(None)):
+    db_users = controllers.get_users(db, skip=skip, limit=limit)
+    controllers.check_user_role(db, role_name="ADMIN", Authorization=Authorization)
+
+    return db_users
+
+# PLANT ENDPOINTS
+@router.get("/plants/{plant_id}", dependencies=[Depends(JWTBearer())])
+async def read_plant(plant_id= int, db: Session = Depends(get_db)):
+    pass
+
+@router.post("/plants", dependencies=[Depends(JWTBearer())])
+async def create_plant(plant: schemas.PlantCreate, db: Session = Depends(get_db)):
+    
+    pass
+
