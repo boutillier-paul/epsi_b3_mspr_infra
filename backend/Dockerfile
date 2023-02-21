@@ -1,22 +1,21 @@
 # base image
 FROM python:3.11-alpine
 
-# set working directory
-WORKDIR /app
-
-# install dependencies
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-
-# copy application code
-COPY . .
-
 # set environment variables
 ENV PYTHONUNBUFFERED 1
+ARG DATABASE_URL
+ENV DATABASE_URL ${DATABASE_URL}
 
-# alembic script
-CMD ["alembic", "revision", "-m", '"init tables"', "--autogenerate"]
-CMD ["alembic", "upgrade", "head"]
+WORKDIR /backend
 
-# run the application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# install dependencies
+COPY ./requirements.txt /backend/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /backend/requirements.txt
+
+# copy application code
+COPY . /backend
+COPY entrypoint.sh /backend/entrypoint.sh
+
+# Entrypoint
+RUN chmod 777 ./entrypoint.sh
+ENTRYPOINT ["./entrypoint.sh"]

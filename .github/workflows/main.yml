@@ -1,10 +1,10 @@
 name: main branch CI/CD
 
-on:
-  push:
-    branches: [ "feat/api-cicd" ]
-  pull_request:
-    branches: [ "main" ]
+#on:
+#  push:
+#    branches: [ "feat/api-cicd" ]
+#  pull_request:
+#    branches: [ "main" ]
 
 jobs:
   build:
@@ -13,11 +13,11 @@ jobs:
       contents: read
       packages: write
     env:
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          ALGORITHM: ${{ secrets.ALGORITHM }}
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      ALGORITHM: ${{ secrets.ALGORITHM }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
     steps:
     - name: Checkout repository
