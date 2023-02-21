@@ -20,7 +20,7 @@ class User(Base):
     phone = Column(String, nullable=False)
 
     role_id = Column(Integer, ForeignKey("roles.id"), default=1)
-    role = relationship("Role", back_populates="users")
+    role = relationship("Role")
 
     plants = relationship("Plant", back_populates="user")
     guards = relationship("Guard", back_populates="user")
@@ -30,7 +30,6 @@ class Role(Base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String, unique=True, nullable=False)
-    users = relationship("User", back_populates="role")
 
 class Plant(Base):
     __tablename__ = "plants"

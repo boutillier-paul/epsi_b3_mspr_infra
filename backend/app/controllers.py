@@ -55,6 +55,13 @@ def get_role(db: Session, role_id: int):
 def get_role_by_name(db: Session, role_name: str):
     return db.query(models.Role).filter(models.Role.name == role_name).first()
 
+def create_role(db: Session, role: schemas.RoleCreate):
+    db_role = models.Role(name=role.name)
+    db.add(db_role)
+    db.commit()
+    db.refresh(db_role)
+    return db_role
+
 # PLANT
 def get_plant(db: Session, plant_id: int):
     return db.query(models.Plant).filter(models.Plant.id == plant_id).first()

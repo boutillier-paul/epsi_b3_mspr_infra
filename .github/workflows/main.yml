@@ -1,0 +1,81 @@
+name: main branch CI/CD
+
+#on:
+#  push:
+#    branches: [ "feat/api-cicd" ]
+#  pull_request:
+#    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      ALGORITHM: ${{ secrets.ALGORITHM }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Log in to the Container registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.REGISTRY_TOKEN }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build and push
+      uses: docker/build-push-action@v4
+      with:
+        context: ./backend
+        file: backend/Dockerfile
+        push: true
+        tags: ghcr.io/${{ github.repository }}/app:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Deploy to Server via SSH action
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.HOST_USER }}
+        password: ${{ secrets.HOST_PASSWORD }}
+        port: 22
+        script: |
+          # Stop all running Docker Containers
+          if [ "$(docker ps -a -q)" ]; then
+            docker kill $(docker ps -a -q)
+          fi
+
+          # Free up space
+          docker system prune -a
+
+          # Login to Github Container Registry
+          echo ${{ secrets.REGISTRY_TOKEN }} | docker login https://ghcr.io -u ${{ github.repository_owner }} --password-stdin
+
+          # Pull the Docker Image 
+          docker pull ghcr.io/${{ github.repository }}/app:latest
+
+          # Run a new container from a new image
+          docker run -d -p 8000:8000 -t -it \
+          -e DATABASE_URL='postgresql+psycopg2://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@127.0.0.1:5432/${{ env.POSTGRES_DB }}' \
+          -e ALGORITHM='${{ env.ALGORITHM }}' \
+          -e SECRET_KEY='${{ env.SECRET_KEY }}' \
+          ghcr.io/${{ github.repository }}/app:latest \
+          alemibc upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000
+
+
+          # Execute alembic 
+          docker 

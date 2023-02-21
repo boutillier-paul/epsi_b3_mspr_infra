@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app import api
-from app.database import SessionLocal
+from app.models import Role, Base
+from app.database import SessionLocal, engine
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -18,4 +19,24 @@ app.add_middleware(
     allow_methods=["GET, POST, PUT, DELETE, OPTIONS, PATCH"],
     allow_headers=["*"],
 )
+
+
+# Add default data if not already set
+db = SessionLocal()
+
+Base.metadata.create_all(bind=engine)
+
+if not db.query(Role).all():
+    db_user = Role(name = "USER")
+    db_botanist = Role(name = "BOTANIST")
+    db_admin = Role(name = "ADMIN")
+
+    db.add(db_user)
+    db.add(db_botanist)
+    db.add(db_admin)
+
+    db.commit()
+    
+db.close()
+
 
