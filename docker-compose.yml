@@ -28,7 +28,6 @@ services:
       ALGORITHM: "${ALGORITHM}"
       SECRET_KEY: "${SECRET_KEY}"
 
-
-    networks:
-      app_network:
-        driver: bridge
+  networks:
+    app_network:
+      driver: bridge
