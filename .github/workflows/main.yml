@@ -1,8 +1,6 @@
 name: main branch CI/CD
 
 on:
-  push:
-    branches: [ "feat/endpoint" ]
   pull_request:
     branches: [ "main" ]
 
