@@ -68,25 +68,4 @@ jobs:
 
           cd epsi_b3_mspr_infra
 
-          docker-compose up -d --build
-
-          # Free up space
-          # docker system prune -a
-
-          # Login to Github Container Registry
-          # echo ${{ secrets.REGISTRY_TOKEN }} | docker login https://ghcr.io -u ${{ github.repository_owner }} --password-stdin
-
-          # Pull the Docker Image 
-          # docker pull ghcr.io/${{ github.repository }}/app:latest
-
-          # Run a new container from a new image
-          #docker run -d -p 8000:8000 -t -it \
-          #-e DATABASE_URL='postgresql+psycopg2://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@127.0.0.1:5432/${{ env.POSTGRES_DB }}' \
-          #-e ALGORITHM='${{ env.ALGORITHM }}' \
-          #-e SECRET_KEY='${{ env.SECRET_KEY }}' \
-          #ghcr.io/${{ github.repository }}/app:latest \
-          #alemibc upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000
-
-
-          # Execute alembic 
-          #docker 
+          docker compose up -d --build
