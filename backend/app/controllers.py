@@ -197,8 +197,8 @@ def get_messages_by_reciever(db: Session, reciever_id: int):
 
 def get_messages_conversation(db: Session, user_id: int, interlocutor_id: int):
     return db.query(models.Message).filter(
-            (models.Message.sender_id == user_id and models.Message.reciever_id == interlocutor_id) 
-            or (models.Message.sender_id == interlocutor_id and models.Message.reciever_id == user_id)
+            ((models.Message.sender_id == user_id) & (models.Message.reciever_id == interlocutor_id)) | 
+            ((models.Message.sender_id == interlocutor_id) & (models.Message.reciever_id == user_id))
         )\
         .order_by(models.Message.created_at.desc()).all()
 
