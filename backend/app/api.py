@@ -331,19 +331,19 @@ async def read_session(session_id: int, db: Session = Depends(get_db), Authoriza
 async def create_session(session: schemas.CareSessionCreate, guard_id: int, db: Session = Depends(get_db), Authorization: str = Header(None)):
     controllers.check_user_role(db, role_name="BOTANIST", Authorization=Authorization)
     user = controllers.get_current_user(db, Authorization=Authorization)
-    
+    db_guard = controllers.get_guard(db, guard_id=guard_id)
+
     if not user.guards:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, 
             detail="It is not a guard which you've taken"
         )
 
-    for guard in user.guards:
-        if guard_id ==  guard.id:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, 
-                detail="You can't create a session for a guard you didn't take"
-            )
+    if db_guard not in user.guards:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="You can't create a session for a guard you didn't take"
+        )
                
     db_session = controllers.create_care_session(db, care_session=session, guard_id=guard_id)
     
