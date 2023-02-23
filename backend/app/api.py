@@ -206,7 +206,7 @@ async def read_guard(guard_id: int, db: Session = Depends(get_db), Authorization
     return db_guard
 
 @router.put("/guards/{guard_id}", tags=["Guards"], response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
-async def cancel_guard(guard_id: int, user_id: int, db: Session = Depends(get_db), Authorization: str = Header(None)):
+async def cancel_guard(guard_id: int, db: Session = Depends(get_db), Authorization: str = Header(None)):
     db_guard = controllers.cancel_guard(db, guard_id)
     user = controllers.get_current_user(db, Authorization=Authorization)
     
@@ -222,12 +222,37 @@ async def cancel_guard(guard_id: int, user_id: int, db: Session = Depends(get_db
             detail="Unauthorized"
         )
         
-    db_guard = controllers.take_guard(db, guard_id=guard_id, user_id=user_id)
+    db_guard = controllers.take_guard(db, guard_id=guard_id, user_id=user.id)
+    return db_guard
+
+@router.delete("/guards/{guard_id}", tags=["Guards"], response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
+async def delete_guard(guard_id: int, db: Session = Depends(get_db), Authorization: str = Header(None)):
+    db_guard = controllers.cancel_guard(db, guard_id)
+    user = controllers.get_current_user(db, Authorization=Authorization)
+    
+    if db_guard is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="Guard not found"
+        )
+
+    if db_guard.user_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail="Guard is already taken, you can't delete it"
+        )
+
+    if db_guard in user.guards:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="You didn't created that guard"
+        )
+        
+    db_guard = controllers.delete_guard(db, guard_id=guard_id)
     return db_guard
 
 
 # SESSION ENDPOINTS
-
 @router.post("/sessions", tags=["Sessions"], response_model=schemas.CareSession, dependencies=[Depends(JWTBearer())])
 async def create_session(session: schemas.CareSessionCreate, guard_id: int, db: Session = Depends(get_db)):
     db_session = controllers.create_care_session(db, care_session=session, guard_id=guard_id)
