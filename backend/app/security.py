@@ -14,6 +14,8 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 JWT_SECRET = os.getenv("SECRET_KEY")
 JWT_ALGORITHM = os.getenv("ALGORITHM")
 
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
+
 
 def verify_password(plain_password, password):
     return pwd_context.verify(plain_password, password)
@@ -27,7 +29,7 @@ def token_response(token: str):
 def signJWT(user_login: str) -> Dict[str, str]:
     payload = {
         "user_login": user_login,
-        "expires": time.time() + 600
+        "expires": time.time() + 60 * ACCESS_TOKEN_EXPIRE_MINUTES
     }
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
     return token_response(token)

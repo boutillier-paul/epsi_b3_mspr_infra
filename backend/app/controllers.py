@@ -108,7 +108,7 @@ def get_plants_by_name(db: Session, plant_name: str):
 def create_plant(db: Session, plant: schemas.PlantCreate, user_id: int):
     db_plant = models.Plant(
         name    = plant.name,
-        spicies = plant.species, 
+        species = plant.species, 
         photo   = plant.photo,
         pos_lat = plant.pos_lat,
         pos_lng = plant.pos_lng,

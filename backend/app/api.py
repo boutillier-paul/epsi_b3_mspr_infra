@@ -8,8 +8,6 @@ from geopy.distance import distance
 from sqlalchemy.orm import Session
 
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
 router = APIRouter()
 
 
