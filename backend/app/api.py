@@ -6,7 +6,7 @@ from app.security import JWTBearer
 from sqlalchemy.orm import Session
 
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 120
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 router = APIRouter()
 
@@ -14,6 +14,7 @@ router = APIRouter()
 @router.get("/")
 async def api_root():
     return {"message": "Welcome on API root url"}
+
 
 # REGISTER ENDPOINT
 @router.post("/signup")
@@ -29,9 +30,10 @@ async def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = controllers.create_user(db, user=user)
 
     if db_user:
-        return security.signJWT(user.login)
+        return security.signJWT(user_id=user.id, user_login=user.login)
     else:
         return {}
+
 
 # LOGIN ENDPOINT
 @router.post("/login")
@@ -49,6 +51,7 @@ async def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect login or password",
         )
+
 
 # USER ENDPOINTS
 @router.get("/users/me", response_model=schemas.User, dependencies=[Depends(JWTBearer)])
@@ -76,9 +79,10 @@ async def read_user(user_id: int, db: Session = Depends(get_db)):
 
 @router.get("/users", response_model=list[schemas.User], dependencies=[Depends(JWTBearer())])
 async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), Authorization: str = Header(None)):
-    db_users = controllers.get_users(db, skip=skip, limit=limit)
     controllers.check_user_role(db, role_name="ADMIN", Authorization=Authorization)
+    db_users = controllers.get_users(db, skip=skip, limit=limit)
     return db_users
+
 
 # PLANT ENDPOINTS
 @router.get("/plants/{plant_id}", response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
@@ -90,8 +94,24 @@ async def read_plant(plant_id: int, db: Session = Depends(get_db)):
             detail="Plant not found"
         )
     return db_plant
+
+@router.post("/plants/search/{plant_name}", response_model=list[schemas.Plant], dependencies=[Depends(JWTBearer())])
+async def search_plant(plant_name: str, db: Session = Depends(get_db)):
+    db_plants = controllers.get_plants_by_name(db, plant_name=plant_name)
+    if db_plants is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="No plants found"
+        )
+    return db_plants
+
+@router.get("/plants", response_model=list[schemas.Plant], dependencies=[Depends(JWTBearer())])
+async def read_plants(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), Authorization: str = Header(None)):
+    controllers.check_user_role(db, role_name="ADMIN", Authorization=Authorization)
+    db_plants = controllers.get_plants(db, skip=skip, limit=limit)
+    return db_plants
         
-@router.post("/plants/{user_id}", response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
+@router.post("/plants", response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
 async def create_plant(plant: schemas.PlantCreate, user_id: int, db: Session = Depends(get_db)):
     db_plant = controllers.create_plant(db, plant=plant, user_id=user_id)
     if db_plant is None:
