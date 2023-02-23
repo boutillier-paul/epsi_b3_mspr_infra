@@ -83,8 +83,9 @@ class Advice(AdviceBase):
 class AdviceCreate(AdviceBase):
     pass
 
-class AdviceUpdate(AdviceBase):
-    pass
+class AdviceUpdate(BaseModel):
+    title: str
+    content: str
 
 # User
 class UserBase(BaseModel):
