@@ -95,7 +95,7 @@ async def read_plant(plant_id: int, db: Session = Depends(get_db)):
         )
     return db_plant
 
-@router.post("/plants/search/{plant_name}", response_model=list[schemas.Plant], dependencies=[Depends(JWTBearer())])
+@router.get("/plants/search/{plant_name}", response_model=list[schemas.Plant], dependencies=[Depends(JWTBearer())])
 async def search_plant(plant_name: str, db: Session = Depends(get_db)):
     db_plants = controllers.get_plants_by_name(db, plant_name=plant_name)
     if db_plants is None:
@@ -119,6 +119,17 @@ async def create_plant(plant: schemas.PlantCreate, user_id: int, db: Session = D
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
             detail="Plant not created"
         )
+    return db_plant
+
+@router.delete("/plants/{plant_id}", response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
+async def read_plant(plant_id: int, db: Session = Depends(get_db)):
+    db_plant = controllers.get_plant(db, plant_id=plant_id)
+    if db_plant is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="Plant not found"
+        )
+    db_plant = controllers.delete_plant(db, plant_id=plant_id)
     return db_plant
     
 
