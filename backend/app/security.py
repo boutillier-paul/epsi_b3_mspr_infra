@@ -24,10 +24,9 @@ def get_password_hash(password):
 def token_response(token: str):
     return {"access_token": token}
 
-def signJWT(user_id: int, user_login: str) -> Dict[str, str]:
+def signJWT(user_login: str) -> Dict[str, str]:
     payload = {
         "user_login": user_login,
-        "user_id": user_id,
         "expires": time.time() + 600
     }
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
