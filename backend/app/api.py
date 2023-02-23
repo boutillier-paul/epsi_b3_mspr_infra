@@ -133,3 +133,52 @@ async def delete_plant(plant_id: int, db: Session = Depends(get_db)):
     return db_plant
     
 
+# GUARD ENDPOINTS
+
+@router.post("/guards", response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
+async def create_guard(guard: schemas.GuardCreate, plant_id: int, db: Session = Depends(get_db)):
+    db_guard = controllers.create_guard(db, guard=guard, plant_id=plant_id)
+    if db_guard is None:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            detail="Guard not created"
+        )
+    return db_guard
+
+@router.put("/guards/{guard_id}", response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
+async def accept_guard(guard_id: int, user_id: int, db: Session = Depends(get_db)):
+    db_guard = controllers.get_guard(db, guard_id)
+    if db_guard is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="Guard not found"
+        )
+    db_guard = controllers.take_guard(db, guard_id=guard_id, user_id=user_id)
+    if db_guard is None:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            detail="Guard not updated"
+        )
+    return db_guard
+
+@router.get("/guards/user/{user_id}", response_model=list[schemas.Guard], dependencies=[Depends(JWTBearer())])
+async def read_plant(user_id: int, db: Session = Depends(get_db)):
+    db_guards = controllers.get_guards_by_user(db, user_id=user_id)
+    if db_guards is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="Guards not found"
+        )
+    return db_guards
+
+@router.get("/guards/{guard_id}", response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
+async def read_plant(guard_id: int, db: Session = Depends(get_db)):
+    db_guard = controllers.get_guard(db, guard_id=guard_id)
+    if db_guard is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="Guard not found"
+        )
+    return db_guard
+
+
