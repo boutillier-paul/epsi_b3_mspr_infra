@@ -62,7 +62,7 @@ def check_user_role(db: Session, role_name: str, Authorization: str = Header(Non
     db_role = get_role_by_name(db, role_name=role_name)
     db_user = get_user_by_login(db, user_login=decoded_token['user_login'])
 
-    if not db_role.id == db_user.role_id:
+    if not db_role.id <= db_user.role_id:
         raise HTTPException(
             status_code = status.HTTP_401_UNAUTHORIZED, 
             detail      = f"Unauthorized: only { db_role.name }S can access this ressource"

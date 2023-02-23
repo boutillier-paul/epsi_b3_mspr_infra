@@ -115,8 +115,9 @@ async def read_plants(skip: int = 0, limit: int = 100, db: Session = Depends(get
     return db_plants
         
 @router.post("/plants", tags=["Plants"], response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
-async def create_plant(plant: schemas.PlantCreate, user_id: int, db: Session = Depends(get_db)):
-    db_plant = controllers.create_plant(db, plant=plant, user_id=user_id)
+async def create_plant(plant: schemas.PlantCreate, db: Session = Depends(get_db), Authorization: str = Header(None)):
+    user = controllers.get_current_user(db, Authorization=Authorization)
+    db_plant = controllers.create_plant(db, plant=plant, user_id=user.id)
     if db_plant is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, 
