@@ -45,7 +45,7 @@ async def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
             detail="Incorrect login or password",
         )
     if security.verify_password(user.password, db_user.password):
-        return security.signJWT(user.login)
+        return security.signJWT(user_login=user.login)
     else:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
