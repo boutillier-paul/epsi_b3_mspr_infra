@@ -186,15 +186,18 @@ def create_care_session(db: Session, care_session: schemas.CareSessionCreate, gu
 def get_message(db: Session, message_id: int):
     return db.query(models.Message).filter(models.Message.id == message_id).first()
 
+def get_messages(db: Session, skip:int = 0, limit: int = 100):
+    return db.query(models.Message).offset(skip).limit(limit).order_by(models.Message.created_at.desc()).all()
+
 def get_messages_by_sender(db: Session, sender_id: int):
     return db.query(models.Message).filter(models.Message.sender_id == sender_id).all()
 
 def get_messages_by_reciever(db: Session, reciever_id: int):
     return db.query(models.Message).filter(models.Message.reciever_id == reciever_id).all()
 
-def get_messages_conversation(db: Session, sender_id: int, reciever_id: int):
-    return db.query(models.Message).filter((models.Message.sender_id == sender_id, models.Message.reciever_id == reciever_id)\
-                                        | (models.Message.sender_id == reciever_id, models.Message.reciever_id == sender_id))\
+def get_messages_conversation(db: Session, user_id: int, interlocutor_id: int):
+    return db.query(models.Message).filter((models.Message.sender_id == user_id, models.Message.reciever_id == interlocutor_id)\
+                                        | (models.Message.sender_id == interlocutor_id, models.Message.reciever_id == user_id))\
         .order_by(models.Message.created_at.desc()).all()
 
 def create_message(db: Session, message: schemas.MessageCreate, sender_id: int, reciever_id: int):
@@ -210,6 +213,9 @@ def create_message(db: Session, message: schemas.MessageCreate, sender_id: int, 
 # ADVICE
 def get_advice(db: Session, advice_id: int):
     return db.query(models.Advice).filter(models.Advice.id == advice_id).first()
+
+def get_advices(db: Session, skip: int = 0, limit: int = 100):
+   return db.query(models.Advice).offset(skip).limit(limit).order_by(models.Advice.created_at.desc()).all()
 
 def get_advices_by_title(db: Session, advice_title: str):
     return db.query(models.Advice).filter(models.func.lower(models.Advice.title).startswith(advice_title.lower())).all()
