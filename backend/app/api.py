@@ -302,7 +302,7 @@ async def delete_guard(guard_id: int, db: Session = Depends(get_db), Authorizati
 @router.get("/sessions", tags=["ADMIN ROLE"], response_model=list[schemas.CareSession], dependencies=[Depends(JWTBearer())])
 async def read_sessions(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), Authorization: str = Header(None)):
     controllers.check_user_role(db, role_name="ADMIN", Authorization=Authorization)
-    db_sessions = controllers.get_cares_sessions(db, skip=skip, limit=limit)
+    db_sessions = controllers.get_care_sessions(db, skip=skip, limit=limit)
     return db_sessions
 
 @router.get("/sessions/{session_id}", tags=["Sessions"], response_model=schemas.CareSession, dependencies=[Depends(JWTBearer())])
