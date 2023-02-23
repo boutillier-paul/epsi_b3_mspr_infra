@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # Make migrations
+alembic revision --autogenerate -m "init db"
 alembic upgrade head
 
 # Run app
