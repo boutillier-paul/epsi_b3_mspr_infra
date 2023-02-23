@@ -33,7 +33,7 @@ class Plant(Base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String, nullable=False)
-    spicies = Column(String, nullable=False)
+    species = Column(String, nullable=False)
     photo = Column(String, unique=True, nullable=True)
     pos_lat = Column(Float, nullable=False)
     pos_lng = Column(Float, nullable=False)
