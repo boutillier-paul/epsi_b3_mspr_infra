@@ -127,6 +127,9 @@ def take_guard(db: Session, guard_id: int, user_id: int):
         db.refresh(db_guard)
     return db_guard
 
+def get_guards_by_user(db: Session, user_id: int):
+    return db.query(models.Guard).filter(models.Guard.user_id == user_id).order_by(models.Guard.created_at.desc()).all()
+
 #CARE SESSION 
 def get_care_session(db: Session, care_session_id: int):
    return db.query(models.Care_Session).filter(models.Care_Session.id == care_session_id).first()
