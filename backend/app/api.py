@@ -217,7 +217,7 @@ async def read_open_guards_aroud_me(location: schemas.Location, skip: int = 0, l
     guards_around = []
     for guard in db_guards:
         plant_pos = (guard.plant.pos_lat, guard.plant.pos_lng)
-        plant_distance = distance((location.pos_loat, location.pos_lng), plant_pos).km
+        plant_distance = distance((location.pos_lat, location.pos_lng), plant_pos).km
         if plant_distance <= location.radius and guard not in user:
             for plant in user.plants:
                 if guard not in plant.guards:
