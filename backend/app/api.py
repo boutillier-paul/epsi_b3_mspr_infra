@@ -308,7 +308,7 @@ async def read_sessions(skip: int = 0, limit: int = 100, db: Session = Depends(g
 @router.get("/sessions/{session_id}", tags=["Sessions"], response_model=schemas.CareSession, dependencies=[Depends(JWTBearer())])
 async def read_session(session_id: int, db: Session = Depends(get_db), Authorization: str = Header(None)):
     user = controllers.get_current_user(db, Authorization=Authorization)
-    db_session = controllers.get_care_session(db, session_id=session_id)
+    db_session = controllers.get_care_session(db, care_session_id=session_id)
 
     for plant in user.plants:
         for guard in plant.guards:
