@@ -21,7 +21,7 @@ async def api_root():
 # REGISTER ENDPOINT
 
 @router.post("/signup", tags=["Register"])
-async def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
+async def signup(user: schemas.UserCreate, response_model=schemas.Token, db: Session = Depends(get_db)):
     db_user_email = controllers.get_user_by_email(db, user_email=user.email)
     db_user_login = controllers.get_user_by_login(db, user_login=user.login)
 
@@ -40,7 +40,7 @@ async def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 # LOGIN ENDPOINT
 
-@router.post("/login", tags=["Login"])
+@router.post("/login", response_model=schemas.Token, tags=["Login"])
 async def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     db_user = controllers.get_user_by_login(db, user_login=user.login)
     if not db_user:
@@ -75,14 +75,8 @@ async def read_user(user_id: int, db: Session = Depends(get_db)):
 
 @router.put("/users/me", tags=["Users"], response_model=schemas.User, dependencies=[Depends(JWTBearer())])
 async def update_user(user: schemas.UserUpdate, db: Session = Depends(get_db), Authorization: str = Header(None)):
-    user_id = controllers.get_current_user(db, Authorization=Authorization).id
-
-    if user.id != user_id:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            detail="Unauthorized"
-        )
-    db_user = controllers.update_user(user=user)
+    user = controllers.get_current_user(db, Authorization=Authorization)
+    db_user = controllers.update_user(user=user, user_id=user.id)
     return db_user
 
 @router.get("/users", tags=["ADMIN ROLE"], response_model=list[schemas.User], dependencies=[Depends(JWTBearer())])
@@ -121,8 +115,9 @@ async def read_plants(skip: int = 0, limit: int = 100, db: Session = Depends(get
     return db_plants
         
 @router.post("/plants", tags=["Plants"], response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
-async def create_plant(plant: schemas.PlantCreate, user_id: int, db: Session = Depends(get_db)):
-    db_plant = controllers.create_plant(db, plant=plant, user_id=user_id)
+async def create_plant(plant: schemas.PlantCreate, db: Session = Depends(get_db), Authorization: str = Header(None)):
+    user = controllers.get_current_user(db, Authorization=Authorization)
+    db_plant = controllers.create_plant(db, plant=plant, user_id=user.id)
     if db_plant is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, 

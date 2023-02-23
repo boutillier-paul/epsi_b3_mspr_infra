@@ -7,6 +7,10 @@ class Location(BaseModel):
     pos_lng: float
     radius: int
 
+# Token
+class Token(BaseModel):
+    access_token: str
+
 # Care Session
 class CareSessionBase(BaseModel):
     photo: str

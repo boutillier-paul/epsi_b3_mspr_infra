@@ -15,8 +15,8 @@ def get_user_by_email(db: Session, user_email: str):
 def get_user_by_login(db: Session, user_login: str):
     return db.query(models.User).filter(models.User.login == user_login).first()
 
-def update_user(db: Session, user: schemas.User):
-    db_user = get_user(db, user.id)
+def update_user(db: Session, user: schemas.User, user_id: int):
+    db_user = get_user(db, user_id=user_id)
     if db_user:
         db_user = user
         db.commit()
@@ -62,7 +62,7 @@ def check_user_role(db: Session, role_name: str, Authorization: str = Header(Non
     db_role = get_role_by_name(db, role_name=role_name)
     db_user = get_user_by_login(db, user_login=decoded_token['user_login'])
 
-    if not db_role.id == db_user.role_id:
+    if not db_role.id <= db_user.role_id:
         raise HTTPException(
             status_code = status.HTTP_401_UNAUTHORIZED, 
             detail      = f"Unauthorized: only { db_role.name }S can access this ressource"
