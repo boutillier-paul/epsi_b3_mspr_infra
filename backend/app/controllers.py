@@ -94,6 +94,12 @@ def create_plant(db: Session, plant: schemas.PlantCreate, user_id: int):
     db.refresh(db_plant)
     return db_plant
 
+def delete_plant(db: Session, plant_id: int):
+    db_plant = db.query(models.Plant).filter(models.Plant.id == plant_id).first()
+    db.delete(db_plant)
+    db.commit()
+    return db_plant
+
 
 # GUARD
 def get_guard(db: Session, guard_id:int):
@@ -191,3 +197,4 @@ def delete_advice(db: Session, advice_id: int):
     db_advice = db.query(models.Advice).filter(models.Advice.id == advice_id).first()
     db.delete(db_advice)
     db.commit()
+    return db_advice

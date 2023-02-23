@@ -33,4 +33,4 @@ jobs:
 
           cd epsi_b3_mspr_infra
 
-          docker compose up -d --build
+          sudo docker compose up -d --build
