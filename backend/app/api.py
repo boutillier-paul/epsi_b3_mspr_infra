@@ -11,7 +11,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 router = APIRouter()
 
 
-@router.get("/")
+@router.get("/", tags=["Default"])
 async def api_root():
     return {"message": "Welcome on API root url"}
 
