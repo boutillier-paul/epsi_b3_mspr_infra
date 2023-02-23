@@ -74,20 +74,31 @@ async def read_user(user_id: int, db: Session = Depends(get_db)):
         )
     return db_user
 
-@router.get("/users/", response_model=list[schemas.User], dependencies=[Depends(JWTBearer())])
+@router.get("/users", response_model=list[schemas.User], dependencies=[Depends(JWTBearer())])
 async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), Authorization: str = Header(None)):
     db_users = controllers.get_users(db, skip=skip, limit=limit)
     controllers.check_user_role(db, role_name="ADMIN", Authorization=Authorization)
-
     return db_users
 
 # PLANT ENDPOINTS
-@router.get("/plants/{plant_id}", dependencies=[Depends(JWTBearer())])
-async def read_plant(plant_id= int, db: Session = Depends(get_db)):
-    pass
-
-@router.post("/plants", dependencies=[Depends(JWTBearer())])
-async def create_plant(plant: schemas.PlantCreate, db: Session = Depends(get_db)):
+@router.get("/plants/{plant_id}", response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
+async def read_plant(plant_id: int, db: Session = Depends(get_db)):
+    db_plant = controllers.get_plant(db, plant_id=plant_id)
+    if db_plant is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="Plant not found"
+        )
+    return db_plant
+        
+@router.post("/plants/{user_id}", response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
+async def create_plant(plant: schemas.PlantCreate, user_id: int, db: Session = Depends(get_db)):
+    db_plant = controllers.create_plant(db, plant=plant, user_id=user_id)
+    if db_plant is None:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            detail="Plant not created"
+        )
+    return db_plant
     
-    pass
 

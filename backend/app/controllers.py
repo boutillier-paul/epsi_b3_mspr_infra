@@ -135,16 +135,16 @@ def create_care_session(db: Session, care_session: schemas.CareSessionCreate, gu
 
 
 # MESSAGE
-def get_message(db: Session, message_id: int):
+def get_messages(db: Session, message_id: int):
     return db.query(models.Message).filter(models.Message.id == message_id).first()
 
-def get_message_by_sender(db: Session, sender_id: int):
+def get_messages_by_sender(db: Session, sender_id: int):
     return db.query(models.Message).filter(models.Message.sender_id == sender_id).all()
 
-def get_message_by_reciever(db: Session, reciever_id: int):
+def get_messages_by_reciever(db: Session, reciever_id: int):
     return db.query(models.Message).filter(models.Message.reciever_id == reciever_id).all()
 
-def get_message_conversation(db: Session, sender_id: int, reciever_id: int):
+def get_messages_conversation(db: Session, sender_id: int, reciever_id: int):
     return db.query(models.Message).filter((models.Message.sender_id == sender_id, models.Message.reciever_id == reciever_id)\
                                         | (models.Message.sender_id == reciever_id, models.Message.reciever_id == sender_id))\
         .order_by(models.Message.created_at.desc()).all()
