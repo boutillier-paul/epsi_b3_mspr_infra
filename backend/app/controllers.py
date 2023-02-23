@@ -173,7 +173,7 @@ def get_care_sessions(db: Session, skip: int = 0, limit: int = 100):
    return db.query(models.Care_Session).order_by(models.Care_Session.created_at.desc()).offset(skip).limit(limit).all()
 
 def create_care_session(db: Session, care_session: schemas.CareSessionCreate, guard_id: int):
-    db_care_session = models.CareSession( 
+    db_care_session = models.Care_Session( 
         photo       = care_session.photo,
         report      = care_session.report,
         guard_id    = guard_id)
