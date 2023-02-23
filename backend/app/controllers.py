@@ -17,12 +17,10 @@ def get_user_by_login(db: Session, user_login: str):
 
 def update_user(db: Session, user: schemas.User):
     db_user = get_user(db, user.id)
-
     if db_user:
         db_user = user
         db.commit()
         db.refresh(db_user)
-
     return db_user
 
 def create_user(db: Session, user: schemas.UserCreate):

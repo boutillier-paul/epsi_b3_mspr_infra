@@ -58,8 +58,8 @@ async def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
 
 @router.get("/users/me", tags=["Users"], response_model=schemas.User, dependencies=[Depends(JWTBearer)])
 async def get_current_user(db: Session = Depends(get_db), Authorization: str = Header(None)):
-    db_user = controllers.get_current_user(db, Authorization=Authorization)
-    return db_user
+    user = controllers.get_current_user(db, Authorization=Authorization)
+    return user
 
 @router.get("/users/{user_id}", tags=["Users"], response_model=schemas.User, dependencies=[Depends(JWTBearer())])
 async def read_user(user_id: int, db: Session = Depends(get_db)):
@@ -71,6 +71,18 @@ async def read_user(user_id: int, db: Session = Depends(get_db)):
         )
     return db_user
 
+@router.put("/users/me", tags=["Users"], response_model=schemas.User, dependencies=[Depends(JWTBearer())])
+async def update_user(user: schemas.UserUpdate, db: Session = Depends(get_db), Authorization: str = Header(None)):
+    user_id = controllers.get_current_user(db, Authorization=Authorization).id
+
+    if not user.id == user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="Unauthorized"
+        )
+    db_user = controllers.update_user(user=user)
+    return db_user
+
 @router.get("/users", tags=["Users", "ADMIN ROLE"], response_model=list[schemas.User], dependencies=[Depends(JWTBearer())])
 async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), Authorization: str = Header(None)):
     controllers.check_user_role(db, role_name="ADMIN", Authorization=Authorization)
@@ -79,6 +91,7 @@ async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_
 
 
 # PLANT ENDPOINTS
+
 @router.get("/plants/{plant_id}", tags=["Plants"], response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
 async def read_plant(plant_id: int, db: Session = Depends(get_db)):
     db_plant = controllers.get_plant(db, plant_id=plant_id)
@@ -254,12 +267,53 @@ async def delete_guard(guard_id: int, db: Session = Depends(get_db), Authorizati
 
 
 # SESSION ENDPOINTS
-@router.post("/sessions", tags=["Sessions"], response_model=schemas.CareSession, dependencies=[Depends(JWTBearer())])
-async def create_session(session: schemas.CareSessionCreate, guard_id: int, db: Session = Depends(get_db)):
+
+@router.get("/sessions", tags=["Sessions", "ADMIN ROLE"], response_model=list[schemas.CareSession], dependencies=[Depends(JWTBearer())])
+async def read_sessions(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), Authorization: str = Header(None)):
+    controllers.check_user_role(db, role_name="ADMIN", Authorization=Authorization)
+    db_sessions = controllers.get_cares_sessions(db, skip=skip, limit=limit)
+    return db_sessions
+
+@router.get("/sessions/{session_id}", tags=["Sessions"], response_model=schemas.CareSession, dependencies=[Depends(JWTBearer())])
+async def read_session(session_id: int, db: Session = Depends(get_db), Authorization: str = Header(None)):
+    user = controllers.get_current_user(db, Authorization=Authorization)
+    db_session = controllers.get_care_session(db, session_id=session_id)
+
+    if db_session is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Session not created"
+        )
+
+    for plant in user:
+        for guard in plant.guards:
+            for session in guard.care_session:
+                if not user in db_session.guard.user and not session.id == db_session.id:
+                    raise HTTPException(
+                        status_code=status.HTTP_401_UNAUTHORIZED, 
+                        detail="You don't have access to this ressource"
+                    )
+    return db_session
+
+@router.post("/sessions", tags=["Sessions", "BOTANIST ROLE"], response_model=schemas.CareSession, dependencies=[Depends(JWTBearer())])
+async def create_session(session: schemas.CareSessionCreate, guard_id: int, db: Session = Depends(get_db), Authorization: str = Header(None)):
+    controllers.check_user_role(db, role_name="BOTANIST", Authorization=Authorization)
+    user = controllers.get_current_user(db, Authorization=Authorization)
     db_session = controllers.create_care_session(db, care_session=session, guard_id=guard_id)
     if db_session is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Session not created"
         )
+
+    for guard in user.guards:
+        if guard_id in guard:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, 
+                detail="You can't create a session for a guard you didn't take"
+            )
     return db_session
+
+
+    # MESSAGE ENDPOINTS
+
