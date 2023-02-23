@@ -169,8 +169,8 @@ def delete_guard(db: Session, guard_id: int):
 def get_care_session(db: Session, care_session_id: int):
    return db.query(models.Care_Session).filter(models.Care_Session.id == care_session_id).first()
 
-def get_cares_sessions(db: Session, skip: int = 0, limit: int = 100):
-   return db.query(models.Care_Session).offset(skip).limit(limit).order_by(models.Care_Session.created_at.desc()).all()
+def get_care_sessions(db: Session, skip: int = 0, limit: int = 100):
+   return db.query(models.Care_Session).order_by(models.Care_Session.created_at.desc()).offset(skip).limit(limit).all()
 
 def create_care_session(db: Session, care_session: schemas.CareSessionCreate, guard_id: int):
     db_care_session = models.CareSession( 
@@ -187,7 +187,7 @@ def get_message(db: Session, message_id: int):
     return db.query(models.Message).filter(models.Message.id == message_id).first()
 
 def get_messages(db: Session, skip:int = 0, limit: int = 100):
-    return db.query(models.Message).offset(skip).limit(limit).order_by(models.Message.created_at.desc()).all()
+    return db.query(models.Message).order_by(models.Message.created_at.desc()).offset(skip).limit(limit).all()
 
 def get_messages_by_sender(db: Session, sender_id: int):
     return db.query(models.Message).filter(models.Message.sender_id == sender_id).all()
@@ -215,7 +215,7 @@ def get_advice(db: Session, advice_id: int):
     return db.query(models.Advice).filter(models.Advice.id == advice_id).first()
 
 def get_advices(db: Session, skip: int = 0, limit: int = 100):
-   return db.query(models.Advice).offset(skip).limit(limit).order_by(models.Advice.created_at.desc()).all()
+   return db.query(models.Advice).order_by(models.Advice.created_at.desc()).offset(skip).limit(limit).all()
 
 def get_advices_by_title(db: Session, advice_title: str):
     return db.query(models.Advice).filter(models.func.lower(models.Advice.title).startswith(advice_title.lower())).all()
