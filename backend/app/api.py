@@ -161,9 +161,9 @@ async def accept_guard(guard_id: int, user_id: int, db: Session = Depends(get_db
         )
     return db_guard
 
-@router.get("/guards/user/{guard_id}", response_model=list[schemas.Guard], dependencies=[Depends(JWTBearer())])
-async def read_plant(guard_id: int, db: Session = Depends(get_db)):
-    db_guards = controllers.get_guards_by_user(db, guard_id=guard_id)
+@router.get("/guards/user/{user_id}", response_model=list[schemas.Guard], dependencies=[Depends(JWTBearer())])
+async def read_plant(user_id: int, db: Session = Depends(get_db)):
+    db_guards = controllers.get_guards_by_user(db, user_id=user_id)
     if db_guards is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, 
