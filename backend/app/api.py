@@ -232,7 +232,7 @@ async def read_guard(guard_id: int, db: Session = Depends(get_db), Authorization
             detail="Guard not found"
         )
 
-    if db_guard not in user.guards or db_guard.plant not in user.plants or not db_guard.user_id:
+    if db_guard not in user.guards and db_guard.plant not in user.plants and not db_guard.user_id:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, 
             detail="Unauthorized"
