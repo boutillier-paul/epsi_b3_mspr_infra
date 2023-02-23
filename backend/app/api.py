@@ -20,8 +20,8 @@ async def api_root():
 
 # REGISTER ENDPOINT
 
-@router.post("/signup", tags=["Register"])
-async def signup(user: schemas.UserCreate, response_model=schemas.Token, db: Session = Depends(get_db)):
+@router.post("/signup", tags=["Register"], response_model=schemas.Token)
+async def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user_email = controllers.get_user_by_email(db, user_email=user.email)
     db_user_login = controllers.get_user_by_login(db, user_login=user.login)
 
