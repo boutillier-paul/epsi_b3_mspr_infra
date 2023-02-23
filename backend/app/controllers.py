@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session, or_, and_
+from sqlalchemy.orm import Session
 from fastapi import HTTPException, status, Header
 from . import models, schemas, security
 
