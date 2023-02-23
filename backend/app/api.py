@@ -442,9 +442,9 @@ async def read_advice(advice_id: int, db: Session = Depends(get_db)):
         )
     return db_advice
 
-@router.get("/advices/search/{advices_title}", tags=["Advices"], response_model=list[schemas.Advice], dependencies=[Depends(JWTBearer())])
-async def search_advice(advices_title: str, db: Session = Depends(get_db)):
-    db_advices = controllers.get_advices_by_title(db, advices_title=advices_title)
+@router.get("/advices/search/{advice_title}", tags=["Advices"], response_model=list[schemas.Advice], dependencies=[Depends(JWTBearer())])
+async def search_advice(advice_title: str, db: Session = Depends(get_db)):
+    db_advices = controllers.get_advices_by_title(db, advice_title=advice_title)
     if db_advices is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, 
