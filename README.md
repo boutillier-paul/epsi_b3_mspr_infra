@@ -8,6 +8,8 @@ Backend du projet MSPR infra.
 
 - [@Boutillier-paul](https://github.com/Boutillier-paul)
 - [@Alexis-Looten](https://github.com/Alexis-Looten)
+- [@Zita-Eliane](https://github.com/Zita-Eliane)
+- [@Kanesho1924](https://github.com/Kanesho1924)
 
 
 ## Installation
