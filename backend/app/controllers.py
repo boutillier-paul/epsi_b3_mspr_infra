@@ -107,6 +107,9 @@ def get_guard(db: Session, guard_id:int):
 
 def get_guards(db: Session, skip:int = 0, limit: int = 100):
     return db.query(models.Guard).offset(skip).limit(limit).all()
+
+def get_open_guards(db: Session, skip:int = 0, limit: int = 100):
+    return db.query(models.Guard).filter(not models.Guard.user_id).offset(skip).limit(limit).all()
     
 def create_guard(db: Session, guard: schemas.GuardCreate, plant_id: int):
     db_guard = models.Guard(
@@ -120,15 +123,10 @@ def create_guard(db: Session, guard: schemas.GuardCreate, plant_id: int):
 
 def take_guard(db: Session, guard_id: int, user_id: int):
     db_guard = get_guard(db, guard_id)
-
-    if db_guard:
-        db_guard.user_id = user_id
-        db.commit()
-        db.refresh(db_guard)
+    db_guard.user_id = user_id
+    db.add(db_guard)
+    db.commit()
     return db_guard
-
-def get_guards_by_user(db: Session, user_id: int):
-    return db.query(models.Guard).filter(models.Guard.user_id == user_id).order_by(models.Guard.created_at.desc()).all()
 
 #CARE SESSION 
 def get_care_session(db: Session, care_session_id: int):

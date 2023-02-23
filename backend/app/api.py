@@ -77,7 +77,7 @@ async def read_user(user_id: int, db: Session = Depends(get_db)):
         )
     return db_user
 
-@router.get("/users", tags=["Users"], response_model=list[schemas.User], dependencies=[Depends(JWTBearer())])
+@router.get("/users", tags=["Users", "ADMIN"], response_model=list[schemas.User], dependencies=[Depends(JWTBearer())])
 async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), Authorization: str = Header(None)):
     controllers.check_user_role(db, role_name="ADMIN", Authorization=Authorization)
     db_users = controllers.get_users(db, skip=skip, limit=limit)
@@ -105,7 +105,7 @@ async def search_plant(plant_name: str, db: Session = Depends(get_db)):
         )
     return db_plants
 
-@router.get("/plants", tags=["Plants"], response_model=list[schemas.Plant], dependencies=[Depends(JWTBearer())])
+@router.get("/plants", tags=["Plants", "ADMIN"], response_model=list[schemas.Plant], dependencies=[Depends(JWTBearer())])
 async def read_plants(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), Authorization: str = Header(None)):
     controllers.check_user_role(db, role_name="ADMIN", Authorization=Authorization)
     db_plants = controllers.get_plants(db, skip=skip, limit=limit)
@@ -116,7 +116,7 @@ async def create_plant(plant: schemas.PlantCreate, user_id: int, db: Session = D
     db_plant = controllers.create_plant(db, plant=plant, user_id=user_id)
     if db_plant is None:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            status_code=status.HTTP_400_BAD_REQUEST, 
             detail="Plant not created"
         )
     return db_plant
@@ -140,39 +140,40 @@ async def create_guard(guard: schemas.GuardCreate, plant_id: int, db: Session = 
     db_guard = controllers.create_guard(db, guard=guard, plant_id=plant_id)
     if db_guard is None:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            status_code=status.HTTP_400_BAD_REQUEST, 
             detail="Guard not created"
         )
     return db_guard
 
 @router.put("/guards/{guard_id}", tags=["Guards"], response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
-async def accept_guard(guard_id: int, user_id: int, db: Session = Depends(get_db)):
+async def take_guard(guard_id: int, user_id: int, db: Session = Depends(get_db)):
     db_guard = controllers.get_guard(db, guard_id)
     if db_guard is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, 
             detail="Guard not found"
         )
-    db_guard = controllers.take_guard(db, guard_id=guard_id, user_id=user_id)
-    if db_guard is None:
+    if db_guard.user_id:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
-            detail="Guard not updated"
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail="Guard already taken"
         )
+    db_guard = controllers.take_guard(db, guard_id=guard_id, user_id=user_id)
     return db_guard
 
-@router.get("/guards/user/{user_id}", tags=["Guards"], response_model=list[schemas.Guard], dependencies=[Depends(JWTBearer())])
-async def read_plant(user_id: int, db: Session = Depends(get_db)):
-    db_guards = controllers.get_guards_by_user(db, user_id=user_id)
-    if db_guards is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
-            detail="Guards not found"
-        )
+@router.get("/guards", tags=["Guards", "ADMIN"], response_model=list[schemas.Guard], dependencies=[Depends(JWTBearer())])
+async def read_guards(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), Authorization: str = Header(None)):
+    controllers.check_user_role(db, role_name="ADMIN", Authorization=Authorization)
+    db_guards = controllers.get_guards(db, skip=skip, limit=limit)
+    return db_guards
+
+@router.get("/guards/open", tags=["Guards"], response_model=list[schemas.Guard], dependencies=[Depends(JWTBearer())])
+async def read_open_guards(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    db_guards = controllers.get_open_guards(db, skip=skip, limit=limit)
     return db_guards
 
 @router.get("/guards/{guard_id}", tags=["Guards"], response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
-async def read_plant(guard_id: int, db: Session = Depends(get_db)):
+async def read_guard(guard_id: int, db: Session = Depends(get_db)):
     db_guard = controllers.get_guard(db, guard_id=guard_id)
     if db_guard is None:
         raise HTTPException(
