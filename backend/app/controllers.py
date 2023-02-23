@@ -15,8 +15,8 @@ def get_user_by_email(db: Session, user_email: str):
 def get_user_by_login(db: Session, user_login: str):
     return db.query(models.User).filter(models.User.login == user_login).first()
 
-def update_user(db: Session, user: schemas.User):
-    db_user = get_user(db, user.id)
+def update_user(db: Session, user: schemas.User, user_id: int):
+    db_user = get_user(db, user_id=user_id)
     if db_user:
         db_user = user
         db.commit()
