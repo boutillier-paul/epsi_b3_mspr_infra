@@ -224,7 +224,9 @@ def get_advices_by_title(db: Session, advice_title: str):
 
 def create_advice(db: Session, advice: schemas.AdviceCreate, user_id: int):
     db_advice = models.Advice(
+        title   = advice.title,
         content = advice.content, 
+        photo   = advice.photo,
         user_id = user_id)
     db.add(db_advice)
     db.commit()
