@@ -9,3 +9,4 @@ python-jose[cryptography]
 passlib[bcrypt]
 python-multipart
 pyjwt==2.6.0
+geopy

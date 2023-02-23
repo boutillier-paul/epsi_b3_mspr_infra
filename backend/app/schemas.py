@@ -1,6 +1,12 @@
 from pydantic import BaseModel
 from datetime import datetime
 
+# Location
+class Location(BaseModel):
+    pos_lat: float
+    pos_lng: float
+    radius: int
+
 # Care Session
 class CareSessionBase(BaseModel):
     photo: str
