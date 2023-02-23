@@ -339,7 +339,7 @@ async def create_session(session: schemas.CareSessionCreate, guard_id: int, db: 
         )
 
     for guard in user.guards:
-        if guard_id in guard:
+        if guard_id ==  guard.id:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, 
                 detail="You can't create a session for a guard you didn't take"
