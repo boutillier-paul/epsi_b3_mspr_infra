@@ -477,4 +477,4 @@ async def delete_advice(advice_id: int, db: Session = Depends(get_db), Authoriza
                 detail="You can't delete an advice you didn't create"
             )
     db_advice = controllers.delete_advice(db, advice_id=advice_id)
-    return db_advice
+    return db_advicel
