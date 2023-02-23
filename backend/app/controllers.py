@@ -70,6 +70,32 @@ def check_user_role(db: Session, role_name: str, Authorization: str = Header(Non
             detail      = f"Unauthorized: only { db_role.name }S can access this ressource"
         )
 
+def get_current_user(db: Session, Authorization: str = Header(None)) -> None:
+    if not Authorization:
+        raise HTTPException(
+            status_code = status.HTTP_401_UNAUTHORIZED, 
+            detail      = "Unauthorized"
+        )
+
+    token = Authorization.split(" ")[1]
+    decoded_token = security.decodeJWT(token)
+    if not decoded_token:
+        raise HTTPException(
+            status_code = status.HTTP_401_UNAUTHORIZED, 
+            detail      = "Token expired"
+        )
+    db_user = get_user_by_login(db, user_login=decoded_token['user_login'])
+
+    if not db_user:
+        raise HTTPException(
+            status_code = status.HTTP_400_BAD_REQUEST, 
+            detail      = f"This request failed"
+        )
+
+    return db_user
+
+
+
 
 # PLANT
 def get_plant(db: Session, plant_id: int):
@@ -122,9 +148,22 @@ def create_guard(db: Session, guard: schemas.GuardCreate, plant_id: int):
     return db_guard
 
 def take_guard(db: Session, guard_id: int, user_id: int):
-    db_guard = get_guard(db, guard_id)
+    db_guard = db.query(models.Guard).filter(models.Guard.id == guard_id).first()
     db_guard.user_id = user_id
     db.add(db_guard)
+    db.commit()
+    return db_guard
+
+def cancel_guard(db: Session, guard_id: int):
+    db_guard = db.query(models.Guard).filter(models.Guard.id == guard_id).first()
+    db_guard.user_id = None
+    db.add(db_guard)
+    db.commit()
+    return db_guard
+
+def delete_guard(db: Session, guard_id: int):
+    db_guard = db.query(models.Guard).filter(models.Guard.id == guard_id).first()
+    db.delete(db_guard)
     db.commit()
     return db_guard
 

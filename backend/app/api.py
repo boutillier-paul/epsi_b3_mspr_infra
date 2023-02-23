@@ -173,13 +173,22 @@ async def read_open_guards(skip: int = 0, limit: int = 100, db: Session = Depend
     return db_guards
 
 @router.get("/guards/{guard_id}", tags=["Guards"], response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
-async def read_guard(guard_id: int, db: Session = Depends(get_db)):
+async def read_guard(guard_id: int, db: Session = Depends(get_db), Authorization: str = Header(None)):
     db_guard = controllers.get_guard(db, guard_id=guard_id)
+    user = controllers.get_current_user(db, Authorization=Authorization)
+
     if db_guard is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, 
             detail="Guard not found"
         )
+
+    if db_guard not in user.guards or not db_guard.user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="Unauthorized"
+        )
+
     return db_guard
 
 
