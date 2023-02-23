@@ -147,7 +147,7 @@ async def create_guard(guard: schemas.GuardCreate, plant_id: int, db: Session = 
         )
     return db_guard
 
-@router.put("/guards/{guard_id}", tags=["Guards", "BOTANIST ROLE"], response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
+@router.put("/guards/{guard_id}/take", tags=["Guards", "BOTANIST ROLE"], response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
 async def take_guard(guard_id: int, db: Session = Depends(get_db), Authorization: str = Header(None)):
     controllers.check_user_role(db, role_name="BOTANIST", Authorization=Authorization)
     db_guard = controllers.get_guard(db, guard_id)
@@ -205,7 +205,7 @@ async def read_guard(guard_id: int, db: Session = Depends(get_db), Authorization
 
     return db_guard
 
-@router.put("/guards/{guard_id}", tags=["Guards", "BOTANIST ROLE"], response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
+@router.put("/guards/{guard_id}/cancel", tags=["Guards", "BOTANIST ROLE"], response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
 async def cancel_guard(guard_id: int, db: Session = Depends(get_db), Authorization: str = Header(None)):
     controllers.check_user_role(db, role_name="BOTANIST", Authorization=Authorization)
     db_guard = controllers.cancel_guard(db, guard_id)
