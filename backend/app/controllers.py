@@ -133,7 +133,7 @@ def get_guards(db: Session, skip:int = 0, limit: int = 100):
     return db.query(models.Guard).offset(skip).limit(limit).all()
 
 def get_open_guards(db: Session, skip:int = 0, limit: int = 100):
-    return db.query(models.Guard).filter(not models.Guard.user_id).offset(skip).limit(limit).all()
+    return db.query(models.Guard).filter(models.Guard.user_id is None).offset(skip).limit(limit).all()
     
 def create_guard(db: Session, guard: schemas.GuardCreate, plant_id: int):
     db_guard = models.Guard(

@@ -152,7 +152,16 @@ async def delete_plant(plant_id: int, db: Session = Depends(get_db), Authorizati
 # GUARD ENDPOINTS
 
 @router.post("/guards", tags=["Guards"], response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
-async def create_guard(guard: schemas.GuardCreate, plant_id: int, db: Session = Depends(get_db)):
+async def create_guard(guard: schemas.GuardCreate, plant_id: int, db: Session = Depends(get_db), Authorization: str = Header(None)):
+    db_plant = controllers.get_plant(db, plant_id)
+    user = controllers.get_current_user(db, Authorization=Authorization)
+
+    if db_plant not in user.plants:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, 
+                detail="You can only create guard for your plants"
+            )
+
     db_guard = controllers.create_guard(db, guard=guard, plant_id=plant_id)
     if db_guard is None:
         raise HTTPException(
@@ -223,11 +232,12 @@ async def read_guard(guard_id: int, db: Session = Depends(get_db), Authorization
             detail="Guard not found"
         )
 
-    if db_guard not in user.guards or not db_guard.user_id:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            detail="Unauthorized"
-        )
+    for plant in user.plants:
+        if db_guard not in user.guards or plant not in user.plants or not db_guard.user_id:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, 
+                detail="Unauthorized"
+            )
 
     return db_guard
 
