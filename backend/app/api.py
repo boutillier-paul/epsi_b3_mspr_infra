@@ -274,7 +274,7 @@ async def delete_guard(guard_id: int, db: Session = Depends(get_db), Authorizati
             detail="Guard not found"
         )
 
-    if db_guard.user_id is None:
+    if db_guard.user_id:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, 
             detail="Guard is already taken, you can't delete it"
