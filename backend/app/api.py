@@ -30,7 +30,7 @@ async def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = controllers.create_user(db, user=user)
 
     if db_user:
-        return security.signJWT(user_id=user.id, user_login=user.login)
+        return security.signJWT(user_login=user.login)
     else:
         return {}
 
@@ -45,7 +45,7 @@ async def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
             detail="Incorrect login or password",
         )
     if security.verify_password(user.password, db_user.password):
-        return security.signJWT(user.login)
+        return security.signJWT(user_login=user.login)
     else:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -122,7 +122,7 @@ async def create_plant(plant: schemas.PlantCreate, user_id: int, db: Session = D
     return db_plant
 
 @router.delete("/plants/{plant_id}", response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
-async def read_plant(plant_id: int, db: Session = Depends(get_db)):
+async def delete_plant(plant_id: int, db: Session = Depends(get_db)):
     db_plant = controllers.get_plant(db, plant_id=plant_id)
     if db_plant is None:
         raise HTTPException(
