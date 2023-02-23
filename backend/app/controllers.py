@@ -105,6 +105,9 @@ def get_plants(db: Session, skip: int = 0, limit: int = 100):
 def get_plants_by_name(db: Session, plant_name: str):
     return db.query(models.Plant).filter(models.func.lower(models.Plant.name).startswith(plant_name.lower())).all()
 
+def get_plant_by_photo(db: Session, plant_photo: str):
+    return db.query(models.Plant).filter(models.Plant.photo == plant_photo).first()
+
 def create_plant(db: Session, plant: schemas.PlantCreate, user_id: int):
     db_plant = models.Plant(
         name    = plant.name,
