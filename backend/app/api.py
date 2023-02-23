@@ -17,7 +17,7 @@ async def api_root():
 
 
 # REGISTER ENDPOINT
-@router.post("/signup")
+@router.post("/signup", tags=["Register"])
 async def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user_email = controllers.get_user_by_email(db, user_email=user.email)
     db_user_login = controllers.get_user_by_login(db, user_login=user.login)
@@ -36,7 +36,7 @@ async def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 
 # LOGIN ENDPOINT
-@router.post("/login")
+@router.post("/login", tags=["Login"])
 async def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     db_user = controllers.get_user_by_login(db, user_login=user.login)
     if not db_user:
@@ -54,7 +54,7 @@ async def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
 
 
 # USER ENDPOINTS
-@router.get("/users/me", response_model=schemas.User, dependencies=[Depends(JWTBearer)])
+@router.get("/users/me", tags=["Users"], response_model=schemas.User, dependencies=[Depends(JWTBearer)])
 async def get_current_user(db: Session = Depends(get_db), Authorization: str = Header(None)):
 
     token = Authorization.split(" ")[1]
@@ -67,7 +67,7 @@ async def get_current_user(db: Session = Depends(get_db), Authorization: str = H
     db_user = controllers.get_user_by_login(db, user_login=decoded_token['user_login'])
     return db_user
 
-@router.get("/users/{user_id}", response_model=schemas.User, dependencies=[Depends(JWTBearer())])
+@router.get("/users/{user_id}", tags=["Users"], response_model=schemas.User, dependencies=[Depends(JWTBearer())])
 async def read_user(user_id: int, db: Session = Depends(get_db)):
     db_user = controllers.get_user(db, user_id=user_id)
     if db_user is None:
@@ -77,7 +77,7 @@ async def read_user(user_id: int, db: Session = Depends(get_db)):
         )
     return db_user
 
-@router.get("/users", response_model=list[schemas.User], dependencies=[Depends(JWTBearer())])
+@router.get("/users", tags=["Users"], response_model=list[schemas.User], dependencies=[Depends(JWTBearer())])
 async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), Authorization: str = Header(None)):
     controllers.check_user_role(db, role_name="ADMIN", Authorization=Authorization)
     db_users = controllers.get_users(db, skip=skip, limit=limit)
@@ -85,7 +85,7 @@ async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_
 
 
 # PLANT ENDPOINTS
-@router.get("/plants/{plant_id}", response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
+@router.get("/plants/{plant_id}", tags=["Plants"], response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
 async def read_plant(plant_id: int, db: Session = Depends(get_db)):
     db_plant = controllers.get_plant(db, plant_id=plant_id)
     if db_plant is None:
@@ -95,7 +95,7 @@ async def read_plant(plant_id: int, db: Session = Depends(get_db)):
         )
     return db_plant
 
-@router.get("/plants/search/{plant_name}", response_model=list[schemas.Plant], dependencies=[Depends(JWTBearer())])
+@router.get("/plants/search/{plant_name}", tags=["Plants"], response_model=list[schemas.Plant], dependencies=[Depends(JWTBearer())])
 async def search_plant(plant_name: str, db: Session = Depends(get_db)):
     db_plants = controllers.get_plants_by_name(db, plant_name=plant_name)
     if db_plants is None:
@@ -105,13 +105,13 @@ async def search_plant(plant_name: str, db: Session = Depends(get_db)):
         )
     return db_plants
 
-@router.get("/plants", response_model=list[schemas.Plant], dependencies=[Depends(JWTBearer())])
+@router.get("/plants", tags=["Plants"], response_model=list[schemas.Plant], dependencies=[Depends(JWTBearer())])
 async def read_plants(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), Authorization: str = Header(None)):
     controllers.check_user_role(db, role_name="ADMIN", Authorization=Authorization)
     db_plants = controllers.get_plants(db, skip=skip, limit=limit)
     return db_plants
         
-@router.post("/plants", response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
+@router.post("/plants", tags=["Plants"], response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
 async def create_plant(plant: schemas.PlantCreate, user_id: int, db: Session = Depends(get_db)):
     db_plant = controllers.create_plant(db, plant=plant, user_id=user_id)
     if db_plant is None:
@@ -121,7 +121,7 @@ async def create_plant(plant: schemas.PlantCreate, user_id: int, db: Session = D
         )
     return db_plant
 
-@router.delete("/plants/{plant_id}", response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
+@router.delete("/plants/{plant_id}", tags=["Plants"], response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
 async def delete_plant(plant_id: int, db: Session = Depends(get_db)):
     db_plant = controllers.get_plant(db, plant_id=plant_id)
     if db_plant is None:
@@ -135,7 +135,7 @@ async def delete_plant(plant_id: int, db: Session = Depends(get_db)):
 
 # GUARD ENDPOINTS
 
-@router.post("/guards", response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
+@router.post("/guards", tags=["Guards"], response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
 async def create_guard(guard: schemas.GuardCreate, plant_id: int, db: Session = Depends(get_db)):
     db_guard = controllers.create_guard(db, guard=guard, plant_id=plant_id)
     if db_guard is None:
@@ -145,7 +145,7 @@ async def create_guard(guard: schemas.GuardCreate, plant_id: int, db: Session = 
         )
     return db_guard
 
-@router.put("/guards/{guard_id}", response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
+@router.put("/guards/{guard_id}", tags=["Guards"], response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
 async def accept_guard(guard_id: int, user_id: int, db: Session = Depends(get_db)):
     db_guard = controllers.get_guard(db, guard_id)
     if db_guard is None:
@@ -161,7 +161,7 @@ async def accept_guard(guard_id: int, user_id: int, db: Session = Depends(get_db
         )
     return db_guard
 
-@router.get("/guards/user/{user_id}", response_model=list[schemas.Guard], dependencies=[Depends(JWTBearer())])
+@router.get("/guards/user/{user_id}", tags=["Guards"], response_model=list[schemas.Guard], dependencies=[Depends(JWTBearer())])
 async def read_plant(user_id: int, db: Session = Depends(get_db)):
     db_guards = controllers.get_guards_by_user(db, user_id=user_id)
     if db_guards is None:
@@ -171,7 +171,7 @@ async def read_plant(user_id: int, db: Session = Depends(get_db)):
         )
     return db_guards
 
-@router.get("/guards/{guard_id}", response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
+@router.get("/guards/{guard_id}", tags=["Guards"], response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
 async def read_plant(guard_id: int, db: Session = Depends(get_db)):
     db_guard = controllers.get_guard(db, guard_id=guard_id)
     if db_guard is None:
