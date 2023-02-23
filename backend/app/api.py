@@ -279,6 +279,12 @@ async def delete_guard(guard_id: int, db: Session = Depends(get_db), Authorizati
             status_code=status.HTTP_400_BAD_REQUEST, 
             detail="Guard is already taken, you can't delete it"
         )
+    
+    if not user.plants:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="You didn't created that guard"
+        )
 
     for plant in user.plants:
         if db_guard not in plant.guards:
