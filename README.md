@@ -28,6 +28,9 @@ and run
 
 docker compose up --build 
 
+docker kill $(docker ps -q)
+docker rm $(docker ps -a -q)
+
 to lanch the app with db
 
 go to https://localhost:8000/docs/
