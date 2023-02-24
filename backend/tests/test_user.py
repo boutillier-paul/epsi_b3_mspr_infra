@@ -1,9 +1,9 @@
 from sqlalchemy.orm import Session
 # from http import client
 from fastapi.testclient import TestClient
-from backend import app
+# from backend import app
 from backend.app import schemas
-client = TestClient(app)
+# client = TestClient(app)
 import requests
 import json
 import random
