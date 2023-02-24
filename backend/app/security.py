@@ -20,8 +20,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 
 def is_valid_email(email: str):
-    pattern = r"^[\w\.-]+@[\w\.-]+\.\w{2,4}$"
-    return True if (re.match(pattern, email) and validate_email(email)) else False
+    return validate_email(email)
 
 def is_valid_password(password: str):
     pattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
