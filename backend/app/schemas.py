@@ -1,44 +1,71 @@
-from pydantic import BaseModel
+"""
+    SCHEMAS
+"""
+import dataclasses
 from datetime import datetime
+from pydantic import BaseModel
+
 
 # Location
 class Location(BaseModel):
+    """
+        Location
+    """
     pos_lat: float
     pos_lng: float
     radius: int
 
-
 # Token
 class Token(BaseModel):
+    """
+        Token
+    """
     access_token: str
-
 
 # Care Session
 class CareSessionBase(BaseModel):
+    """
+        CareSessionBase
+    """
     photo: str
     report: str | None = None
 
 class CareSession(CareSessionBase):
+    """
+        CareSession
+    """
     id: int
     created_at: datetime
     guard_id: int
-    
     class Config:
+        """
+            Config
+        """
         orm_mode = True
 
 class CareSessionCreate(CareSessionBase):
-    pass
+    """
+        CareSessionCreate
+    """
 
 class CareSessionUpdate(CareSessionBase):
-    pass
+    """
+        CareSessionUpdate
+    """
 
 
 # Guard
 class GuardBase(BaseModel):
+    """
+        GuardBase
+    """
     start_at: datetime
     end_at: datetime
 
 class Guard(GuardBase):
+    """
+        Guard
+    """
     id: int
     plant_id: int
     user_id: int | None = None
@@ -46,17 +73,27 @@ class Guard(GuardBase):
     sessions: list[CareSession] = []
 
     class Config:
+        """
+            Config
+        """
         orm_mode = True
 
 class GuardCreate(GuardBase):
-    pass
+    """
+        GuardCreate
+    """
 
 class GuardUpdate(GuardBase):
-    user_id: int 
-   
-     
+    """
+        GuardUpdate
+    """
+    user_id: int
+
 # Plant
 class PlantBase(BaseModel):
+    """
+        PlantBase
+    """
     name: str
     species: str
     photo: str
@@ -64,98 +101,162 @@ class PlantBase(BaseModel):
     pos_lng: float
 
 class Plant(PlantBase):
+    """
+        Plant
+    """
     id: int
     user_id: int
     guards: list[Guard] = []
     created_at: datetime
 
     class Config:
+        """
+            Config
+        """
         orm_mode = True
 
 class PlantCreate(PlantBase):
-    pass
+    """
+        PlantCreate
+    """
 
 class PlantUpdate(PlantBase):
-    pass
+    """
+        PlantUpdate
+    """
 
 # Advice
 class AdviceBase(BaseModel):
+    """
+        AdviceBase
+    """
     title: str
     content: str
     photo: str
 
 class Advice(AdviceBase):
+    """
+        Advice
+    """
     id: int
     created_at: datetime
     user_id: int
-    
     class Config:
+        """
+            Config
+        """
         orm_mode = True
 
 class AdviceCreate(AdviceBase):
-    pass
+    """
+        AdviceCreate
+    """
 
 class AdviceUpdate(BaseModel):
+    """
+        AdviceUpdate
+    """
     title: str
     content: str
 
 # User
 class UserBase(BaseModel):
+    """
+        UserBase
+    """
     last_name: str
     first_name: str
     email: str
 
 class User(UserBase):
+    """
+        User
+    """
     id: int
-    role_id: int 
+    role_id: int
     plants: list[Plant] = []
     guards: list[Guard] = []
     advices: list[Advice] = []
     created_at: datetime
 
     class Config:
+        """
+            Config
+        """
         orm_mode = True
 
 class UserCreate(UserBase):
+    """
+        UserCreate
+    """
     login: str
     password: str
 
 class UserUpdate(UserBase):
-    pass
+    """
+        UserUpdate
+    """
 
 class UserLogin(BaseModel):
+    """
+        UserLogin
+    """
     login: str
     password: str
 
 # Botanist
 class Botanist(UserBase):
+    """
+        Botanist
+    """
     id: int
 
 # Role
 class RoleBase(BaseModel):
+    """
+        RoleBase
+    """
     name: str
 
 class Role(RoleBase):
+    """
+        Role
+    """
     id: int
 
     class Config:
+        """
+            Config
+        """
         orm_mode = True
 
 # Message
 class MessageBase(BaseModel):
+    """
+        MessageBase
+    """
     content: str
 
 class Message(MessageBase):
+    """
+        Message
+    """
     id: int
     created_at: datetime
     sender_id: int
     reciever_id: int
-    
     class Config:
+        """
+            Config
+        """
         orm_mode = True
 
 class MessageCreate(MessageBase):
-    pass
+    """
+        MessageCreate
+    """
 
 class MessageUpdate(MessageBase):
-    pass
+    """
+        MessageUpdate
+    """
