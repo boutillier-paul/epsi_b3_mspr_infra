@@ -10,6 +10,7 @@ Installer le paquet virtualenv
 Créer l'environnement virtuel
 
 > python -m virtualenv venv
+> python3 -m virtualenv venv
 
 venv correspond au chemin/dossier dans lequel sera activé votre environnement virtuel
 (Dans notre cas, dans le dossier où est exécuté la commande, dans le dossier venv)
