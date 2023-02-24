@@ -10,7 +10,7 @@ import json
     
 BASE_URL = 'http://0.0.0.0:80'
     
-def test_get_create_user():
+def test_create_user():
         # Arrange
         user = schemas.UserCreate(last_name="Doe", 
                                   first_name="Jhon",
