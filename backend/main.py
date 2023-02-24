@@ -1,8 +1,13 @@
+"""
+    MAIN
+"""
+
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from app import api
 from app.models import Role, Base
 from app.database import SessionLocal, engine
-from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI()
 app.include_router(api.router, prefix="/api")
@@ -29,8 +34,5 @@ if not db.query(Role).all():
     db.add(db_user)
     db.add(db_botanist)
     db.add(db_admin)
-
-    db.commit()  
+    db.commit()
 db.close()
-
-
