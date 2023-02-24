@@ -22,18 +22,28 @@ async def api_root():
 async def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user_email = controllers.get_user_by_email(db, user_email=user.email)
     db_user_login = controllers.get_user_by_login(db, user_login=user.login)
-
     if db_user_email or db_user_login:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Email or Login already registered"
         )
+    if not security.is_valid_email(user.email):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid email format"
+        )
+    if not security.is_valid_password(user.password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid password format \n" +
+                "min length 8 \n" +
+                "at least one MAJ \n" +
+                "at least one MIN \n" +
+                "at least one number \n" +
+                "at least one special char"
+        )
     db_user = controllers.create_user(db, user=user)
-
-    if db_user:
-        return security.signJWT(user_login=user.login)
-    else:
-        return {}
+    return security.signJWT(user_login=user.login) if db_user else {}
 
 
 # LOGIN ENDPOINT
@@ -61,6 +71,11 @@ async def get_current_user(db: Session = Depends(get_db), Authorization: str = H
     user = controllers.get_current_user(db, Authorization=Authorization)
     return user
 
+@router.get("/users/botanists", tags=["Users"], response_model=list[schemas.Botanist], dependencies=[Depends(JWTBearer())])
+async def read_botanists(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    db_botanists = controllers.get_botanists(db, skip=skip, limit=limit)
+    return db_botanists
+
 @router.get("/users/{user_id}", tags=["Users"], response_model=schemas.User, dependencies=[Depends(JWTBearer())])
 async def read_user(user_id: int, db: Session = Depends(get_db)):
     db_user = controllers.get_user(db, user_id=user_id)
@@ -73,8 +88,13 @@ async def read_user(user_id: int, db: Session = Depends(get_db)):
 
 @router.put("/users/me", tags=["Users"], response_model=schemas.User, dependencies=[Depends(JWTBearer())])
 async def update_user(user: schemas.UserUpdate, db: Session = Depends(get_db), Authorization: str = Header(None)):
-    user = controllers.get_current_user(db, Authorization=Authorization)
-    db_user = controllers.update_user(user=user, user_id=user.id)
+    current_user = controllers.get_current_user(db, Authorization=Authorization)
+    if not security.is_valid_email(user.email):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid email format"
+        )
+    db_user = controllers.update_user(user=user, user_id=current_user.id)
     return db_user
 
 @router.get("/users", tags=["ADMIN ROLE"], response_model=list[schemas.User], dependencies=[Depends(JWTBearer())])
@@ -82,7 +102,6 @@ async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_
     controllers.check_user_role(db, role_name="ADMIN", Authorization=Authorization)
     db_users = controllers.get_users(db, skip=skip, limit=limit)
     return db_users
-
 
 # PLANT ENDPOINTS
 
@@ -115,6 +134,12 @@ async def read_plants(skip: int = 0, limit: int = 100, db: Session = Depends(get
 @router.post("/plants", tags=["Plants"], response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
 async def create_plant(plant: schemas.PlantCreate, db: Session = Depends(get_db), Authorization: str = Header(None)):
     user = controllers.get_current_user(db, Authorization=Authorization)
+    db_plant = controllers.get_plant_by_photo(db, plant_photo=plant.photo)
+    if db_plant:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail="Photo string already used"
+        )
     db_plant = controllers.create_plant(db, plant=plant, user_id=user.id)
     if db_plant is None:
         raise HTTPException(
