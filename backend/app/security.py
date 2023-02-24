@@ -2,7 +2,7 @@ from fastapi import Request, HTTPException, Header, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from passlib.context import CryptContext
 from dotenv import load_dotenv
-from py3_validate_email import validate_email
+from validate_email import validate_email
 import os
 import time
 from typing import Dict
