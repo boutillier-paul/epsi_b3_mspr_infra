@@ -35,12 +35,12 @@ async def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
     if not security.is_valid_password(user.password):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="""Invalid password format \n
-                min length 8 \n 
-                at least one MAJ \n 
-                at least one MIN \n 
-                at least one number 
-                at least one special char \n """
+            detail="Invalid password format \n" +
+                "min length 8 \n" +
+                "at least one MAJ \n" +
+                "at least one MIN \n" +
+                "at least one number \n" +
+                "at least one special char"
         )
     db_user = controllers.create_user(db, user=user)
     return security.signJWT(user_login=user.login) if db_user else {}
