@@ -61,6 +61,11 @@ async def get_current_user(db: Session = Depends(get_db), Authorization: str = H
     user = controllers.get_current_user(db, Authorization=Authorization)
     return user
 
+@router.get("/users/botanists", tags=["Users"], response_model=list[schemas.User], dependencies=[Depends(JWTBearer())])
+async def read_botanists(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    db_botanists = controllers.get_botanists(db, skip=skip, limit=limit)
+    return db_botanists
+
 @router.get("/users/{user_id}", tags=["Users"], response_model=schemas.User, dependencies=[Depends(JWTBearer())])
 async def read_user(user_id: int, db: Session = Depends(get_db)):
     db_user = controllers.get_user(db, user_id=user_id)
@@ -82,12 +87,6 @@ async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_
     controllers.check_user_role(db, role_name="ADMIN", Authorization=Authorization)
     db_users = controllers.get_users(db, skip=skip, limit=limit)
     return db_users
-
-@router.get("/users/botanists", tags=["Users"], response_model=list[schemas.User], dependencies=[Depends(JWTBearer())])
-async def read_botanists(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    db_botanists = controllers.get_botanists(db, skip=skip, limit=limit)
-    return db_botanists
-
 
 # PLANT ENDPOINTS
 
