@@ -10,7 +10,7 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.User).offset(skip).limit(limit).all()
 
 def get_botanists(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.User).filter(models.User.role_id >= 2).offset(skip).limit(limit).all()
+    return db.query(models.User.id, models.User.first_name, models.User.last_name, models.User.email).filter(models.User.role_id >= 2).offset(skip).limit(limit).all()
 
 def get_user_by_email(db: Session, user_email: str):
     return db.query(models.User).filter(models.User.email == user_email).first()
