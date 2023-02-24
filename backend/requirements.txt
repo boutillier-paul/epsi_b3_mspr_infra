@@ -11,3 +11,5 @@ python-multipart
 pyjwt==2.6.0
 geopy
 pytest
+httpx
+requests
