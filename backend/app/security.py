@@ -2,10 +2,12 @@ from fastapi import Request, HTTPException, Header, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from passlib.context import CryptContext
 from dotenv import load_dotenv
+from py3_validate_email import validate_email
 import os
 import time
 from typing import Dict
 import jwt
+import re
 
 
 load_dotenv()
@@ -16,6 +18,14 @@ JWT_ALGORITHM = os.getenv("ALGORITHM")
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
+
+def is_valid_email(email: str):
+    pattern = r"^[\w\.-]+@[\w\.-]+\.\w{2,4}$"
+    return True if (re.match(pattern, email) and validate_email(email)) else False
+
+def is_valid_password(password: str):
+    pattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+    return re.match(pattern, password)
 
 def verify_password(plain_password, password):
     return pwd_context.verify(plain_password, password)
