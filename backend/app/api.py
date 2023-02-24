@@ -88,8 +88,13 @@ async def read_user(user_id: int, db: Session = Depends(get_db)):
 
 @router.put("/users/me", tags=["Users"], response_model=schemas.User, dependencies=[Depends(JWTBearer())])
 async def update_user(user: schemas.UserUpdate, db: Session = Depends(get_db), Authorization: str = Header(None)):
-    user = controllers.get_current_user(db, Authorization=Authorization)
-    db_user = controllers.update_user(user=user, user_id=user.id)
+    current_user = controllers.get_current_user(db, Authorization=Authorization)
+    if not security.is_valid_email(user.email):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid email format"
+        )
+    db_user = controllers.update_user(user=user, user_id=current_user.id)
     return db_user
 
 @router.get("/users", tags=["ADMIN ROLE"], response_model=list[schemas.User], dependencies=[Depends(JWTBearer())])
