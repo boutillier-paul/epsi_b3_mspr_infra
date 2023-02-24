@@ -2,7 +2,6 @@ from fastapi import Request, HTTPException, Header, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from passlib.context import CryptContext
 from dotenv import load_dotenv
-from validate_email import validate_email
 import os
 import time
 from typing import Dict
@@ -20,7 +19,8 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 
 def is_valid_email(email: str):
-    return validate_email(email)
+    pattern = r"^[\w\.-]+@[\w\.-]+\.\w{2,4}$"
+    return re.match(pattern, email)
 
 def is_valid_password(password: str):
     pattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
