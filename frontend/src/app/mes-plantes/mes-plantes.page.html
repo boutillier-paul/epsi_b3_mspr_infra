@@ -1,0 +1,105 @@
+<ion-split-pane contentId="my-content">
+  <ion-menu side="start" type="overlay" contentId="my-content">
+    <ion-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12">
+            <ion-row class="row-spacing">
+              <ion-col size="11" class="ion-border-right">
+                <div class="image-container">
+                  <img src="assets/icon/Arosaje.png" height="100 px" width="200 px">
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-border-bottom ">
+              <ion-col size="1" class="ion-border-right">
+                <ion-icon name="leaf-outline"></ion-icon>
+              </ion-col>
+              <ion-col size="11" class="ion-border-right">
+                <a href="/map">Garder une plante</a>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-border-top ion-border-bottom">
+              <ion-col size="1" class="ion-border-right">
+                <ion-icon name="clipboard-outline"></ion-icon>
+              </ion-col>
+              <ion-col size="11" class="ion-border-right">
+                <a href="/form-declare">Déclarer sa plante</a>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-border-top ion-border-bottom">
+              <ion-col size="1" class="ion-border-right">
+                <ion-icon name="add-circle-outline"></ion-icon>
+              </ion-col>
+              <ion-col size="11" class="ion-border-right">
+                <a href="/form-garde">Faire une demande de garde</a>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-border-top ion-border-bottom">
+              <ion-col size="1" class="ion-border-right">
+                <ion-icon name="leaf-outline"></ion-icon>
+              </ion-col>
+              <ion-col size="11" class="ion-border-right">
+                <a href="/mes-plantes">Mes plantes</a>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-border-top ion-border-bottom">
+              <ion-col size="1" class="ion-border-right">
+                <ion-icon name="people-outline"></ion-icon>
+              </ion-col>
+              <ion-col size="11" class="ion-border-right">
+                <a href="/mes-gardes">Mes gardes</a>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-border-top ion-border-bottom">
+              <ion-col size="1" class="ion-border-right">
+                <ion-icon name="mail-outline"></ion-icon>
+              </ion-col>
+              <ion-col size="11" class="ion-border-right">
+                <a href="/mes-messages">Mes messages</a>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-border-top">
+              <ion-col size="1" class="ion-border-right">
+                <ion-icon name="person-outline"></ion-icon>
+              </ion-col>
+              <ion-col size="11">
+                <a href="/mon-profil">Mon espace</a>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+      </ion-grid> 
+    </ion-content>
+  </ion-menu>
+  <ion-content class="bg-class" id="my-content">
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Mes plantes</ion-title>
+      </ion-toolbar>
+    </ion-header> 
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="ion-text-center">Espèce de la plante</th>
+            <th class="ion-text-center">Nom de la plante</th>
+            <th class="ion-text-center">Voir plus</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let plante of plantes">
+            <td class="ion-text-center">{{ plante.espece }}</td>
+            <td class="ion-text-center">{{ plante.name }}</td>
+            <td class="ion-text-center">
+              <button (click)="voirPlus(plante)" class="transbutton">Cliquez pour plus de détails</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>    
+  </div>
+  </ion-content>
+</ion-split-pane>

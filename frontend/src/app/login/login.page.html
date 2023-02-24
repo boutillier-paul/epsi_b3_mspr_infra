@@ -1,0 +1,40 @@
+<ion-content class="bg-class">
+
+  <div id="container">
+    <img src="assets/icon/Arosaje.png" height="200 px" width="350 px">
+    <h3><strong>Des plantes en pleine santé, sans aucun souci.</strong></h3><br>
+    <ion-row>
+      <ion-col size="12" size-sm="10" offset-sm="1" size-md="8" offset-md="2" size-lg="6" offset-lg="3" size-xl="4"
+        offset-xl="4">
+   
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title class="ion-text-center"><strong>Connectez-vous</strong></ion-card-title>
+          </ion-card-header>
+   
+          <ion-card-content>
+   
+            <ion-item lines="none" class="back2">
+              <ion-label position="stacked">Identifiant</ion-label>
+              <ion-input type="email" placeholder="Entrez votre Identifiant" name="email" [(ngModel)]="credentials.login"></ion-input>
+            </ion-item>
+   
+            <ion-item lines="none" class="back2">
+              <ion-label position="stacked">Mot de passe</ion-label>
+              <ion-input type="password" placeholder="Entrez votre Mot de passe" name="password" [(ngModel)]="credentials.pass">
+              </ion-input>
+            </ion-item>
+   
+            <ion-button expand="block" (click)="login()">Se connecter</ion-button>
+
+            <ion-item lines="none" class="back">
+              <h3>Vous n'avez pas de compte ? <a href="/register"><strong>Inscrivez-vous !!</strong></a></h3>
+            </ion-item>
+
+          </ion-card-content>
+        </ion-card>
+   
+      </ion-col>
+    </ion-row>
+  </div>
+</ion-content>
