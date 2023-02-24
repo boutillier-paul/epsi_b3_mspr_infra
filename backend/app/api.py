@@ -83,6 +83,11 @@ async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_
     db_users = controllers.get_users(db, skip=skip, limit=limit)
     return db_users
 
+@router.get("/users/botanists", tags=["Users"], response_model=list[schemas.User], dependencies=[Depends(JWTBearer())])
+async def read_botanists(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    db_botanists = controllers.get_botanists(db, skip=skip, limit=limit)
+    return db_botanists
+
 
 # PLANT ENDPOINTS
 
