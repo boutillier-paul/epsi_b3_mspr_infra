@@ -127,6 +127,10 @@ class UserLogin(BaseModel):
     login: str
     password: str
 
+# Botanist
+class Botanist(UserBase):
+    id: int
+
 # Role
 class RoleBase(BaseModel):
     name: str
