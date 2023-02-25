@@ -9,6 +9,9 @@ def get_user(db: Session, user_id: int):
 def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.User).offset(skip).limit(limit).all()
 
+def get_botanists(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.User.id, models.User.first_name, models.User.last_name, models.User.email).filter(models.User.role_id >= 2).offset(skip).limit(limit).all()
+
 def get_user_by_email(db: Session, user_email: str):
     return db.query(models.User).filter(models.User.email == user_email).first()
 
@@ -104,6 +107,9 @@ def get_plants(db: Session, skip: int = 0, limit: int = 100):
 
 def get_plants_by_name(db: Session, plant_name: str):
     return db.query(models.Plant).filter(models.func.lower(models.Plant.name).startswith(plant_name.lower())).all()
+
+def get_plant_by_photo(db: Session, plant_photo: str):
+    return db.query(models.Plant).filter(models.Plant.photo == plant_photo).first()
 
 def create_plant(db: Session, plant: schemas.PlantCreate, user_id: int):
     db_plant = models.Plant(
