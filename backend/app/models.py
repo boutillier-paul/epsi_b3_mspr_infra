@@ -63,7 +63,7 @@ class Guard(Base):
     care_sessions = relationship("CareSession", back_populates="guard")
 
 
-class CareSession(Base):
+class Care_Session(Base):
     __tablename__ = "care_sessions"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True, nullable=False)
