@@ -10,7 +10,6 @@ from app import schemas
 
 client = TestClient(app)
 
-# use string.hexdigits if whitespace not supported
 RANDOM_STR = ''.join(random.choices(string.hexdigits ,k=12))
 user = schemas.UserCreate(last_name=RANDOM_STR,
                                 first_name=RANDOM_STR,
@@ -87,6 +86,23 @@ def test_update_user():
         and response_json['first_name'] == user_update.first_name\
             and response_json['email'] == user_update.email\
                 and response_json['id'] == user_id
+                
+def test_update_user_invalid_email():
+    """
+        test_update_user_invalid_email
+    """
+    user_update = schemas.UserUpdate(last_name="John",
+                                first_name="Dhoe",
+                                email="is_invalid_email")
+    
+    response = client.put("/api/users/me", headers={"Authorization": f"Bearer {token}"}, content=json.dumps(user_update.__dict__))
+    response_json = response.json()
+    print(response.json())
+    
+    assert response.status_code == 400
+    assert response.json() == {'detail': 'Invalid email format'}
+                
+
 
     
 
