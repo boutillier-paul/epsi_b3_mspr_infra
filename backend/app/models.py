@@ -60,7 +60,7 @@ class Guard(Base):
 
     created_at = Column(DateTime, nullable=False, default=func.now())
 
-    care_sessions = relationship("CareSession", back_populates="guard")
+    care_sessions = relationship("Care_Session", back_populates="guard")
 
 
 class Care_Session(Base):
