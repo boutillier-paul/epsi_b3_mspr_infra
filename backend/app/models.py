@@ -60,10 +60,10 @@ class Guard(Base):
 
     created_at = Column(DateTime, nullable=False, default=func.now())
 
-    care_sessions = relationship("CareSession", back_populates="guard")
+    care_sessions = relationship("Care_Session", back_populates="guard")
 
 
-class CareSession(Base):
+class Care_Session(Base):
     __tablename__ = "care_sessions"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True, nullable=False)
