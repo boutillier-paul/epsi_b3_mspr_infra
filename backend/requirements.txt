@@ -14,3 +14,4 @@ pytest
 httpx
 requests
 coverage
+locust
