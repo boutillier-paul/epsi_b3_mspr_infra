@@ -368,9 +368,6 @@ async def create_session(session: schemas.CareSessionCreate, guard_id: int, db: 
         )
                
     db_session = controllers.create_care_session(db, care_session=session, guard_id=guard_id)
-    db_guard.sessions.append(db_session)
-    db.add(db_guard)
-    db.commit()
     
     if db_session is None:
         raise HTTPException(
