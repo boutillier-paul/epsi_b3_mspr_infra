@@ -337,20 +337,17 @@ async def read_session(session_id: int, db: Session = Depends(get_db), Authoriza
 
     for plant in user.plants:
         for guard in plant.guards:
-            if db_session not in guard.care_sessions:
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED, 
-                    detail="You don't have access to this ressource"
-                )
+            if db_session in guard.care_sessions:
+                return db_session
                     
     for guard in user.guards:
         if db_session not in guard.care_sessions:
-            raise HTTPException(
-                        status_code=status.HTTP_401_UNAUTHORIZED, 
-                        detail="You don't have access to this ressource"
-                    )
-    
-    return db_session
+            return db_session
+
+    raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED, 
+                    detail="You don't have access to this ressource"
+                )
 
 @router.post("/sessions", tags=["BOTANIST ROLE"], response_model=schemas.CareSession, dependencies=[Depends(JWTBearer())])
 async def create_session(session: schemas.CareSessionCreate, guard_id: int, db: Session = Depends(get_db), Authorization: str = Header(None)):
@@ -371,6 +368,9 @@ async def create_session(session: schemas.CareSessionCreate, guard_id: int, db: 
         )
                
     db_session = controllers.create_care_session(db, care_session=session, guard_id=guard_id)
+    db_guard.sessions.append(db_session)
+    db.add(db_guard)
+    db.commit()
     
     if db_session is None:
         raise HTTPException(
