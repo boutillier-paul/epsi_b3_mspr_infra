@@ -8,7 +8,6 @@ from app import api
 from app.models import Role, Base
 from app.database import SessionLocal, engine
 
-
 app = FastAPI()
 app.include_router(api.router, prefix="/api")
 
