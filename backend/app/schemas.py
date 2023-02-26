@@ -60,7 +60,7 @@ class GuardUpdate(GuardBase):
 class PlantBase(BaseModel):
     name: str
     species: str
-    photo: UploadFile
+    photo: UploadFile | str
     pos_lat: float
     pos_lng: float
 
