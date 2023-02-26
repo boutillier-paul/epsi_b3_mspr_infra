@@ -8,10 +8,6 @@ async def upload_image(image: UploadFile):
     # Vérifier la taille maximale du fichier
     if image.content_length > 1024*1024:
         raise HTTPException(status_code=400, detail="La taille de la photo ne doit pas dépasser 1 Mo")
-
-    # Vérifier le type du fichier
-    if not image.content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail="Le fichier n'est pas une image")
     
     if not image.filename.lower().endswith((".png", ".jpg", ".jpeg")):
         raise HTTPException(status_code=400, detail="Le fichier doit être une image PNG ou JPEG")
