@@ -4,7 +4,7 @@ from . import models, schemas, security
 import os, uuid
 
 # PHOTO UPLOAD
-async def upload_image(image: UploadFile):
+def upload_image(image: UploadFile):
     # Vérifier la taille maximale du fichier
     if image.content_length > 1024*1024:
         raise HTTPException(status_code=400, detail="La taille de la photo ne doit pas dépasser 1 Mo")
@@ -16,7 +16,7 @@ async def upload_image(image: UploadFile):
     name, ext = os.path.splitext(image.filename)
     path = os.path.join("images", f"{str(uuid.uuid4())}.{ext}")
     with open(path, "wb") as f:
-        f.write(await image.read())
+        f.write(image.read())
     return path
 
 # USER
