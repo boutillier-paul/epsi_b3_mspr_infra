@@ -1,6 +1,27 @@
 from sqlalchemy.orm import Session
-from fastapi import HTTPException, status, Header
+from fastapi import HTTPException, status, Header, UploadFile
 from . import models, schemas, security
+import os, uuid
+
+# PHOTO UPLOAD
+async def upload_image(image: UploadFile):
+    # Vérifier la taille maximale du fichier
+    if image.content_length > 1024*1024:
+        raise HTTPException(status_code=400, detail="La taille de la photo ne doit pas dépasser 1 Mo")
+
+    # Vérifier le type du fichier
+    if not image.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="Le fichier n'est pas une image")
+    
+    if not image.filename.lower().endswith((".png", ".jpg", ".jpeg")):
+        raise HTTPException(status_code=400, detail="Le fichier doit être une image PNG ou JPEG")
+
+    # Enregistrer la photo sur le disque
+    name, ext = os.path.splitext(image.filename)
+    path = os.path.join("images", f"{str(uuid.uuid4())}.{ext}")
+    with open(path, "wb") as f:
+        f.write(await image.read())
+    return path
 
 # USER
 def get_user(db: Session, user_id: int):
@@ -115,7 +136,7 @@ def create_plant(db: Session, plant: schemas.PlantCreate, user_id: int):
     db_plant = models.Plant(
         name    = plant.name,
         species = plant.species, 
-        photo   = plant.photo,
+        photo   = upload_image(plant.photo),
         pos_lat = plant.pos_lat,
         pos_lng = plant.pos_lng,
         user_id = user_id)

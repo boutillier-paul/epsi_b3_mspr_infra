@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from fastapi import UploadFile
 
 # Location
 class Location(BaseModel):
@@ -59,7 +60,7 @@ class GuardUpdate(GuardBase):
 class PlantBase(BaseModel):
     name: str
     species: str
-    photo: str
+    photo: UploadFile
     pos_lat: float
     pos_lng: float
 
