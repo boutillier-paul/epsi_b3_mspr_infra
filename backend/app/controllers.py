@@ -3,8 +3,29 @@
 """
 
 from sqlalchemy.orm import Session
-from fastapi import HTTPException, status, Header
+from fastapi import HTTPException, status, Header, UploadFile
 from . import models, schemas, security
+import os, uuid
+
+# PHOTO UPLOAD
+async def upload_image(image: UploadFile):
+    # Vérifier la taille maximale du fichier
+    if image.content_length > 1024*1024:
+        raise HTTPException(status_code=400, detail="La taille de la photo ne doit pas dépasser 1 Mo")
+
+    # Vérifier le type du fichier
+    if not image.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="Le fichier n'est pas une image")
+    
+    if not image.filename.lower().endswith((".png", ".jpg", ".jpeg")):
+        raise HTTPException(status_code=400, detail="Le fichier doit être une image PNG ou JPEG")
+
+    # Enregistrer la photo sur le disque
+    name, ext = os.path.splitext(image.filename)
+    path = os.path.join("images", f"{str(uuid.uuid4())}.{ext}")
+    with open(path, "wb") as f:
+        f.write(await image.read())
+    return path
 
 # USER
 def get_user(database: Session, user_id: int):
@@ -169,8 +190,8 @@ def create_plant(database: Session, plant: schemas.PlantCreate, user_id: int):
     """
     database_plant = models.Plant(
         name    = plant.name,
-        species = plant.species,
-        photo   = plant.photo,
+        species = plant.species, 
+        photo   = upload_image(plant.photo),
         pos_lat = plant.pos_lat,
         pos_lng = plant.pos_lng,
         user_id = user_id)
@@ -266,6 +287,9 @@ def get_care_sessions(database: Session, skip: int = 0, limit: int = 100):
     return database.query(models.CareSession)\
         .order_by(models.CareSession.created_at.desc()).offset(skip).limit(limit).all()
 
+def get_care_session_by_photo(db: Session, care_session_photo: str):
+    return db.query(models.Care_Session).filter(models.Care_Session.photo == care_session_photo).first()
+
 def create_care_session(database: Session, care_session: schemas.CareSessionCreate, guard_id: int):
     """
         create_care_session
@@ -350,6 +374,10 @@ def get_advices_by_title(database: Session, advice_title: str):
     """
     return database.query(models.Advice).filter(models.func.lower(models.Advice.title)\
         .startswith(advice_title.lower())).all()
+
+def get_advice_by_photo(db: Session, advice_photo: str):
+    return db.query(models.Advice).filter(models.Advice.photo == advice_photo).first()
+
 
 def create_advice(database: Session, advice: schemas.AdviceCreate, user_id: int):
     """

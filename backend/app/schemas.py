@@ -1,10 +1,9 @@
 """
     SCHEMAS
 """
-import dataclasses
 from datetime import datetime
 from pydantic import BaseModel
-
+from fastapi import UploadFile
 
 # Location
 class Location(BaseModel):
@@ -96,7 +95,7 @@ class PlantBase(BaseModel):
     """
     name: str
     species: str
-    photo: str
+    photo: UploadFile | str
     pos_lat: float
     pos_lng: float
 
