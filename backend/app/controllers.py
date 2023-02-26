@@ -178,6 +178,9 @@ def get_care_session(db: Session, care_session_id: int):
 def get_care_sessions(db: Session, skip: int = 0, limit: int = 100):
    return db.query(models.Care_Session).order_by(models.Care_Session.created_at.desc()).offset(skip).limit(limit).all()
 
+def get_care_session_by_photo(db: Session, care_session_photo: str):
+    return db.query(models.Care_Session).filter(models.Care_Session.photo == care_session_photo).first()
+
 def create_care_session(db: Session, care_session: schemas.CareSessionCreate, guard_id: int):
     db_care_session = models.Care_Session( 
         photo       = care_session.photo,
@@ -227,6 +230,9 @@ def get_advices(db: Session, skip: int = 0, limit: int = 100):
 
 def get_advices_by_title(db: Session, advice_title: str):
     return db.query(models.Advice).filter(models.func.lower(models.Advice.title).startswith(advice_title.lower())).all()
+
+def get_advice_by_photo(db: Session, advice_photo: str):
+    return db.query(models.Advice).filter(models.Advice.photo == advice_photo).first()
 
 def create_advice(db: Session, advice: schemas.AdviceCreate, user_id: int):
     db_advice = models.Advice(

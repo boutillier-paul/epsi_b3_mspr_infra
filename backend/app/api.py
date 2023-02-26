@@ -246,6 +246,8 @@ async def read_open_guards_aroud_me(location: schemas.Location, skip: int = 0, l
         plant_distance = distance(center, plant_pos).km
         if plant_distance <= location.radius:
             guards_around.append(guard)
+    for guard in user.guards:
+        guards_around.remove(guard)
     return guards_around
 
 @router.get("/guards/{guard_id}", tags=["Guards"], response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
@@ -345,15 +347,22 @@ async def read_session(session_id: int, db: Session = Depends(get_db), Authoriza
             return db_session
 
     raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED, 
-                    detail="You don't have access to this ressource"
-                )
+        status_code=status.HTTP_401_UNAUTHORIZED, 
+        detail="You don't have access to this ressource"
+    )
 
 @router.post("/sessions", tags=["BOTANIST ROLE"], response_model=schemas.CareSession, dependencies=[Depends(JWTBearer())])
 async def create_session(session: schemas.CareSessionCreate, guard_id: int, db: Session = Depends(get_db), Authorization: str = Header(None)):
     controllers.check_user_role(db, role_name="BOTANIST", Authorization=Authorization)
     user = controllers.get_current_user(db, Authorization=Authorization)
     db_guard = controllers.get_guard(db, guard_id=guard_id)
+
+    db_session = controllers.get_care_session_by_photo(db, care_session_photo=session.photo)
+    if db_session:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail="Photo string already used"
+        )
 
     if not user.guards:
         raise HTTPException(
@@ -367,7 +376,7 @@ async def create_session(session: schemas.CareSessionCreate, guard_id: int, db: 
             detail="You can't create a session for a guard you didn't take"
         )
                
-    db_session = controllers.create_care_session(db, care_session=session, guard_id=guard_id)
+    db_session = controllers.create_care_session(db, care_session=session, guard_id=db_guard.id)
     
     if db_session is None:
         raise HTTPException(
@@ -478,7 +487,16 @@ async def search_advice(advice_title: str, db: Session = Depends(get_db)):
 async def create_advice(advice: schemas.AdviceCreate, db: Session = Depends(get_db), Authorization: str = Header(None)):
     controllers.check_user_role(db, role_name="BOTANIST", Authorization=Authorization)
     user = controllers.get_current_user(db, Authorization=Authorization)
+
+    db_advice = controllers.get_advice_by_photo(db, advice_photo=advice.photo)
+    if db_advice:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail="Photo string already used"
+        )
+
     db_advice = controllers.create_advice(db, advice=advice, user_id=user.id)
+    
     if db_advice is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
