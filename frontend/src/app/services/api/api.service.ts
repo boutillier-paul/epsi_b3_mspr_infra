@@ -14,7 +14,7 @@ const ID = 'id';
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type' : 'application/json'})
 };
-const api_url = process.env.API_URL;
+const api_url = process.env['API_URL'];
 
 @Injectable({
   providedIn: 'root'
