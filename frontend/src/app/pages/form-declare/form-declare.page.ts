@@ -12,8 +12,11 @@ export class FormDeclarePage implements OnInit {
   credentials = {
     species: '',
     name: '',
+    photo: '',
+    pos_lat: 0,
+    pos_lng: 0
   };
-  public selectedFile: File | null = null;
+  selectedFile: {filename: string , data: string};
 
   constructor(
     private alertController: AlertController,
@@ -28,12 +31,9 @@ export class FormDeclarePage implements OnInit {
           navigator.userAgent
         )
       ) {
-        // L'utilisateur utilise un appareil mobile
         navigator.geolocation.watchPosition(
           (position) => {
-            // La position de l'utilisateur a changé, elle est disponible dans l'objet `position`
             const { latitude, longitude } = position.coords;
-            // Stocker les valeurs dans le localStorage
             localStorage.setItem('pos_lat', String(latitude));
             localStorage.setItem('pos_lng', String(longitude));
           },
@@ -45,9 +45,7 @@ export class FormDeclarePage implements OnInit {
         // L'utilisateur utilise un PC
         navigator.geolocation.getCurrentPosition(
           (position) => {
-            // La position de l'utilisateur est disponible dans l'objet `position`
             const { latitude, longitude } = position.coords;
-            // Stocker les valeurs dans le localStorage
             localStorage.setItem('pos_lat', String(latitude));
             localStorage.setItem('pos_lng', String(longitude));
           },
@@ -62,8 +60,24 @@ export class FormDeclarePage implements OnInit {
   }
 
   onFileSelected(event: any) {
-    const file: File = event.target.files[0];
-    this.selectedFile = file;
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (reader.result) {
+          this.selectedFile = {
+            filename: file.name,
+            data: reader.result.toString().split(',')[1]
+          };
+        }
+      };
+      reader.readAsDataURL(file);
+      const fileName = file.name;
+      const fileExtension = fileName.split('.').pop();
+  
+      console.log('Nom du fichier:', fileName);
+      console.log('Extension du fichier:', fileExtension);
+    }
   }
 
   async declarer() {
@@ -101,24 +115,44 @@ export class FormDeclarePage implements OnInit {
       return;
     }
   
-    const fd = new FormData();
-    fd.append('species', this.credentials.species);
-    fd.append('name', this.credentials.name);
-    const latitude = localStorage.getItem('latitude');
-    const longitude = localStorage.getItem('longitude');
-    if (latitude !== null && longitude !== null) {
-      fd.append('pos_lat', latitude);
-      fd.append('pos_lng', longitude);
-    }
-    this.api.postPlant(fd).subscribe(async res => {
-      console.log(fd);
-      if (res && res.hasOwnProperty('created_at')) {
-        const alert = await this.alertController.create({
-          header: 'Plante déclarée',
-          message: 'La plante a été déclarée avec succès.',
-          buttons: ['OK']
+
+
+        this.api.postPhoto(this.selectedFile).subscribe(async res => {
+      if (res && res.hasOwnProperty('filename')) {
+        const fd = new FormData();
+        this.credentials.photo = res.filename;
+        this.credentials.pos_lat = parseFloat(localStorage.getItem('pos_lat') || '');
+        this.credentials.pos_lng = parseFloat(localStorage.getItem('pos_lng') || '');
+        console.log(this.credentials);
+
+        this.api.postPlant(fd).subscribe(async res => {
+          console.log(fd);
+          if (res && res.hasOwnProperty('created_at')) {
+            const alert = await this.alertController.create({
+              header: 'Plante déclarée',
+              message: 'La plante a été déclarée avec succès.',
+              buttons: ['OK']
+            });
+            await alert.present();
+          } else if (res && res.hasOwnProperty('detail')) {
+            const alert = await this.alertController.create({
+              header: 'Erreur',
+              message: res.detail,
+              buttons: ['OK']
+            });
+            await alert.present();
+          } else {
+            console.log('La réponse de l\'API ne contient ni le token ni le detail de l\'erreur');
+            console.log(res);
+            const alert = await this.alertController.create({
+              header: 'Erreur de type inconnu',
+              message: res.detail,
+              buttons: ['OK']
+            });
+            await alert.present();
+          }
         });
-        await alert.present();
+
       } else if (res && res.hasOwnProperty('detail')) {
         const alert = await this.alertController.create({
           header: 'Erreur',
@@ -127,15 +161,10 @@ export class FormDeclarePage implements OnInit {
         });
         await alert.present();
       } else {
-        console.log('La réponse de l\'API ne contient ni le token ni le detail de l\'erreur');
+        console.log('La réponse de l\'API ne contient ni le token ni l\'erreur');
         console.log(res);
-        const alert = await this.alertController.create({
-          header: 'Erreur de type inconnu',
-          message: res.detail,
-          buttons: ['OK']
-        });
-        await alert.present();
       }
-    });
+    })
+    
   }
 }
