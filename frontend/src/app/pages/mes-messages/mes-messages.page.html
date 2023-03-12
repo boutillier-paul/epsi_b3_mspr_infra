@@ -1,0 +1,127 @@
+<ion-split-pane contentId="my-content">
+  <ion-menu side="start" type="overlay" contentId="my-content">
+    <ion-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12">
+            <ion-row class="row-spacing">
+              <ion-col size="11" class="ion-border-right">
+                <div class="image-container">
+                  <img src="assets/icon/Arosaje.png" height="100 px" width="200 px" [routerLink]="['/advices']" RouterLinkActive="active">
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-border-bottom ">
+              <ion-col size="1" class="ion-border-right">
+                <ion-icon name="leaf-outline"></ion-icon>
+              </ion-col>
+              <ion-col size="11" class="ion-border-right">
+                <a href="/map">Garder une plante</a>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-border-top ion-border-bottom">
+              <ion-col size="1" class="ion-border-right">
+                <ion-icon name="clipboard-outline"></ion-icon>
+              </ion-col>
+              <ion-col size="11" class="ion-border-right">
+                <a href="/form-declare">Déclarer sa plante</a>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-border-top ion-border-bottom">
+              <ion-col size="1" class="ion-border-right">
+                <ion-icon name="add-circle-outline"></ion-icon>
+              </ion-col>
+              <ion-col size="11" class="ion-border-right">
+                <a href="/form-garde">Faire une demande de garde</a>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-border-top ion-border-bottom">
+              <ion-col size="1" class="ion-border-right">
+                <ion-icon name="mail-outline"></ion-icon>
+              </ion-col>
+              <ion-col size="11" class="ion-border-right">
+                <a href="/mes-messages">Mes messages</a>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-border-top">
+              <ion-col size="1" class="ion-border-right">
+                <ion-icon name="person-outline"></ion-icon>
+              </ion-col>
+              <ion-col size="11">
+                <a href="/mon-profil">Mon espace</a>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-border-top">
+              <ion-col size="1" class="ion-border-right">
+                <ion-icon name="arrow-undo-circle"></ion-icon>
+              </ion-col>
+              <ion-col size="11">
+                <a href="/map">Se déconnecter</a>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-content>
+  </ion-menu>
+  <ion-content class="bg-class" id="my-content">
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Mes messages</ion-title>
+      </ion-toolbar>
+    </ion-header> 
+
+    <ion-item>
+      <ion-label>Utilisateur:</ion-label>
+        <select name="pets" id="pet-select">
+          <option value="">--Choisissez un utilisateur--</option>
+          <option value="dog">Paul Boutillier</option>
+          <option value="cat">Alexis Looten</option>
+          <option value="hamster">John Doe</option>
+
+        </select>
+    </ion-item>
+    <table style="background-color: rgb(0,0,0,0.2); width: 100%;" class="ague4">
+      <tr>
+        <td style="width: 50%;">
+          <div style=" border-radius: 20px; padding: 10px; margin: 10px; max-width: 90%;">
+            <ion-card class="ague1">
+              <h6>De Paul Boutiller le <ion-chip>25/02/23 - 14:25:48</ion-chip></h6>
+              <br>
+              Bonjour
+            </ion-card>
+          </div>
+        </td>
+        </tr>
+        <tr>
+        <td style="width: 50%;">
+          <div style=" border-radius: 20px; padding: 10px; margin: 10px; max-width: 90%;">
+            <ion-card class="ague2">
+              <h6> De moi le <ion-chip>25/02/23 - 14:27:51</ion-chip><br></h6>
+              Bonjour. Comment tu vas ?
+            </ion-card>
+          </div>
+        </td>
+      </tr>
+      <h6 style="text-align: center;">Voir plus de messages ...</h6>
+    </table>
+
+   
+<br><br><br>
+    <ion-item class="ague3">
+      <ion-input [(ngModel)]="newMessage" placeholder="Insérez votre message"></ion-input>
+      <ion-button expand="block">Envoyer</ion-button>
+    </ion-item>
+
+
+
+    
+
+
+
+
+  </ion-content>
+</ion-split-pane>

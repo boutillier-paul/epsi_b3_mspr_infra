@@ -29,6 +29,11 @@
                 "glob": "**/*.svg",
                 "input": "node_modules/ionicons/dist/ionicons/svg",
                 "output": "./svg"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/images",
+                "output": "images"
               }
             ],
             "styles": ["src/theme/variables.scss", "src/global.scss"],
@@ -136,7 +141,8 @@
   "cli": {
     "schematicCollections": [
       "@ionic/angular-toolkit"
-    ]
+    ],
+    "analytics": "14a26c9d-e95d-4e3d-b5da-49099d0759b5"
   },
   "schematics": {
     "@ionic/angular-toolkit:component": {
