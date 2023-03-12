@@ -3,7 +3,10 @@
 """
 from datetime import datetime
 from pydantic import BaseModel
-from fastapi import UploadFile
+
+# Photo
+class Photo(BaseModel):
+    filename: str
 
 # Location
 class Location(BaseModel):

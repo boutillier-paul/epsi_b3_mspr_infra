@@ -1,15 +1,12 @@
-"""
-    API
-"""
-
-from datetime import datetime
-from geopy.distance import distance
-from sqlalchemy.orm import Session
-from fastapi import APIRouter, Depends, HTTPException, status, Header
+from fastapi import APIRouter, Depends, HTTPException, status, Header , UploadFile, File
+from . import security, schemas, controllers
 from app.database import get_db
 from app.security import JWTBearer
 from . import security, schemas, controllers
 
+from sqlalchemy.orm import Session
+
+import boto3
 
 
 router = APIRouter()
@@ -186,6 +183,20 @@ async def create_plant(plant: schemas.PlantCreate,
         )
     return db_plant
 
+@router.post("/photo", tags=["Plants"], response_model=schemas.Photo, dependencies=[Depends(JWTBearer())])
+async def upload_image(file: UploadFile = File(...), db: Session = Depends(get_db), Authorization: str = Header(None)):
+    user = controllers.get_current_user(db, Authorization=Authorization)
+    
+    if not security.is_valid_file(file):
+        raise HTTPException(status_code=400, detail="Le fichier n'est pas une image valide ou dépasse la taille maximale autorisée.")
+    
+    s3 = boto3.client('s3')
+    bucket_name = "mspr-infra-bucket"
+    s3_key = f"images/{file.filename}"
+    s3.upload_fileobj(file.file, bucket_name, s3_key)
+    return {"filename": file.filename}
+
+
 @router.delete("/plants/{plant_id}", tags=["Plants"],
     response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
 async def delete_plant(plant_id: int,
@@ -194,7 +205,7 @@ async def delete_plant(plant_id: int,
         delete_plant
     """
     db_plant = controllers.get_plant(database, plant_id=plant_id)
-    user = controllers.get_current_user(database, authorization=authorization)
+    user = controllers.get_current_user(database, Authorization=Authorization)
 
     if db_plant is None:
         raise HTTPException(
@@ -316,7 +327,8 @@ async def read_open_guards_aroud_me(location: schemas.Location, skip: int = 0, l
         if plant_distance <= location.radius:
             guards_around.append(guard)
     for guard in user.guards:
-        guards_around.remove(guard)
+        if guard in guards_around:
+            guards_around.remove(guard)
     return guards_around
 
 @router.get("/guards/{guard_id}", tags=["Guards"],
