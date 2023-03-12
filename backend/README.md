@@ -1,110 +1,107 @@
 
-# epsi_b3_mspr_infra
+----------------------------------------------------------
 
-Backend du projet MSPR infra.
+### Préparer son environnement
 
+Installer le paquet virtualenv
 
-## Authors
+> pip install virtualenv
 
-- [@Boutillier-paul](https://github.com/Boutillier-paul)
-- [@Alexis-Looten](https://github.com/Alexis-Looten)
+Créer l'environnement virtuel
 
+> python -m virtualenv venv
 
-## Installation
+venv correspond au chemin/dossier dans lequel sera activé votre environnement virtuel
+(Dans notre cas, dans le dossier où est exécuté la commande, dans le dossier venv)
 
-Créer un environement virtuel et y installer les dépendances.
+Activer l'environnement virtuel
 
-```bash
-  python3 -m venv .venv
-  source .venv/bin/activate
-  pip install requirements.txt
-```
+> Linux/Mac : source venv/bin/activate
+> Windows : ./venv/Scripts/activate.ps1
 
-## Start application
+Si sur windows vous ne pouvez exécuter le script en .ps1, ouvrer un powershelle en admin et exécuter
+> set-executionpolicy unrestricted
 
-Lancer l'application.
+Installer les paquets
 
-```bash
-  uvicorn app.main:app --reload
-```
+> pip install -r requirements.txt
 
-## Swagger
+#### Démarrer l'application
 
-Par défault, accessible à l'adresse : http://127.0.0.1:8000/docs
-    
-## API Reference
+> uvicorn main:app
+> --reload # pour développer (recharge automatique l'application à chaque changement d'un fichier)
 
-### Articles
+Exécuter dans le dossier application
 
-#### Get all articles
+#### Pytest
 
-```http
-  Get /articles/
-```
+> python -m pytest
 
-#### Create article
+#### Coverage
 
-```http
-  Post /articles/
-```
+> coverage run -m pytest --profile # remplace la commande python
+> coverage html # génère le rapport en html
 
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `name`      | `string` | **Required**. Name of the article |
-| `description`      | `string` | Description of article |
-| `quantity`      | `int` | **Required**. Quantity of article |
+Exécuter à la racine du dossier
 
-#### Get an article
+#### Locust
 
-```http
-  Get /articles/{article_id}
-```
+> locust # nécessite d'avoir un fichier locustfile.py dans le dossier où la commande est exécuté
+> locust --config=.locust.conf
 
-#### Update article quantity
+#### Pylint
 
-```http
-  Put /articles/{article_id}
-```
+> pylint application/ tests/
+----------------------------------------------------------
 
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `name`      | `string` | Name of the article |
-| `description`      | `string` | Description of article |
-| `quantity`      | `int` | **Required**. Quantity of article |
+### Préparer son environnement
 
+Installer le paquet virtualenv
 
-### Orders
+> pip install virtualenv
 
-#### Get all orders
+Créer l'environnement virtuel
 
-```http
-  Get /orders/
-```
+> python -m virtualenv venv
 
-#### Create order
+venv correspond au chemin/dossier dans lequel sera activé votre environnement virtuel
+(Dans notre cas, dans le dossier où est exécuté la commande, dans le dossier venv)
 
-```http
-  Post /orders/
-```
+Activer l'environnement virtuel
 
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `status`      | `string` | **Required**. Status of the order |
+> Linux/Mac : source venv/bin/activate
+> Windows : ./venv/Scripts/activate.ps1
 
-#### Get an order
+Si sur windows vous ne pouvez exécuter le script en .ps1, ouvrer un powershelle en admin et exécuter
+> set-executionpolicy unrestricted
 
-```http
-  Get /orders/{order_id}
-```
+Installer les paquets
 
-#### Update order status
+> pip install -r requirements.txt
 
-```http
-  Put /orders/{order_id}
-```
+#### Démarrer l'application
 
-#### add article to order
+> uvicorn main:app
+> --reload # pour développer (recharge automatique l'application à chaque changement d'un fichier)
 
-```http
-  Put /orders/{order_id}/add/{article_id}
-```
+Exécuter dans le dossier application
+
+#### Pytest
+
+> python -m pytest
+
+#### Coverage
+
+> coverage run -m pytest --profile # remplace la commande python
+> coverage html # génère le rapport en html
+
+Exécuter à la racine du dossier
+
+#### Locust
+
+> locust # nécessite d'avoir un fichier locustfile.py dans le dossier où la commande est exécuté
+> locust --config=.locust.conf
+
+#### Pylint
+
+> pylint application/ tests/
