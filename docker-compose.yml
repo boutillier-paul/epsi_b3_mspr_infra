@@ -34,4 +34,4 @@ services:
       ports:
         - "8080:8080"
       environment:
-        - API_URL=http://ec2-35-180-208-148.eu-west-3.compute.amazonaws.com
+        API_URL: "ec2-15-188-55-68.eu-west-3.compute.amazonaws.com"
