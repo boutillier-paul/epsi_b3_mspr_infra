@@ -153,7 +153,10 @@ async def create_plant(plant: schemas.PlantCreate, db: Session = Depends(get_db)
 @router.post("/photo", tags=["Plants"], response_model=schemas.Photo, dependencies=[Depends(JWTBearer())])
 async def upload_image(file: UploadFile = File(...), db: Session = Depends(get_db), Authorization: str = Header(None)):
     user = controllers.get_current_user(db, Authorization=Authorization)
-    security.is_valid_file(file)
+    
+    if not security.is_valid_file(file):
+        raise HTTPException(status_code=400, detail="Le fichier n'est pas une image valide ou dépasse la taille maximale autorisée.")
+    
     s3 = boto3.client('s3')
     bucket_name = "mspr-infra-bucket"
     s3_key = f"images/{file.filename}"
