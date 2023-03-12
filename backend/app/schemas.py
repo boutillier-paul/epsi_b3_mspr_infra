@@ -1,6 +1,10 @@
 from pydantic import BaseModel
 from datetime import datetime
 
+# Photo
+class Photo(BaseModel):
+    filename: str
+
 # Location
 class Location(BaseModel):
     pos_lat: float
