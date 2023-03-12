@@ -67,8 +67,19 @@ def update_user(database: Session, user: schemas.User, user_id: int):
     database_user = get_user(database, user_id=user_id)
     if database_user:
         database_user = user
+        database.add(database_user)
         database.commit()
-        database.refresh(database_user)
+    return database_user
+
+def update_user_role(database: Session, role_id: int, user_id: int):
+    """
+        update_user_role
+    """
+    database_user = get_user(database, user_id=user_id)
+    if database_user:
+        database_user.role_id = role_id
+        database.add(database_user)
+        database.commit()
     return database_user
 
 def create_user(database: Session, user: schemas.UserCreate):
@@ -191,7 +202,7 @@ def create_plant(database: Session, plant: schemas.PlantCreate, user_id: int):
     database_plant = models.Plant(
         name    = plant.name,
         species = plant.species, 
-        photo   = upload_image(plant.photo),
+        photo   = plant.photo,
         pos_lat = plant.pos_lat,
         pos_lng = plant.pos_lng,
         user_id = user_id)

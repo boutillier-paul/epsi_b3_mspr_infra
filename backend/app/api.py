@@ -112,6 +112,16 @@ async def read_users(skip: int = 0, limit: int = 100,
     db_users = controllers.get_users(database, skip=skip, limit=limit)
     return db_users
 
+@router.put("/users/{user_id}/botanist", tags=["Users"],
+    response_model=schemas.User, dependencies=[Depends(JWTBearer())])
+async def update_user_role_botanist(user_id: int,
+    database: Session = Depends(get_db)):
+    """
+        update_user_role_botanist
+    """
+    role = controllers.get_role_by_name(database, "BOTANIST")
+    db_user = controllers.update_user_role(database, role_id=role.id, user_id=user_id)
+    return db_user
 
 # PLANT ENDPOINTS
 
@@ -153,22 +163,6 @@ async def read_plants(skip: int = 0, limit: int = 100,
     controllers.check_user_role(database, role_name="ADMIN", authorization=authorization)
     db_plants = controllers.get_plants(database, skip=skip, limit=limit)
     return db_plants
-        
-@router.post("/plants", tags=["Plants"], response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
-async def create_plant(plant: schemas.PlantCreate, db: Session = Depends(get_db), Authorization: str = Header(None)):
-    user = controllers.get_current_user(db, Authorization=Authorization)
-    db_plant = controllers.get_plant_by_photo(db, plant_photo=plant.photo)
-    if db_plant:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, 
-            detail="Photo string already used"
-        )
-    if isinstance(plant.photo, str):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, 
-            detail="Photo has to be a File type"
-        )
-    db_plant = controllers.create_plant(db, plant=plant, user_id=user.id)
 
 @router.post("/plants", tags=["Plants"],
     response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
@@ -178,6 +172,12 @@ async def create_plant(plant: schemas.PlantCreate,
         create_plant
     """
     user = controllers.get_current_user(database, authorization=authorization)
+    db_plant = controllers.get_plant_by_photo(database, plant_photo=plant.photo)
+    if db_plant:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail="Photo string already used"
+        )
     db_plant = controllers.create_plant(database, plant=plant, user_id=user.id)
     if db_plant is None:
         raise HTTPException(
@@ -304,10 +304,11 @@ async def read_open_guards_aroud_me(location: schemas.Location, skip: int = 0, l
     """
         read_open_guards_aroud_me
     """
-    controllers.check_user_role(database, role_name="BOTANIST", authorization=authorization)
+    guards_around = []
+    # controllers.check_user_role(database, role_name="BOTANIST", authorization=authorization)
     user = controllers.get_current_user(database, authorization=authorization)
     db_guards = controllers.get_open_guards(database, skip=skip, limit=limit)
-    guards_around = []
+    
     for guard in db_guards:
         plant_pos = (guard.plant.pos_lat, guard.plant.pos_lng)
         center = (location.pos_lat, location.pos_lng)

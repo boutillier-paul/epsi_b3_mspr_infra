@@ -95,7 +95,7 @@ class PlantBase(BaseModel):
     """
     name: str
     species: str
-    photo: UploadFile | str
+    photo: str
     pos_lat: float
     pos_lng: float
 

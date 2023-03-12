@@ -40,7 +40,7 @@ def test_signup():
     # Act
     url_current_user = BASE_URL + '/api/users/me'
     token = "Bearer "+token
-    result = requests.get(url_current_user, headers={'Authorization': token}, timeout=TIMEOUT)
+    result = requests.get(url_current_user, headers={'authorization': token}, timeout=TIMEOUT)
     result_json = result.json()
 
     # Assert
