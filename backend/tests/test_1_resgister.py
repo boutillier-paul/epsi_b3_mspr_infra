@@ -12,6 +12,7 @@ def test_sign_up():
         test_sign_up
     """
     response = utils.client.post("/api/signup", content=json.dumps(utils.first_user.__dict__))
+    print(response.json())
     assert response.status_code == 200
     assert response.json()['access_token'] is not None
 

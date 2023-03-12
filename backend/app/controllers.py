@@ -43,9 +43,11 @@ def update_user(database: Session, user: schemas.User, user_id: int):
     """
         update_user
     """
-    database_user = get_user(database, user_id=user_id)
+    database_user = database.query(models.User).filter(models.User.id == user_id).first()
     if database_user:
-        database_user = user
+        database_user.last_name = user.last_name
+        database_user.first_name = user.first_name
+        database_user.email = user.email
         database.add(database_user)
         database.commit()
     return database_user
@@ -54,7 +56,7 @@ def update_user_role(database: Session, role_id: int, user_id: int):
     """
         update_user_role
     """
-    database_user = get_user(database, user_id=user_id)
+    database_user = database.query(models.User).filter(models.User.id == user_id).first()
     if database_user:
         database_user.role_id = role_id
         database.add(database_user)

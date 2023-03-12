@@ -1,10 +1,10 @@
 import datetime
-from turtle import distance
 from fastapi import APIRouter, Depends, HTTPException, status, Header , UploadFile, File
 from . import security, schemas, controllers
 from app.database import get_db
 from app.security import JWTBearer
 from . import security, schemas, controllers
+from geopy.distance import distance
 
 from sqlalchemy.orm import Session
 
@@ -36,6 +36,23 @@ async def signup(user: schemas.UserCreate, database: Session = Depends(get_db)):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Email or Login already registered"
         )
+        
+    if not security.is_valid_email(user.email):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid email format"
+        )
+    if not security.is_valid_password(user.password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid password format \n" +
+                "min length 8 \n" +
+                "at least one MAJ \n" +
+                "at least one MIN \n" +
+                "at least one number \n" +
+                "at least one special char"
+        )
+        
     db_user = controllers.create_user(database, user=user)
 
     if db_user:
@@ -75,6 +92,11 @@ async def get_current_user(database: Session = Depends(get_db), authorization: s
     user = controllers.get_current_user(database, authorization=authorization)
     return user
 
+@router.get("/users/botanists", tags=["Users"], response_model=list[schemas.Botanist], dependencies=[Depends(JWTBearer())])
+async def read_botanists(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    db_botanists = controllers.get_botanists(db, skip=skip, limit=limit)
+    return db_botanists
+
 @router.get("/users/{user_id}", tags=["Users"],
     response_model=schemas.User, dependencies=[Depends(JWTBearer())])
 async def read_user(user_id: int, database: Session = Depends(get_db)):
@@ -91,13 +113,18 @@ async def read_user(user_id: int, database: Session = Depends(get_db)):
 
 @router.put("/users/me", tags=["Users"],
     response_model=schemas.User, dependencies=[Depends(JWTBearer())])
-async def update_user(user: schemas.UserUpdate,
+async def update_user(userUpdate: schemas.UserUpdate,
     database: Session = Depends(get_db), authorization: str = Header(None)):
     """
         update_user
     """
-    user = controllers.get_current_user(database, authorization=authorization)
-    db_user = controllers.update_user(database, user=user, user_id=user.id)
+    current_user = controllers.get_current_user(database, authorization=authorization)
+    if not security.is_valid_email(userUpdate.email):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid email format"
+        )
+    db_user = controllers.update_user(database, user=userUpdate, user_id=current_user.id)
     return db_user
 
 @router.get("/users", tags=["ADMIN ROLE"],
@@ -186,8 +213,8 @@ async def create_plant(plant: schemas.PlantCreate,
     return db_plant
 
 @router.post("/photo", tags=["Plants"], response_model=schemas.Photo, dependencies=[Depends(JWTBearer())])
-async def upload_image(file: UploadFile = File(...), db: Session = Depends(get_db), Authorization: str = Header(None)):
-    user = controllers.get_current_user(db, Authorization=Authorization)
+async def upload_image(file: UploadFile = File(...), db: Session = Depends(get_db), authorization: str = Header(None)):
+    user = controllers.get_current_user(db, authorization=authorization)
     
     if not security.is_valid_file(file):
         raise HTTPException(status_code=400, detail="Le fichier n'est pas une image valide ou dépasse la taille maximale autorisée.")
@@ -207,7 +234,7 @@ async def delete_plant(plant_id: int,
         delete_plant
     """
     db_plant = controllers.get_plant(database, plant_id=plant_id)
-    user = controllers.get_current_user(database, Authorization=authorization)
+    user = controllers.get_current_user(database, authorization=authorization)
 
     if db_plant is None:
         raise HTTPException(
@@ -318,7 +345,7 @@ async def read_open_guards_aroud_me(location: schemas.Location, skip: int = 0, l
         read_open_guards_aroud_me
     """
     guards_around = []
-    # controllers.check_user_role(database, role_name="BOTANIST", authorization=authorization)
+    controllers.check_user_role(database, role_name="BOTANIST", authorization=authorization)
     user = controllers.get_current_user(database, authorization=authorization)
     db_guards = controllers.get_open_guards(database, skip=skip, limit=limit)
     

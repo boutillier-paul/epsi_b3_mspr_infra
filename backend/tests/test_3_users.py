@@ -64,16 +64,10 @@ def test_update_user():
     """
         test_update_user
     """
-    
-    
-    print(utils.first_user_update)
-    response = utils.client.put("/api/users/me", headers={"authorization": f"Bearer {utils.token}"}, content=json.dumps(utils.first_user_update.__dict__))
+    response = utils.client.put("/api/users/me"
+        , headers={"authorization": f"Bearer {utils.token}"}
+        , content=json.dumps(utils.first_user_update.__dict__))
     response_json = response.json()
-    print(response_json)
-    
-    response = utils.client.get("/api/users/me", headers={"authorization": f"Bearer {utils.token}"})
-    response_json2 = response.json()
-    print(response_json2)
     
     assert response.status_code == 200
     assert response_json['id'] == utils.first_user_id\
@@ -81,21 +75,20 @@ def test_update_user():
             and response_json['first_name'] == utils.first_user_update.first_name\
                 and response_json['email'] == utils.first_user_update.email\
                 
-# @pytest.mark.order(9) 
-# def test_update_user_invalid_email():
-#     """
-#         test_update_user_invalid_email
-#     """
-#     user_update = schemas.UserUpdate(last_name="John",
-#                                 first_name="Dhoe",
-#                                 email="is_invalid_email")
+@pytest.mark.order(9) 
+def test_update_user_invalid_email():
+    """
+        test_update_user_invalid_email
+    """
+    wrong_email_user = utils.first_user_update
+    wrong_email_user.email = "invalid_email"
+    response = utils.client.put("/api/users/me"
+        , headers={"authorization": f"Bearer {utils.token}"}
+        , content=json.dumps(wrong_email_user.__dict__))
+    response_json = response.json()
     
-#     response = client.put("/api/users/me", headers={"authorization": f"Bearer {token}"}, content=json.dumps(user_update.__dict__))
-#     response_json = response.json()
-#     print(response.json())
-    
-#     assert response.status_code == 400
-#     assert response.json() == {'detail': 'Invalid email format'}
+    assert response.status_code == 400
+    assert response_json['detail'] == 'Invalid email format'
                 
 
 

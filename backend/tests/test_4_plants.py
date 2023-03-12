@@ -74,6 +74,8 @@ def test_delete_plant_unauthorized():
     """
     response = utils.client.post("/api/signup", content=json.dumps(utils.second_user.__dict__))
     utils.second_token = response.json()['access_token']
+    response = utils.client.get("/api/users/me", headers={"authorization": f"Bearer {utils.second_token}"})
+    utils.second_user_id = response.json()['id']
     response = utils.client.post(f"/api/plants/", headers={"authorization": f"Bearer {utils.second_token}"}, content=json.dumps(utils.second_plant.__dict__))
     utils.second_plant_id = response.json()['id']
     
@@ -85,7 +87,7 @@ def test_delete_plant_unauthorized():
 @pytest.mark.order(16) 
 def test_recreate_plant():
     """
-        def test_recreate_plant
+        test_recreate_plant
     """
     response = utils.client.post(f"/api/plants/", headers={"authorization": f"Bearer {utils.token}"}\
         , content=json.dumps(utils.first_plant.__dict__))
