@@ -1,3 +1,5 @@
+import datetime
+from turtle import distance
 from fastapi import APIRouter, Depends, HTTPException, status, Header , UploadFile, File
 from . import security, schemas, controllers
 from app.database import get_db
@@ -205,7 +207,7 @@ async def delete_plant(plant_id: int,
         delete_plant
     """
     db_plant = controllers.get_plant(database, plant_id=plant_id)
-    user = controllers.get_current_user(database, Authorization=Authorization)
+    user = controllers.get_current_user(database, Authorization=authorization)
 
     if db_plant is None:
         raise HTTPException(
