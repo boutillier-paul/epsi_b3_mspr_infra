@@ -41,7 +41,7 @@ export class MonProfilPage implements OnInit {
           this.advices = [];
         } else {
           this.guards = res.guards.slice(0, 3);
-          this.advices = res.advices.slice(0, 5);
+          this.advices = res.advices.slice(0, 10);
         }
       },
       async (error: any) => {

@@ -87,11 +87,8 @@
             <ion-card-content>
      
               <ion-item lines="none" class="back2">
-                <ion-label position="stacked">Plante</ion-label>
-                <ion-select placeholder="Choissez parmi vos plantes déclarées" [(ngModel)]="planteSelected">
-                  <ion-select-option value="fleur">Fleur</ion-select-option>
-                  <ion-select-option value="arbre">Arbre</ion-select-option>
-                  <ion-select-option value="arbuste">Arbuste</ion-select-option>
+                <ion-select placeholder="Choisissez parmi vos plantes déclarées" [(ngModel)]="planteSelected" (ionChange)="saveSelectedPlantId()">
+                  <ion-select-option *ngFor="let plant of plants" [value]="plant.id">{{plant.name}}</ion-select-option>
                 </ion-select>
               </ion-item>
      

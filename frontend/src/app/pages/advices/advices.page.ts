@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ApiService } from 'src/app/services/api/api.service';
 import { IonInfiniteScroll } from '@ionic/angular';
 import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-advices',
   templateUrl: 'advices.page.html',
@@ -15,7 +16,6 @@ export class AdvicesPage {
   chunkSize = 15;
   loadedChunks = 1;
   limiteCaracteres = 75;
-
   constructor(private router: Router, private api: ApiService) {}
 
   ngOnInit() {
@@ -60,4 +60,5 @@ export class AdvicesPage {
     localStorage.setItem('selectedAdviceId', String(id));
     this.router.navigate(['/advice-click']);
   }
+  
 }

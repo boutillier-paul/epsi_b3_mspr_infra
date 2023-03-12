@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { Component, forwardRef, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
+import { ApiService } from 'src/app/services/api/api.service';
 
 @Component({
   selector: 'app-form-garde',
@@ -15,9 +16,21 @@ export class FormGardePage implements OnInit {
   showStartButton: boolean = false;
   showEndButton: boolean = false;
   verif: boolean = false;
-  planteSelected: string = "";
+  planteSelected: number | undefined;
+  plants: any[] = [];
   
-  constructor( private alertController: AlertController, private router: Router ) { }
+  constructor(
+    public alertController: AlertController,
+    private router: Router,
+    @Inject(forwardRef(() => ApiService)) private api: ApiService
+  ) { }
+
+  saveSelectedPlantId() {
+    const selectedPlant = this.plants.find(plant => plant.id === this.planteSelected);
+    if (selectedPlant) {
+      localStorage.setItem('selectedPlantId', selectedPlant.id.toString());
+    }
+  }
 
   showStartDatePicker() {
     this.showStartDatePickerFlag = true;
@@ -63,6 +76,9 @@ export class FormGardePage implements OnInit {
   }
 
   ngOnInit() {
+    this.api.getyouruser().subscribe((data) => {
+      this.plants = data.plants;
+    });
   }
 
   async declare() {
@@ -98,18 +114,30 @@ export class FormGardePage implements OnInit {
       return;
     }
 
-    const now = new Date();
-    const dateString = now.toLocaleDateString('fr-FR');
-
-    const alert = await this.alertController.create({
-      header: 'Succès',
-      message: 'Votre demande à été validé !',
-      buttons: ['OK'],
+    this.api.postGuard(this.dateDebut, this.dateFin).subscribe(async (response) => {
+      if (response.created_at) {
+        const alert = await this.alertController.create({
+          header: 'Succès',
+          message: 'Votre demande a été validée !',
+          buttons: ['OK'],
+        });
+        await alert.present();
+        this.router.navigate(['/mes-plantes']);
+      } else if (response.detail) {
+        const alert = await this.alertController.create({
+          header: 'Erreur',
+          message: response.detail,
+          buttons: ['OK'],
+        });
+        await alert.present();
+      } else {
+        const alert = await this.alertController.create({
+          header: 'Erreur Inconnue',
+          message: 'Une erreur inconnue est survenue.',
+          buttons: ['OK'],
+        });
+        await alert.present();
+      }
     });
-    await alert.present();
-      
-    this.router.navigate(['/mes-plantes']);
-  }
-  // POST /guards/ 
-  // POST //  
+  } 
 }

@@ -15,7 +15,7 @@ export class FormAdvicePage implements OnInit {
     content: '',
     photo: '',
   };
-  selectedFile: File;
+  selectedFile: {filename: string , data: string};
 
   constructor(
     public alertController: AlertController,
@@ -28,19 +28,28 @@ export class FormAdvicePage implements OnInit {
   }
 
   onFileSelected(event: any) {
-    const file: File = event.target.files[0];
-    this.selectedFile = file;
-
-    const fileName = file.name;
-    const fileExtension = fileName.split('.').pop();
-
-    console.log('Nom du fichier:', fileName);
-    console.log('Extension du fichier:', fileExtension);
-
-    this.credentials.photo = fileName + '.' + fileExtension;
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (reader.result) {
+          this.selectedFile = {
+            filename: file.name,
+            data: reader.result.toString().split(',')[1]
+          };
+        }
+      };
+      reader.readAsDataURL(file);
+      const fileName = file.name;
+      const fileExtension = fileName.split('.').pop();
+  
+      console.log('Nom du fichier:', fileName);
+      console.log('Extension du fichier:', fileExtension);
+    }
   }
 
   async createPost() {
+
     if (!this.credentials.title) {
       const alert = await this.alertController.create({
         header: 'Attention',
@@ -61,41 +70,65 @@ export class FormAdvicePage implements OnInit {
       return;
     }
 
-    const filePath = `advices/${this.selectedFile.name}`;
-    const fileRef = this.storage.ref(filePath);
-    const uploadTask = this.storage.upload(filePath, this.selectedFile);
-
-    uploadTask.snapshotChanges().subscribe(async () => {
-      const downloadURL = await fileRef.getDownloadURL().toPromise();
-      this.credentials.photo = downloadURL;
-
-      this.api.postAdvices(this.credentials).subscribe(async res => {
-        if (res && res.hasOwnProperty('created_at')) {
-          const alert = await this.alertController.create({
-            header: 'Succès',
-            message: 'Votre post a été créé !',
-            buttons: [
-              {
-                text: 'Aller à la page d\'accueil',
-                handler: () => {
-                  this.router.navigate(['/advices']);
-                }
-              }
-            ]
-          });
-          await alert.present();
-        } else if (res && res.hasOwnProperty('detail')) {
-          const alert = await this.alertController.create({
-            header: 'Erreur',
-            message: res.detail,
-            buttons: ['OK']
-          });
-          await alert.present();
-        } else {
-          console.log('La réponse de l\'API ne contient ni le token ni l\'erreur');
-          console.log(res);
-        }
+    if (!this.selectedFile) {
+      const alert = await this.alertController.create({
+        header: 'Attention',
+        message: 'Veuillez sélectionner une image de créer votre post.',
+        buttons: ['OK']
       });
-    });
-  }
+      await alert.present();
+      return;
+    }
+    
+    console.log(this.selectedFile);
+
+    this.api.postPhoto(this.selectedFile).subscribe(async res => {
+      if (res && res.hasOwnProperty('filename')) {
+        this.credentials.photo = res.filename;
+  
+        this.api.postAdvices(this.credentials).subscribe(async res => {
+          if (res && res.hasOwnProperty('created_at')) {
+            const alert = await this.alertController.create({
+              header: 'Succès',
+              message: 'Votre post a été créé !',
+              buttons: [
+                {
+                  text: 'Aller à la page d\'accueil',
+                  handler: () => {
+                    this.router.navigate(['/advices']);
+                  }
+                }
+              ]
+            });
+            await alert.present();
+          } else if (res && res.hasOwnProperty('detail')) {
+            const alert = await this.alertController.create({
+              header: 'Erreur',
+              message: res.detail,
+              buttons: ['OK']
+            });
+            await alert.present();
+          } else {
+            console.log('La réponse de l\'API ne contient ni le token ni l\'erreur');
+            console.log(res);
+          }
+        });
+
+      } else if (res && res.hasOwnProperty('detail')) {
+        const alert = await this.alertController.create({
+          header: 'Erreur',
+          message: res.detail,
+          buttons: ['OK']
+        });
+        await alert.present();
+      } else {
+        console.log('La réponse de l\'API ne contient ni le token ni l\'erreur');
+        console.log(res);
+      }
+    })
+
+
+    
+
+  };
 }

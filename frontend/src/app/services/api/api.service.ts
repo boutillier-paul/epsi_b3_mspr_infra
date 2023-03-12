@@ -267,6 +267,37 @@ export class ApiService {
       })
     );
   }
+  postGuard(start_at: string, end_at: string): Observable<any> {
+    return of(localStorage.getItem('access_token')).pipe(
+      switchMap(jeton => {
+        const httpOptions = {
+          headers: new HttpHeaders({
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Method': 'GET,HEAD,OPTIONS,POST,PUT',
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jeton,
+          })
+        };
+
+        let postData = {
+          "start_at": start_at,
+          "end_at": end_at,
+        };
+
+        const ague = localStorage.getItem('selectedPlantId');
+
+        return this.http.post(api_url + `/api/guards/` + "?plant_id="+ ague, postData, httpOptions).pipe(
+          map(res => {
+            return res;
+          }),
+          catchError(error => {
+            return of(error.error);
+          })
+        );
+      })
+    );
+  }
   deleteGuard(guardId: number): Observable<any> {
     return of(localStorage.getItem('access_token')).pipe(
       switchMap(jeton => {
@@ -479,6 +510,42 @@ export class ApiService {
         return this.http.get(api_url + '/api/guards/open/around'+ getData, httpOptions).pipe(
           map(res => {
             console.log(res);
+            return res;
+          }),
+          catchError(error => {
+            return of(error.error);
+          })
+        );
+      })
+    );
+  }
+  postPhoto(selectedFile: { filename: string, data: string }): Observable<any> {
+    return of(localStorage.getItem('access_token')).pipe(
+      switchMap(jeton => {
+        const httpOptions = {
+          headers: new HttpHeaders({
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Method': 'GET,HEAD,OPTIONS,POST,PUT',
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+            'Authorization': 'Bearer ' + jeton,
+          })
+        };
+  
+        const byteCharacters = atob(selectedFile.data);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: 'image/jpeg' });
+        const file = new File([blob], selectedFile.filename, { type: blob.type });
+  
+        const postData = new FormData();
+        postData.append('file', file);
+  
+        return this.http.post(api_url + `/api/photo/`, postData, httpOptions).pipe(
+          map(res => {
+            console.log(res)
             return res;
           }),
           catchError(error => {
