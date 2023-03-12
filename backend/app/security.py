@@ -21,14 +21,12 @@ MAX_FILE_SIZE = 1024 * 1024 * 10  # 10 MB maximum
 ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif']
 
 def is_valid_file(file):
-    try:
-        content_length = int(file.headers["content-length"])
-    except KeyError:
-        raise HTTPException(status_code=400, detail="File size could not be determined")
-
-    if file.content_type not in ALLOWED_MIME_TYPES:
+    content_type = file.content_type
+    if content_type not in ALLOWED_MIME_TYPES:
         raise HTTPException(status_code=400, detail="Only JPEG, PNG, and GIF files are allowed")
-    if content_length > MAX_FILE_SIZE:
+    file_size = len(file.file.read())
+    file.file.seek(0)
+    if file_size > MAX_FILE_SIZE:
         raise HTTPException(status_code=400, detail="File size exceeds maximum allowed")
     return True
 
