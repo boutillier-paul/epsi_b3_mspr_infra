@@ -1,0 +1,65 @@
+#container {
+    text-align: center;
+  
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  #container a {
+    text-decoration: none;
+  }
+
+  .bg-class{
+    --background: linear-gradient(180deg, RGB(64, 144, 107)  0%, RGB(31, 75, 56) 100%) !important;
+  }
+  
+  
+  ion-button {
+    --background: RGB(52, 106, 74);
+    --color: #ffff;
+  
+    --border-radius: 30px;
+    --border-color: #fff;
+    --border-style: solid;
+    --border-width: 1px;
+  
+  }
+  
+  ion-card {
+    --background: RGB(52, 106, 74);
+    --color: #ffff;
+  }
+  
+  ion-card-title {
+    --color: #ffff;
+  }
+
+  ion-input{
+    --placeholder-color: rgb(190, 190, 190);
+    --placeholder-opacity: 1;
+    }
+
+  ion-item.item-has-focus > ion-label{
+    color: white !important;
+  }
+  
+  .back {
+    --background: RGB(52, 106, 74);
+    --color: #ffff;
+    text-align: center;
+  }
+
+  .back2 {
+    --background: rgb(107, 174, 101, 0.185);
+    --color: #ffff;
+  }
+
+  a{
+    color: white !important;
+  }
+  .custom-checkbox {
+    --background: RGB(52, 106, 74);
+  }
