@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Header
+from fastapi import APIRouter, Depends, HTTPException, status, Header, UploadFile, File
 from . import security, schemas, controllers
 from app.database import get_db
 from app.security import JWTBearer
@@ -6,6 +6,8 @@ from datetime import datetime
 from geopy.distance import distance
 
 from sqlalchemy.orm import Session
+
+import boto3
 
 
 router = APIRouter()
@@ -147,6 +149,16 @@ async def create_plant(plant: schemas.PlantCreate, db: Session = Depends(get_db)
             detail="Plant not created"
         )
     return db_plant
+
+@router.post("/photo", tags=["Plants"], response_model=schemas.Photo, dependencies=[Depends(JWTBearer())])
+async def upload_image(file: UploadFile = File(...), db: Session = Depends(get_db), Authorization: str = Header(None)):
+    user = controllers.get_current_user(db, Authorization=Authorization)
+    security.is_valid_file(file)
+    s3 = boto3.client('s3')
+    bucket_name = "mspr-infra-bucket"
+    s3_key = f"images/{file.filename}"
+    s3.upload_fileobj(file.file, bucket_name, s3_key)
+    return {"filename": file.filename}
 
 @router.delete("/plants/{plant_id}", tags=["Plants"], response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
 async def delete_plant(plant_id: int, db: Session = Depends(get_db), Authorization: str = Header(None)):

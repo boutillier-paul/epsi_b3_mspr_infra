@@ -17,6 +17,16 @@ JWT_ALGORITHM = os.getenv("ALGORITHM")
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
+MAX_FILE_SIZE = 1024 * 1024 * 10  # 10 MB maximum
+ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif']
+
+def is_valid_file(file):
+    if file.content_type not in ALLOWED_MIME_TYPES:
+        raise HTTPException(status_code=400, detail="Only JPEG, PNG, and GIF files are allowed")
+    if file.content_length > MAX_FILE_SIZE:
+        raise HTTPException(status_code=400, detail="File size exceeds maximum allowed")
+    return True
+
 
 def is_valid_email(email: str):
     pattern = r"^[\w\.-]+@[\w\.-]+\.\w{2,4}$"
