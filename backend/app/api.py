@@ -140,11 +140,6 @@ async def create_plant(plant: schemas.PlantCreate, db: Session = Depends(get_db)
             status_code=status.HTTP_400_BAD_REQUEST, 
             detail="Photo string already used"
         )
-    if isinstance(plant.photo, str):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, 
-            detail="Photo has to be a File type"
-        )
     db_plant = controllers.create_plant(db, plant=plant, user_id=user.id)
     if db_plant is None:
         raise HTTPException(
@@ -252,7 +247,8 @@ async def read_open_guards_aroud_me(location: schemas.Location, skip: int = 0, l
         if plant_distance <= location.radius:
             guards_around.append(guard)
     for guard in user.guards:
-        guards_around.remove(guard)
+        if guard in guards_around:
+            guards_around.remove(guard)
     return guards_around
 
 @router.get("/guards/{guard_id}", tags=["Guards"], response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
