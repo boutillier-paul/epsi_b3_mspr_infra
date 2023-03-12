@@ -127,7 +127,6 @@ export class FormAdvicePage implements OnInit {
       }
     })
 
-
     
 
   };
