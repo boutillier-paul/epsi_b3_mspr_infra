@@ -6,8 +6,6 @@ import { BehaviorSubject, Observable, from, of, throwError, catchError } from 'r
 import { take, map, switchMap } from 'rxjs/operators';
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { Router } from '@angular/router';
-import { environment } from '../environments/environment';
-
 
 
 const helper = new JwtHelperService();
@@ -16,7 +14,7 @@ const ID = 'id';
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type' : 'application/json'})
 };
-const api_url = environment.apiUrl;
+const api_url = "http://ec2-13-39-18-90.eu-west-3.compute.amazonaws.com";
 
 @Injectable({
   providedIn: 'root'
