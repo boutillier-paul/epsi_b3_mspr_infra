@@ -25,3 +25,18 @@
 #container a {
   text-decoration: none;
 }
+.bg-class{
+  --background: linear-gradient(180deg, RGB(64, 144, 107)  0%, RGB(31, 75, 56) 100%) !important;
+}
+
+
+ion-button {
+  --background: #6BAE65;
+  --color: #ffff;
+
+  --border-radius: 30px;
+  --border-color: #fff;
+  --border-style: solid;
+  --border-width: 1px;
+
+}

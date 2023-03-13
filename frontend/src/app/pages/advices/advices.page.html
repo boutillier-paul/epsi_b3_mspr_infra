@@ -1,0 +1,109 @@
+<ion-split-pane contentId="my-content">
+  <ion-menu side="start" type="overlay" contentId="my-content">
+    <ion-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12">
+            <ion-row class="row-spacing">
+              <ion-col size="11" class="ion-border-right">
+                <div class="image-container">
+                  <img src="assets/icon/Arosaje.png" height="100 px" width="200 px" [routerLink]="['/advices']" RouterLinkActive="active">
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-border-bottom ">
+              <ion-col size="1" class="ion-border-right">
+                <ion-icon name="leaf-outline"></ion-icon>
+              </ion-col>
+              <ion-col size="11" class="ion-border-right">
+                <a href="/map">Garder une plante</a>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-border-top ion-border-bottom">
+              <ion-col size="1" class="ion-border-right">
+                <ion-icon name="clipboard-outline"></ion-icon>
+              </ion-col>
+              <ion-col size="11" class="ion-border-right">
+                <a href="/form-declare">Déclarer sa plante</a>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-border-top ion-border-bottom">
+              <ion-col size="1" class="ion-border-right">
+                <ion-icon name="add-circle-outline"></ion-icon>
+              </ion-col>
+              <ion-col size="11" class="ion-border-right">
+                <a href="/form-garde">Faire une demande de garde</a>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-border-top ion-border-bottom">
+              <ion-col size="1" class="ion-border-right">
+                <ion-icon name="mail-outline"></ion-icon>
+              </ion-col>
+              <ion-col size="11" class="ion-border-right">
+                <a href="/mes-messages">Mes messages</a>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-border-top">
+              <ion-col size="1" class="ion-border-right">
+                <ion-icon name="person-outline"></ion-icon>
+              </ion-col>
+              <ion-col size="11">
+                <a href="/mon-profil">Mon espace</a>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-border-top">
+              <ion-col size="1" class="ion-border-right">
+                <ion-icon name="arrow-undo-circle"></ion-icon>
+              </ion-col>
+              <ion-col size="11">
+                <a href="/map">Se déconnecter</a>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+      </ion-grid> 
+    </ion-content>
+  </ion-menu>
+  <ion-content class="bg-class" id="my-content">
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Page d'accueil</ion-title>
+      </ion-toolbar>
+    </ion-header> 
+    
+    <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="filterAdvices()" placeholder="Rechercher le post"></ion-searchbar>
+
+    <ion-row class="ion-text-center">
+      <ion-col size="12" class="ion-text-center">
+        <ion-button [routerLink]="['/form-advice']" RouterLinkActive="active">Ajouter un post</ion-button>
+      </ion-col>
+    </ion-row>
+    
+    <ion-row *ngFor="let chunk of filteredAdvices | chunk: 3" style="display: flex; align-items: stretch; margin: 0 auto; max-width: 1250px;">
+      <ng-container *ngFor="let advice of chunk">
+        <ion-col size="4">
+          <ion-card style="height: 100%;">
+            <ion-card-header class="text-center" style="height: 100%;">
+              <div class="card-image-container">
+                <img [src]="advice.photo ? 'https://mspr-infra-bucket.s3.eu-west-3.amazonaws.com/images/' + advice.photo : 'https://img.freepik.com/vecteurs-premium/vecteur-icone-image-par-defaut-page-image-manquante-pour-conception-site-web-application-mobile-aucune-photo-disponible_87543-11093.jpg'" alt="Image" class="card-image" />
+              </div>
+              <ion-card-title class="ion-padding">{{advice.title}}</ion-card-title>
+              <ion-card-subtitle>{{ advice.content | slice:0:limiteCaracteres }}{{ advice.content.length > limiteCaracteres ? '...' : '' }}</ion-card-subtitle>
+              <ion-card-subtitle>Posté le <ion-chip>{{ advice.created_at |  date: 'dd/MM/YYYY - HH:MM:SS'}}</ion-chip></ion-card-subtitle>
+              <br>
+              <ion-button class="button-center" (click)="saveAdviceId(advice.id)">Voir</ion-button>
+            </ion-card-header>
+          </ion-card>
+        </ion-col>
+      </ng-container>
+    </ion-row>
+    
+    <ion-infinite-scroll (ionInfinite)="loadMore($event)">
+      <ion-infinite-scroll-content>Scrollez pour voir les autres posts...</ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+
+  </ion-content>
+</ion-split-pane>
