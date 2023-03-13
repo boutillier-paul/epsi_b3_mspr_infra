@@ -7,7 +7,8 @@ interface Plant {
   id: number;
   name: string;
   species: string;
- photo: string;
+  photo: string;
+  created_at: string;
 }
 
 @Component({
@@ -34,7 +35,9 @@ export class MonProfilPage implements OnInit {
       (res: any) => {
         this.last_name = res.last_name;
         this.first_name = res.first_name;
-        this.plants = res.plants.slice(0, 3);
+        this.plants = res.plants.sort((a: Plant, b: Plant) => {
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        }).slice(0, 3);
         this.role_id = res.role_id;
         if (this.role_id === 1) {
           this.guards = [];

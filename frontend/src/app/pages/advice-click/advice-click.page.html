@@ -75,7 +75,7 @@
     </ion-header> 
     
     <div class="ion-text-center" (window:resize)="onResize()">
-      <img [src]="post.photo" [style.width]="imageWidth" [style.height]="imageHeight" [style.object-fit]="imageOrientation" [style.max-width]="'100%'" [style.max-height]="'100%'" />
+      <img [src]="post.photo ? 'https://mspr-infra-bucket.s3.eu-west-3.amazonaws.com/images/' + post.photo : https://img.freepik.com/vecteurs-premium/vecteur-icone-image-par-defaut-page-image-manquante-pour-conception-site-web-application-mobile-aucune-photo-disponible_87543-11093.jpg" [style.width]="imageWidth" [style.height]="imageHeight" [style.object-fit]="imageOrientation" [style.max-width]="'100%'" [style.max-height]="'100%'" />
       <br>
       <h4> <ion-chip>{{post.title}}</ion-chip></h4>
       <br>

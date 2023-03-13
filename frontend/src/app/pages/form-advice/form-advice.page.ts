@@ -2,7 +2,6 @@ import { Component, forwardRef, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { ApiService } from 'src/app/services/api/api.service';
-import { AngularFireStorage } from '@angular/fire/compat/storage';
 
 @Component({
   selector: 'app-form-advice',
@@ -21,7 +20,6 @@ export class FormAdvicePage implements OnInit {
     public alertController: AlertController,
     private router: Router,
     @Inject(forwardRef(() => ApiService)) private api: ApiService,
-    private storage: AngularFireStorage
   ) { }
 
   ngOnInit() {

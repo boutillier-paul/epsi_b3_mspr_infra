@@ -75,7 +75,7 @@
     </ion-header> 
     <div class="ion-text-center">
       <br>
-      <img [src]="imageUrl" [style.width]="imageWidth" [style.height]="imageHeight" [style.object-fit]="imageOrientation" [style.max-width]="'100%'" [style.max-height]="'100%'">
+      <img [src]="imageUrl ? 'https://mspr-infra-bucket.s3.eu-west-3.amazonaws.com/images/' + imageUrl : 'https://img.freepik.com/vecteurs-premium/vecteur-icone-image-par-defaut-page-image-manquante-pour-conception-site-web-application-mobile-aucune-photo-disponible_87543-11093.jpg'" [style.width]="imageWidth" [style.height]="imageHeight" [style.object-fit]="imageOrientation" [style.max-width]="'100%'" [style.max-height]="'100%'">
       <br>
       <h5>Espèce de la plante : <ion-chip>{{species}}</ion-chip></h5>
       <h5>Nom de la plante : <ion-chip>{{name}}</ion-chip></h5>
