@@ -76,7 +76,6 @@ export class AdvicesPage {
     s3.getObject(params, (err: any, data: { Body: { toString: (arg0: string) => any; }; }) => {
       if (err) {
         console.error(err); // an error occurre
-        return false;
       } else {
         if (data.Body) {
           const photo = data.Body.toString('utf-8');
@@ -84,6 +83,7 @@ export class AdvicesPage {
           return photo
         }
       }
+      return;
     });
   }
   
