@@ -11,7 +11,7 @@ import { ApiService } from 'src/app/services/api/api.service';
 export class FormSessionPage implements OnInit {
   credentials = {
     photo: '',
-    rapport: '',
+    report: '',
   };
   selectedFile: {filename: string , data: string};
   

@@ -13,33 +13,29 @@ export class HistoriqueSessionClickPage implements OnInit {
   imageHeight: string = '';
   imageWidth: string = '';
   SessionSelectionnee: any;
-  created_at: string ='';
-  rapport: string ='';
+  created_at: string = '';
+  report: string = '';
 
-  constructor(private alertController: AlertController, private router: Router) {
-  }
+  constructor(private alertController: AlertController, private router: Router) {}
 
-  
   ngOnInit() {
     const SessionSelectionneeString = localStorage.getItem('SessionSelectionnee');
     if (SessionSelectionneeString) {
-      const SessionSelectionneeArray = SessionSelectionneeString.split(',');
       const SessionSelectionnee = JSON.parse(SessionSelectionneeString);
       this.created_at = SessionSelectionnee.created_at;
-      this.rapport = SessionSelectionnee.rapport;
-      this.sessionPicUrl = SessionSelectionnee.sessionpic
-      this.setImageSize()
-    }
-    else{
+      this.report = SessionSelectionnee.report;
+      this.sessionPicUrl = SessionSelectionnee.photo;
+      this.setImageSize();
+    } else {
       this.valAlert();
     }
   }
+
   private getImageOrientation(sessionPicUrl: string): string {
     const img = new Image();
     img.src = sessionPicUrl;
     return img.width > img.height ? 'cover' : 'contain';
   }
-
 
   private setImageSize() {
     const windowWidth = window.innerWidth;
@@ -66,6 +62,7 @@ export class HistoriqueSessionClickPage implements OnInit {
     };
     img.src = this.sessionPicUrl;
   }
+
   async valAlert() {
     const alert = await this.alertController.create({
       header: 'Valeurs manquantes',

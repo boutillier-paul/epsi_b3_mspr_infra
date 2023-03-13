@@ -94,7 +94,7 @@
      
               <ion-item lines="none" class="back2">
                 <ion-label position="stacked">Rapport (Optionnel)</ion-label>
-                <ion-textarea rows="3" placeholder="Entrez le rapport si nécessaire" name="rapport"></ion-textarea>
+                <ion-textarea rows="3" placeholder="Entrez le rapport si nécessaire" name="report" [(ngModel)]="credentials.report"></ion-textarea>
               </ion-item>
 
               <ion-button expand="block" (click)="envoyer()">Envoyer</ion-button>

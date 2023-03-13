@@ -78,9 +78,9 @@
         <br>
         <img [src]="sessionPicUrl" [style.width]="imageWidth" [style.height]="imageHeight" [style.object-fit]="imageOrientation" [style.max-width]="'100%'" [style.max-height]="'100%'">
         <br>
-        <h5>Date de la session : <ion-chip>{{created_at}}</ion-chip></h5>
+        <h5>Date de la session : <ion-chip>{{created_at |  date: 'dd/MM/YYYY'}}</ion-chip></h5>
         <h5>Rapport de la session (Optionnel) :</h5>
-        <h5>{{rapport}}</h5>
+        <h5>{{report}}</h5>
       </div>
     </div>
   </ion-content>

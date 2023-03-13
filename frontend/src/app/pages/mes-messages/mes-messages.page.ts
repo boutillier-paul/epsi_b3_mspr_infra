@@ -27,8 +27,13 @@ export class MesMessagesPage implements OnInit {
       }));
       console.log(this.users);
     });
+
+    this.api.getyouruser().subscribe((response: any) => {
+      const yourUserId = response.id;
+      console.log('Your user id:', yourUserId);
+      this.users = this.users.filter((user) => user.id !== yourUserId);
+    });
   }
-  
 
   saveSelectedUserId() {
     const selectedUser = this.users.find(user => user.id === this.userSelected);
@@ -52,8 +57,7 @@ export class MesMessagesPage implements OnInit {
           r_first_name: '',
           r_last_name: '',
           user_id: ''
-        }
-        ));
+        }));
         mess.forEach((message: any, index: number) => {
           const senderId = message.sender_id;
           this.api.getUserBySenderIdParams(senderId).subscribe((sender: any) => {

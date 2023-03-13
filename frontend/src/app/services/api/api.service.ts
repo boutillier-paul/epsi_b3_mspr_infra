@@ -342,11 +342,8 @@ export class ApiService {
             'Authorization': 'Bearer ' + jeton,
           })
         };
-        let postData = {
-          "guard_id": guardId
-        };
   
-        return this.http.delete(api_url + '/api/guards/' + postData, httpOptions).pipe(
+        return this.http.delete(api_url + '/api/guards/' + guardId, httpOptions).pipe(
           map(res => {
             console.log(res);
             return res;
@@ -358,7 +355,33 @@ export class ApiService {
       })
     );
   }
-  postSession(credentials: {photo: string, rapport: string}): Observable<any> {
+  getsessions(): Observable<any> {
+    return of(localStorage.getItem('access_token')).pipe(
+      switchMap(jeton => {
+        const httpOptions = {
+          headers: new HttpHeaders({
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Method': 'GET,HEAD,OPTIONS,POST,PUT',
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jeton,
+          })
+        };
+        const ague = localStorage.getItem('selectedGuardId');
+  
+        return this.http.get(api_url + '/api/sessions/guard/' + ague, httpOptions).pipe(
+          map(res => {
+            console.log(res);
+            return res;
+          }),
+          catchError(error => {
+            return of(error.error);
+          })
+        );
+      })
+    );
+  }
+  postSession(credentials: {photo: string, report: string}): Observable<any> {
     return of(localStorage.getItem('access_token')).pipe(
       switchMap(jeton => {
         const httpOptions = {
@@ -372,10 +395,12 @@ export class ApiService {
   
         let postData = {
           "photo": credentials.photo,
-          "rapport": credentials.rapport,
+          "report": credentials.report,
         };
 
-        return this.http.post(api_url + '/api/sessions/', postData, httpOptions).pipe(
+        const ague = localStorage.getItem('selectedGuardId');
+
+        return this.http.post(api_url + '/api/sessions/' + "?guard_id="+ ague, postData, httpOptions).pipe(
           map(res => {
             console.log(res);
             return res;
@@ -480,6 +505,8 @@ export class ApiService {
           "content": credentials.content,
           "photo": credentials.photo
         };
+
+
 
         return this.http.post(api_url + `/api/advices/`, postData, httpOptions).pipe(
           map(res => {

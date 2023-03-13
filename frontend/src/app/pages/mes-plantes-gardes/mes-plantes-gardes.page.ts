@@ -11,7 +11,7 @@ import { ApiService } from 'src/app/services/api/api.service';
 export class MesPlantesGardesPage implements OnInit {
   plantId: number;
   plantName: string;
-  guards: any[] = [];
+  gardes: any[] = [];
 
   constructor(
     public alertController: AlertController,
@@ -20,41 +20,27 @@ export class MesPlantesGardesPage implements OnInit {
   ) { }
   
   ngOnInit() {
-    this.api.getplants().subscribe(
-      (response: any) => {
-        this.plantName = response.name;
+    this.api.getplants().subscribe( (response: any) => {
         const guards = response.guards;
-        for (let guard of guards) {
+        this.gardes = guards.map((guard: any) => {
+          return {
+            id: guard.id,
+            start_at: guard.start_at,
+            end_at: guard.end_at,
+            user_id: guard.user_id,
+            first_name: '',
+            last_name: '',
+          };
+        });
+        console.log("Mon tableau :" + this.gardes)
+        guards.forEach((guard: any, index: number) => {
           const userId = guard.user_id;
-          localStorage.setItem('selectedUserID', userId)
-          this.api.getUserById().subscribe(
-            (userResponse: any) => {
-              guard.userName = `${userResponse.last_name} ${userResponse.first_name}`;
-            },
-            async (error) => {
-              if (error.status === 401) {
-                const alert = await this.alertController.create({
-                  header: 'Erreur 401',
-                  message: 'Votre session a expiré. Veuillez vous reconnecter.',
-                  buttons: [
-                    {
-                      text: 'OK',
-                      handler: () => {
-                        // Naviguez vers la page de connexion
-                      }
-                    }
-                  ]
-                });
-                await alert.present();
-              } else {
-                console.log('Une erreur s\'est produite :', error);
-              }
-            }
-          );
-        }
-
-        // Enregistre les gardes dans la variable de classe pour l'affichage
-        this.guards = guards;
+          this.api.getUserByIdParams(userId).subscribe((user: any) => {
+            this.gardes[index].first_name = user.first_name;
+            this.gardes[index].last_name = user.last_name;
+            console.log('Tableau après get user par ID', this.gardes);
+          });
+        });
       },
       async (error) => {
         if (error.status === 401) {
@@ -110,12 +96,52 @@ export class MesPlantesGardesPage implements OnInit {
 
     await alert.present();
   }
+  async deleteGuardAsk(guardId: number) {
+    const alert = await this.alertController.create({
+      header: 'Confirmation requise',
+      message: 'Êtes-vous sûr de vouloir supprimer cette garde ?',
+      buttons: [
+        {
+          text: 'Non',
+          handler: () => {
+            this.router.navigate(['/mes-plantes-gardes']);
+          }
+        },
+        {
+          text: 'Oui',
+          handler: () => {
+            this.deleteGuard(guardId);
+          }
+        }
+      ]
+    
+    });
+    await alert.present();
+    } 
   deleteGuard(guardId: number) {
-  this.api.deleteGuard(guardId).subscribe((data) => {
-      this.delete_success();
-     });
-  };
+    this.api.deleteGuard(guardId).subscribe(
+      (data) => {
+        if (data.created_at) {
+          this.alertController.create({
+            header: 'Succès',
+            message: 'La suppression est validée !! ',
+            buttons: ['OK']
+          }).then(alert => alert.present());
+        } else {
+          this.delete_success();
+        }
+      },
+      (error) => {
+        this.alertController.create({
+          header: 'Erreur lors de la suppression',
+          message: error.detail,
+          buttons: ['OK']
+        }).then(alert => alert.present());
+      }
+    );
+  }
   viewGuard(guardId: number){
-
+    localStorage.setItem("selectedGuardId", guardId.toString());
+    this.router.navigateByUrl('/historique-session');
   }
 }

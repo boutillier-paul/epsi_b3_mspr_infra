@@ -83,11 +83,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let plante of plantes">
-            <td class="ion-text-center">{{ plante.created_at }}</td>
-            <td class="ion-text-center">{{ plante.rapport | slice:0:limiteCaracteres }}{{ plante.rapport.length > limiteCaracteres ? '...' : '' }}</td>
+          <tr *ngFor="let session of sessions">
+            <td class="ion-text-center">{{ session.created_at |  date: 'dd/MM/YYYY' }}</td>
+            <td class="ion-text-center">{{ session.report | slice:0:limiteCaracteres }}{{ session.report.length > limiteCaracteres ? '...' : '' }}</td>
             <td class="ion-text-center">
-              <button (click)="voirPlus(plante)" class="transbutton" id="open-modal">Cliquez pour plus de détails</button>
+              <button (click)="voirPlus(session)" class="transbutton" id="open-modal">Cliquez pour plus de détails</button>
             </td>
           </tr>
         </tbody>
