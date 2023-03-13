@@ -217,7 +217,7 @@ export class ApiService {
       })
     );
   }
-  postPlant(fd: any): Observable<any> {
+  postPlant(credentials: {name: string, species: string, photo: string, pos_lat: number, pos_lng: number}): Observable<any> {
     return of(localStorage.getItem('access_token')).pipe(
       switchMap(jeton => {
         const httpOptions = {
@@ -229,7 +229,15 @@ export class ApiService {
           })
         };
   
-        return this.http.post(api_url + '/api/plants/', fd, httpOptions).pipe(
+        let postData = {
+          "name": credentials.name,
+          "species": credentials.species,
+          "photo": credentials.photo,
+          "pos_lat": credentials.pos_lat,
+          "pos_lng": credentials.pos_lng
+        };
+
+        return this.http.post(api_url + '/api/plants/', postData, httpOptions).pipe(
           map(res => {
             console.log(res);
             return res;
