@@ -29,6 +29,10 @@ export class AdvicesPage {
       this.filteredAdvices = data;
       console.log(this.advices);
     });
+    this.advices.forEach( (advice) => {
+      let photoName = advice.photo
+      advice.photo = this.s3Service.getObjectFromS3(photoName);
+    })
   }
 
   filterAdvices() {
@@ -61,9 +65,5 @@ export class AdvicesPage {
   saveAdviceId(id: number) {
     localStorage.setItem('selectedAdviceId', String(id));
     this.router.navigate(['/advice-click']);
-  }
-
-  getObjectPhoto(photoName: string) {
-    return this.s3Service.getObjectFromS3(photoName);
   }
 }
