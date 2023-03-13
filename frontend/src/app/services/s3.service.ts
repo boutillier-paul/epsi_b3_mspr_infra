@@ -13,9 +13,9 @@ export class S3Service {
     this.s3 = new S3();
   }
 
-  getObjectFromS3(bucket: string, key: string): Observable<any> {
+  getObjectFromS3(key: string): Observable<any> {
     return new Observable(observer => {
-      this.s3.getObject({ Bucket: bucket, Key: key }, (err, data) => {
+      this.s3.getObject({ Bucket: "mspr-infra-bucket", Key: "images/" + key }, (err, data) => {
         if (err) {
           observer.error(err);
         } else {
