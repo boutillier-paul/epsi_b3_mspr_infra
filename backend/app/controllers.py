@@ -191,6 +191,9 @@ def create_care_session(db: Session, care_session: schemas.CareSessionCreate, gu
     db.refresh(db_care_session)
     return db_care_session 
 
+def get_care_sessions_by_guard(db: Session, guard_id: int):
+   return db.query(models.Care_Session).filter(models.Care_Session.guard_id == guard_id).order_by(models.Care_Session.created_at.desc()).all()
+
 # MESSAGE
 def get_message(db: Session, message_id: int):
     return db.query(models.Message).filter(models.Message.id == message_id).first()
