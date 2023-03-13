@@ -402,6 +402,25 @@ async def create_session(session: schemas.CareSessionCreate, guard_id: int, db: 
 
     return db_session
 
+@router.get("/sessions/guard/{guard_id}", tags=["Sessions"], response_model=list[schemas.CareSession], dependencies=[Depends(JWTBearer())])
+async def read_session_by_guard(guard_id: int, db: Session = Depends(get_db), Authorization: str = Header(None)):
+    user = controllers.get_current_user(db, Authorization=Authorization)
+    db_session = controllers.get_care_sessions_by_guard(db, guard_id=guard_id)
+
+    for plant in user.plants:
+        for guard in plant.guards:
+            if db_session in guard.care_sessions:
+                return db_session
+                    
+    for guard in user.guards:
+        if db_session not in guard.care_sessions:
+            return db_session
+
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED, 
+        detail="You don't have access to this ressource"
+    )
+
 
 # MESSAGE ENDPOINTS
 
