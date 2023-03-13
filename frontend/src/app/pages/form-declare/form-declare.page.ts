@@ -122,10 +122,8 @@ export class FormDeclarePage implements OnInit {
         this.credentials.photo = res.filename;
         this.credentials.pos_lat = parseFloat(localStorage.getItem('pos_lat') || '');
         this.credentials.pos_lng = parseFloat(localStorage.getItem('pos_lng') || '');
-        console.log(this.credentials);
 
         this.api.postPlant(this.credentials).subscribe(async res => {
-          console.log(this.credentials);
           if (res && res.hasOwnProperty('created_at')) {
             const alert = await this.alertController.create({
               header: 'Plante déclarée',

@@ -14,7 +14,7 @@ const ID = 'id';
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type' : 'application/json'})
 };
-const api_url = "http://ec2-13-39-18-90.eu-west-3.compute.amazonaws.com";
+const api_url = "http://ec2-13-37-212-138.eu-west-3.compute.amazonaws.com";
 
 @Injectable({
   providedIn: 'root'
@@ -156,6 +156,30 @@ export class ApiService {
         };
 
         return this.http.get(api_url + `/api/users/`+ userid, httpOptions).pipe(
+          map(res => {
+            return res;
+          }),
+          catchError(error => {
+            return of(error.error);
+          })
+        );
+      })
+    );
+  }
+  getAllBotanists(): Observable<any> {
+    return of(localStorage.getItem('access_token')).pipe(
+      switchMap(jeton => {
+        const httpOptions = {
+          headers: new HttpHeaders({
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Method': 'GET,HEAD,OPTIONS,POST,PUT',
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jeton,
+          })
+        };
+  
+        return this.http.get(api_url + '/api/users/botanists', httpOptions).pipe(
           map(res => {
             return res;
           }),
@@ -323,6 +347,35 @@ export class ApiService {
         };
   
         return this.http.delete(api_url + '/api/guards/' + postData, httpOptions).pipe(
+          map(res => {
+            console.log(res);
+            return res;
+          }),
+          catchError(error => {
+            return of(error.error);
+          })
+        );
+      })
+    );
+  }
+  postSession(credentials: {photo: string, rapport: string}): Observable<any> {
+    return of(localStorage.getItem('access_token')).pipe(
+      switchMap(jeton => {
+        const httpOptions = {
+          headers: new HttpHeaders({
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Method': 'GET,HEAD,OPTIONS,POST,PUT',
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+            'Authorization': 'Bearer ' + jeton,
+          })
+        };
+  
+        let postData = {
+          "photo": credentials.photo,
+          "rapport": credentials.rapport,
+        };
+
+        return this.http.post(api_url + '/api/sessions/', postData, httpOptions).pipe(
           map(res => {
             console.log(res);
             return res;
@@ -554,6 +607,108 @@ export class ApiService {
         return this.http.post(api_url + `/api/photo/`, postData, httpOptions).pipe(
           map(res => {
             console.log(res)
+            return res;
+          }),
+          catchError(error => {
+            return of(error.error);
+          })
+        );
+      })
+    );
+  }
+  getMessages(userSelected : number): Observable<any> {
+    return of(localStorage.getItem('access_token')).pipe(
+      switchMap(jeton => {
+        const httpOptions = {
+          headers: new HttpHeaders({
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Method': 'GET,HEAD,OPTIONS,POST,PUT',
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jeton,
+          })
+        };
+
+        return this.http.get(api_url + `/api/messages/`+ userSelected, httpOptions).pipe(
+          map(res => {
+            return res;
+          }),
+          catchError(error => {
+            return of(error.error);
+          })
+        );
+      })
+    );
+  }
+  postMessages(message: {content: string}): Observable<any> {
+    return of(localStorage.getItem('access_token')).pipe(
+      switchMap(jeton => {
+        const httpOptions = {
+          headers: new HttpHeaders({
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Method': 'GET,HEAD,OPTIONS,POST,PUT',
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jeton,
+          })
+        };
+
+        let postData = {
+          "content": message.content,
+        };
+
+        const ague = localStorage.getItem('selectedUserId');
+
+        return this.http.post(api_url + `/api/messages/`+ ague, postData, httpOptions).pipe(
+          map(res => {
+            return res;
+          }),
+          catchError(error => {
+            return of(error.error);
+          })
+        );
+      })
+    );
+  }
+  getUserBySenderIdParams(senderid: number): Observable<any> {
+    return of(localStorage.getItem('access_token')).pipe(
+      switchMap(jeton => {
+        const httpOptions = {
+          headers: new HttpHeaders({
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Method': 'GET,HEAD,OPTIONS,POST,PUT',
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jeton,
+          })
+        };
+
+        return this.http.get(api_url + `/api/users/`+ senderid, httpOptions).pipe(
+          map(res => {
+            return res;
+          }),
+          catchError(error => {
+            return of(error.error);
+          })
+        );
+      })
+    );
+  }
+  getUserByRecieverIdParams(recieverid: number): Observable<any> {
+    return of(localStorage.getItem('access_token')).pipe(
+      switchMap(jeton => {
+        const httpOptions = {
+          headers: new HttpHeaders({
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Method': 'GET,HEAD,OPTIONS,POST,PUT',
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jeton,
+          })
+        };
+
+        return this.http.get(api_url + `/api/users/`+ recieverid, httpOptions).pipe(
+          map(res => {
             return res;
           }),
           catchError(error => {

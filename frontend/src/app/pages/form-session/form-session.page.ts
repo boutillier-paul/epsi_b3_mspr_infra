@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { Component, forwardRef, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
+import { ApiService } from 'src/app/services/api/api.service';
 
 @Component({
   selector: 'app-form-session',
@@ -8,34 +9,45 @@ import { Router } from '@angular/router';
   styleUrls: ['./form-session.page.scss'],
 })
 export class FormSessionPage implements OnInit {
-  sessionimgSrc: string = "";
-  imageSelected = false;
+  credentials = {
+    photo: '',
+    rapport: '',
+  };
+  selectedFile: {filename: string , data: string};
   
-  constructor( private alertController: AlertController, private router: Router ) { }
+  constructor(
+    public alertController: AlertController,
+    private router: Router,
+    @Inject(forwardRef(() => ApiService)) private api: ApiService,
+  ) { }
 
   ngOnInit() {
   }
   
 
-  onFileSelected(event: Event) {
-    const inputElement = event.target as HTMLInputElement;
-    if (inputElement && inputElement.files && inputElement.files.length > 0) {
-      const file: File = inputElement.files[0];
-
-      if (file) {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-          this.sessionimgSrc = reader.result as string;
-          localStorage.setItem('sessionimgSrc', this.sessionimgSrc);
-          this.imageSelected = true;
-        };
-      }
+  onFileSelected(event: any) {
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (reader.result) {
+          this.selectedFile = {
+            filename: file.name,
+            data: reader.result.toString().split(',')[1]
+          };
+        }
+      };
+      reader.readAsDataURL(file);
+      const fileName = file.name;
+      const fileExtension = fileName.split('.').pop();
+  
+      console.log('Nom du fichier:', fileName);
+      console.log('Extension du fichier:', fileExtension);
     }
   }
 
   async envoyer() {
-    if (!this.imageSelected) {
+    if (!this.selectedFile) {
       const alert = await this.alertController.create({
         header: 'Attention',
         message: 'Veuillez sélectionner une image d\'envoyer votre session.',
@@ -45,11 +57,52 @@ export class FormSessionPage implements OnInit {
       return;
     }
   
-    const now = new Date();
-    const dateString = now.toLocaleDateString('fr-FR');
-    localStorage.setItem('dateSession', dateString);
+    console.log(this.selectedFile);
+
+    this.api.postPhoto(this.selectedFile).subscribe(async res => {
+      if (res && res.hasOwnProperty('filename')) {
+        this.credentials.photo = res.filename;
   
-    // Code pour traiter les données
+        this.api.postSession(this.credentials).subscribe(async res => {
+          if (res && res.hasOwnProperty('created_at')) {
+            const alert = await this.alertController.create({
+              header: 'Succès',
+              message: 'Votre session a été envoyée !',
+              buttons: [
+                {
+                  text: 'Aller à la page d\'accueil',
+                  handler: () => {
+                    this.router.navigate(['/mes-gardes']);
+                  }
+                }
+              ]
+            });
+            await alert.present();
+          } else if (res && res.hasOwnProperty('detail')) {
+            const alert = await this.alertController.create({
+              header: 'Erreur',
+              message: res.detail,
+              buttons: ['OK']
+            });
+            await alert.present();
+          } else {
+            console.log('La réponse de l\'API ne contient ni le token ni l\'erreur');
+            console.log(res);
+          }
+        });
+
+      } else if (res && res.hasOwnProperty('detail')) {
+        const alert = await this.alertController.create({
+          header: 'Erreur',
+          message: res.detail,
+          buttons: ['OK']
+        });
+        await alert.present();
+      } else {
+        console.log('La réponse de l\'API ne contient ni le token ni l\'erreur');
+        console.log(res);
+      }
+    })
   
     const alert = await this.alertController.create({
       header: 'Session envoyée',
@@ -58,6 +111,6 @@ export class FormSessionPage implements OnInit {
     });
     await alert.present();
   
-    this.router.navigate(['/map']);
+    
   }
 }

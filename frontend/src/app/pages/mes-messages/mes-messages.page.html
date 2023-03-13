@@ -76,52 +76,42 @@
 
     <ion-item>
       <ion-label>Utilisateur:</ion-label>
-        <select name="pets" id="pet-select">
-          <option value="">--Choisissez un utilisateur--</option>
-          <option value="dog">Paul Boutillier</option>
-          <option value="cat">Alexis Looten</option>
-          <option value="hamster">John Doe</option>
-
-        </select>
-    </ion-item>
-    <table style="background-color: rgb(0,0,0,0.2); width: 100%;" class="ague4">
-      <tr>
-        <td style="width: 50%;">
-          <div style=" border-radius: 20px; padding: 10px; margin: 10px; max-width: 90%;">
-            <ion-card class="ague1">
-              <h6>De Paul Boutiller le <ion-chip>25/02/23 - 14:25:48</ion-chip></h6>
-              <br>
-              Bonjour
-            </ion-card>
-          </div>
-        </td>
-        </tr>
-        <tr>
-        <td style="width: 50%;">
-          <div style=" border-radius: 20px; padding: 10px; margin: 10px; max-width: 90%;">
-            <ion-card class="ague2">
-              <h6> De moi le <ion-chip>25/02/23 - 14:27:51</ion-chip><br></h6>
-              Bonjour. Comment tu vas ?
-            </ion-card>
-          </div>
-        </td>
-      </tr>
-      <h6 style="text-align: center;">Voir plus de messages ...</h6>
-    </table>
-
-   
-<br><br><br>
-    <ion-item class="ague3">
-      <ion-input [(ngModel)]="newMessage" placeholder="Insérez votre message"></ion-input>
-      <ion-button expand="block">Envoyer</ion-button>
+      <ion-select placeholder="Choisissez parmi les botanistes" [(ngModel)]="userSelected" (ionChange)="saveSelectedUserId()">
+        <ion-select-option *ngFor="let user of users" [value]="user.id" >
+          {{ user.name }}
+        </ion-select-option>
+      </ion-select>
     </ion-item>
 
-
-
+    <ion-item>
+      <ion-label>Utilisateur:</ion-label>
+      <ion-select placeholder="Choisissez parmi les botanistes" [(ngModel)]="userSelected" (ionChange)="getMessages()">
+        <ion-select-option *ngFor="let user of users" [value]="user.id">
+          {{ user.name }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
     
-
-
-
+    <ion-list>
+      <ion-item *ngFor="let message of messages" [class.ague2]="message.sender_id === selectedUser" [class.ague]="message.sender_id !== selectedUser">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-subtitle>De {{ message.sender_id === selectedUser ? 'moi' : message.sender_id }}</ion-card-subtitle>
+            <ion-card-title>{{ message.created_at }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            {{ message.content }}
+          </ion-card-content>
+        </ion-card>
+      </ion-item>
+    </ion-list>
+    
+    <h6 style="text-align: center;">Voir plus de messages ...</h6>
+    
+    <ion-item class="ague3">
+      <ion-input [(ngModel)]="credentials.content" placeholder="Insérez votre message"></ion-input>
+      <ion-button expand="block" (click)="sendMessage()">Envoyer</ion-button>
+    </ion-item>
 
   </ion-content>
 </ion-split-pane>
