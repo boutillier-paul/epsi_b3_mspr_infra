@@ -73,7 +73,7 @@ export class AdvicesPage {
       Key: 'images/' + photo
     };
       
-    s3.getObject(params, (err: any, data: { Body: { toString: (arg0: string) => any; }; }) => {
+    s3.getObject(params, (err, data) => {
       if (err) {
         console.error(err); // an error occurre
       } else {
