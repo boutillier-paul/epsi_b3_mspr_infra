@@ -82,6 +82,8 @@ export class AdvicesPage {
         return data.Body
       }
     });
+
+    return false;
   }
   
 }
