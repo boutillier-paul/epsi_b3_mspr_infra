@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ApiService } from 'src/app/services/api/api.service';
 import { IonInfiniteScroll } from '@ionic/angular';
 import { Router } from '@angular/router';
+import AWS from 'aws-sdk';
 
 @Component({
   selector: 'app-advices',
@@ -56,9 +57,31 @@ export class AdvicesPage {
       infiniteScroll.disabled = true;
     }
   }
+
   saveAdviceId(id: number) {
     localStorage.setItem('selectedAdviceId', String(id));
     this.router.navigate(['/advice-click']);
+  }
+
+  getAdvicePhoto(photo: string) {
+    const s3 = new AWS.S3({
+      region: 'eu-west-3'
+    });
+
+    const params = {
+      Bucket: 'mspr-infra-bucket',
+      Key: 'images/' + photo
+    };
+    
+    s3.getObject(params, (err, data) => {
+      if (err) {
+        console.log(err, err.stack);
+      } else {
+        // Utilisez la variable data.Body pour accéder au contenu de l'image
+        console.log(data.Body);
+        return data.Body
+      }
+    });
   }
   
 }
