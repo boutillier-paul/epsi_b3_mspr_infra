@@ -3,7 +3,7 @@ name: main branch CI/CD
 on:
   workflow_dispatch:
   push:
-    branches: [ "main", "feat/validation" ]
+    branches: [ "main" ]
 
 jobs:
   # test-backend: 
