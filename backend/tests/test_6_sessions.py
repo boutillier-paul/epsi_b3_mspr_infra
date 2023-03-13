@@ -4,7 +4,7 @@
 import pytest
 import utils
 
-@pytest.mark.order(24)
+@pytest.mark.order(600)
 def test_read_session_unauthorized():
     """
         test_read_session_unauthorized

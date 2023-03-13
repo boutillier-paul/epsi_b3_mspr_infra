@@ -8,7 +8,7 @@ import utils
 from app import schemas
 
 # get /users/me
-@pytest.mark.order(5)  
+@pytest.mark.order(300)  
 def test_get_current_user():
     """
         test_login
@@ -23,7 +23,7 @@ def test_get_current_user():
             and response_json['email'] == utils.first_user.email\
                 and response_json['id'] is not None
 
-@pytest.mark.order(6)  
+@pytest.mark.order(301)  
 def test_get_current_unauthorized():
     """
         test_get_current_unauthorized
@@ -34,7 +34,7 @@ def test_get_current_unauthorized():
     assert response.json() == {'detail': 'Unauthorized'}
     
 # get /users/{user_id}
-@pytest.mark.order(6)  
+@pytest.mark.order(302)  
 def test_read_user():
     """
         test_read_user
@@ -48,7 +48,7 @@ def test_read_user():
             and response_json['email'] == utils.first_user.email\
                 and response_json['id'] is not None
 
-@pytest.mark.order(7)  
+@pytest.mark.order(303)  
 def test_read_user_not_found():
     """
         test_read_user_not_found
@@ -59,7 +59,7 @@ def test_read_user_not_found():
     assert response.json() == {'detail': 'User not found'}
     
 # post /users/me
-@pytest.mark.order(8)  
+@pytest.mark.order(304)  
 def test_update_user():
     """
         test_update_user
@@ -75,7 +75,7 @@ def test_update_user():
             and response_json['first_name'] == utils.first_user_update.first_name\
                 and response_json['email'] == utils.first_user_update.email\
                 
-@pytest.mark.order(9) 
+@pytest.mark.order(305) 
 def test_update_user_invalid_email():
     """
         test_update_user_invalid_email
@@ -89,6 +89,19 @@ def test_update_user_invalid_email():
     
     assert response.status_code == 400
     assert response_json['detail'] == 'Invalid email format'
+    
+@pytest.mark.order(306) 
+def test_update_user_role_botanist():
+    """
+        test_update_user_role_botanist
+    """
+    response = utils.client.put(f"/api/users/{utils.first_user_id}/botanist"
+        , headers={"authorization": f"Bearer {utils.token}"})
+    response_json = response.json()
+    print(response_json)
+    
+    assert response.status_code == 200
+    assert response_json['role_id'] == 2
                 
 
 

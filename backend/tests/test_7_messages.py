@@ -5,7 +5,7 @@ import utils
 import json
 import pytest
 
-@pytest.mark.order()
+@pytest.mark.order(700)
 def test_create_message():
     """
         test_create_message
@@ -20,7 +20,7 @@ def test_create_message():
     assert response_json['content'] == utils.first_message.content\
             and response_json['reciever_id'] == utils.second_user_id
             
-@pytest.mark.order()
+@pytest.mark.order(701)
 def test_create_message_no_reciever():
     """
         test_create_message_no_reciever
@@ -34,7 +34,7 @@ def test_create_message_no_reciever():
     assert response_json['detail'] == "reciever doesn't exist"
 
 
-@pytest.mark.order()
+@pytest.mark.order(702)
 def test_read_messages_conversation():
     """
         test_read_messages_conversation
@@ -46,7 +46,7 @@ def test_read_messages_conversation():
     assert response.status_code == 200
     assert response_json is not None
     
-@pytest.mark.order()
+@pytest.mark.order(703)
 def test_read_messages_conversation_no_interlocutor():
     """
         test_read_messages_conversation_no_interlocutor

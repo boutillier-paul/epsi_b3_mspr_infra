@@ -346,7 +346,7 @@ async def read_open_guards_aroud_me(location: schemas.Location, skip: int = 0, l
     """
     guards_around = []
     controllers.check_user_role(database, role_name="BOTANIST", authorization=authorization)
-    user = controllers.get_current_user(database, authorization=authorization)
+    user = controllers.get_currenread_open_guards_aroud_met_user(database, authorization=authorization)
     db_guards = controllers.get_open_guards(database, skip=skip, limit=limit)
     
     for guard in db_guards:

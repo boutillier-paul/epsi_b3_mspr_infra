@@ -5,7 +5,7 @@ import json
 import pytest
 import utils
 
-@pytest.mark.order(17) 
+@pytest.mark.order(500) 
 def test_create_guard():
     """
         test_create_guard
@@ -20,7 +20,7 @@ def test_create_guard():
     assert response_json['start_at'] ==  utils.fisrt_guard['start_at']\
         and response_json['end_at'] == utils.fisrt_guard['end_at']
         
-@pytest.mark.order(18)
+@pytest.mark.order(501)
 def test_create_guard_plant_not_owned():
     """
         test_create_guard_plant_not_owned
@@ -34,7 +34,7 @@ def test_create_guard_plant_not_owned():
     assert response.status_code == 400
     assert response_json['detail'] == 'You can only create guard for your plants'
     
-@pytest.mark.order(19)
+@pytest.mark.order(502)
 def test_read_guard():
     """
         test_read_guard
@@ -48,7 +48,7 @@ def test_read_guard():
     assert response_json['start_at'] ==  utils.fisrt_guard['start_at']\
         and response_json['end_at'] == utils.fisrt_guard['end_at']
         
-@pytest.mark.order(20)
+@pytest.mark.order(503)
 def test_read_guard_not_found():
     """
         test_read_guard_not_found
@@ -60,7 +60,7 @@ def test_read_guard_not_found():
     assert response.status_code == 404
     assert response_json['detail'] ==  'Guard not found'
     
-@pytest.mark.order(21) 
+@pytest.mark.order(504) 
 def test_create_second_guard():
     """
         test_create_second_guard
@@ -75,7 +75,7 @@ def test_create_second_guard():
     assert response_json['start_at'] ==  utils.fisrt_guard['start_at']\
         and response_json['end_at'] == utils.fisrt_guard['end_at']
     
-@pytest.mark.order(22)
+@pytest.mark.order(505)
 def test_read_guard_unauthorized():
     """
         test_read_guard_unauthorized
@@ -87,7 +87,7 @@ def test_read_guard_unauthorized():
     assert response.status_code == 401
     assert response_json['detail'] ==  'Unauthorized'
     
-@pytest.mark.order(22)
+@pytest.mark.order(506)
 def test_delete_guard_didnt_create():
     """
         test_delete_guard_didnt_create
@@ -99,7 +99,7 @@ def test_delete_guard_didnt_create():
     assert response.status_code == 401
     assert response_json['detail'] == "You didn't created that guard"
     
-@pytest.mark.order(23)
+@pytest.mark.order(507)
 def test_delete_guard():
     """
         test_delete_guard

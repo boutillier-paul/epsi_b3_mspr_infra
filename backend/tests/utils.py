@@ -90,7 +90,7 @@ global second_guard_id
 second_guard_id = -1
 
 
-#MESSAGES
+# MESSAGES
 
 global first_message
 first_message = schemas.MessageCreate(
@@ -102,3 +102,15 @@ empty_message = schemas.MessageCreate
 
 global first_message_id
 first_message_id = -1
+
+# ADVICES
+
+global first_advice
+first_advice = schemas.AdviceCreate(
+    title=RANDOM_STR,
+    content=RANDOM_STR,
+    photo=RANDOM_STR,
+)
+
+global first_advice_id
+first_advice_id = -1

@@ -6,7 +6,7 @@ import utils
 import json
 from app import schemas
 
-@pytest.mark.order(3)
+@pytest.mark.order(200)
 def test_login():
     """
         test_login
@@ -16,7 +16,7 @@ def test_login():
     assert response.status_code == 200
     assert response.json()['access_token'] is not None
 
-@pytest.mark.order(4)  
+@pytest.mark.order(201)  
 def test_login_unauthorized():
     """
         test_login_unauthorized

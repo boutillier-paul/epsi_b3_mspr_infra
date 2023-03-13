@@ -5,7 +5,7 @@ import json
 import pytest
 import utils
 
-@pytest.mark.order(10) 
+@pytest.mark.order(400) 
 def test_create_plant():
     """
         def test_create_plant
@@ -22,7 +22,7 @@ def test_create_plant():
                 and response_json['pos_lat'] == utils.first_plant.pos_lat\
                     and response_json['pos_lng'] == utils.first_plant.pos_lng
                         
-@pytest.mark.order(11) 
+@pytest.mark.order(401) 
 def test_read_plant():
     """
         test_read_plant
@@ -33,7 +33,7 @@ def test_read_plant():
     assert response.status_code == 200
     assert response_json is not None
     
-@pytest.mark.order(12) 
+@pytest.mark.order(402) 
 def test_search_plant():
     """
         test_search_plant
@@ -46,7 +46,7 @@ def test_search_plant():
     assert response_json is not None
     assert len(response_json) >= 1
 
-@pytest.mark.order(13)
+@pytest.mark.order(403)
 def test_delete_plant():
     """
         test_delete_plant
@@ -56,7 +56,7 @@ def test_delete_plant():
     assert response.status_code == 200
     assert response.json() is not None
 
-@pytest.mark.order(14)
+@pytest.mark.order(404)
 def test_delete_plant_not_found():
     """
         test_delete_plant_not_found
@@ -67,7 +67,7 @@ def test_delete_plant_not_found():
     assert response.status_code == 404
     assert response.json()['detail'] == 'Plant not found'
 
-@pytest.mark.order(15)
+@pytest.mark.order(405)
 def test_delete_plant_unauthorized():
     """
         test_delete_plant_unauthorized
@@ -84,7 +84,7 @@ def test_delete_plant_unauthorized():
     assert response.status_code == 401
     assert response.json()['detail'] == 'Unauthorized'
     
-@pytest.mark.order(16) 
+@pytest.mark.order(406) 
 def test_recreate_plant():
     """
         test_recreate_plant
