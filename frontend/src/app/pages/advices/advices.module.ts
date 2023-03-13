@@ -15,6 +15,7 @@ import { AdvicesPage } from './advices.page';
     IonicModule,
     AdvicesPageRoutingModule
   ],
-  declarations: [AdvicesPage, ChunkPipe, FilterPipe]
+  declarations: [AdvicesPage, ChunkPipe, FilterPipe],
+  exports: [AdvicesPageModule]
 })
 export class AdvicesPageModule {}
