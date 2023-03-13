@@ -13,8 +13,8 @@ export class FormDeclarePage implements OnInit {
     species: '',
     name: '',
     photo: '',
-    pos_lat: 0,
-    pos_lng: 0
+    pos_lat: 0.0,
+    pos_lng: 0.0
   };
   selectedFile: {filename: string , data: string};
 
@@ -119,14 +119,13 @@ export class FormDeclarePage implements OnInit {
 
         this.api.postPhoto(this.selectedFile).subscribe(async res => {
       if (res && res.hasOwnProperty('filename')) {
-        const fd = new FormData();
         this.credentials.photo = res.filename;
         this.credentials.pos_lat = parseFloat(localStorage.getItem('pos_lat') || '');
         this.credentials.pos_lng = parseFloat(localStorage.getItem('pos_lng') || '');
         console.log(this.credentials);
 
-        this.api.postPlant(fd).subscribe(async res => {
-          console.log(fd);
+        this.api.postPlant(this.credentials).subscribe(async res => {
+          console.log(this.credentials);
           if (res && res.hasOwnProperty('created_at')) {
             const alert = await this.alertController.create({
               header: 'Plante déclarée',
