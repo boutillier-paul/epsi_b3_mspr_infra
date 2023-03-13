@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { ApiService } from 'src/app/services/api/api.service';
 import { Router } from '@angular/router';
-import { S3Service } from '../../services/s3.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-advices',
@@ -17,7 +15,7 @@ export class AdvicesPage {
   chunkSize = 15;
   loadedChunks = 1;
   limiteCaracteres = 75;
-  constructor(private router: Router, private api: ApiService, private s3Service: S3Service) {}
+  constructor(private router: Router, private api: ApiService) {}
 
   ngOnInit() {
     this.loadAdvices();
@@ -29,10 +27,6 @@ export class AdvicesPage {
       this.filteredAdvices = data;
       console.log(this.advices);
     });
-    this.advices.forEach( (advice) => {
-      let photoName = advice.photo
-      advice.photo = this.s3Service.getObjectFromS3(photoName);
-    })
   }
 
   filterAdvices() {

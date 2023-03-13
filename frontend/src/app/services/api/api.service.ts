@@ -14,7 +14,7 @@ const ID = 'id';
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type' : 'application/json'})
 };
-const api_url = "http://ec2-13-37-212-138.eu-west-3.compute.amazonaws.com	";
+const api_url = "http://ec2-13-37-212-138.eu-west-3.compute.amazonaws.com";
 
 @Injectable({
   providedIn: 'root'
