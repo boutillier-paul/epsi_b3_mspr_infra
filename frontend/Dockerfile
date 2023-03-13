@@ -15,7 +15,7 @@
 
 
 # Utilise l'image officielle de Node.js en tant que base
-FROM node:18.10.0-alpline
+FROM node:18.10.0-alpine
 
 # Crée un dossier de travail
 WORKDIR /app
