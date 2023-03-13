@@ -16,7 +16,7 @@ export class AdvicesPage {
   chunkSize = 15;
   loadedChunks = 1;
   limiteCaracteres = 75;
-  constructor(private router: Router, private api: ApiService, private s3Service: S3Service) {}
+  constructor(private router: Router, private api: ApiService, public s3Service: S3Service) {}
 
   ngOnInit() {
     this.loadAdvices();
