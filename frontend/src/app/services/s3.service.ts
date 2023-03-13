@@ -13,17 +13,16 @@ export class S3Service {
     this.s3 = new S3();
   }
 
-  getObjectFromS3(key: string): Observable<any> {
-    return new Observable(observer => {
-      this.s3.getObject({ Bucket: "mspr-infra-bucket", Key: "images/" + key }, (err, data) => {
-        if (err) {
-          observer.error(err);
-          observer.complete();
-        } else {
-          observer.next(data);
-          observer.complete();
-        }
-      });
+  getObjectFromS3(key: string) {
+    return this.s3.getObject({ Bucket: "mspr-infra-bucket", Key: "images/" + key }, (err, data) => {
+      if (data.Body) {
+        console.log(data.Body);
+        return(data.Body);
+      } else {
+        console.log("error on s3 query");
+        return;
+      }
     });
+    
   }
 }
