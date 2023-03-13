@@ -17,6 +17,8 @@ export class S3Service {
     return this.client.send(command)
       .then(response => {
         if(response.Body){
+          console.log(response)
+          console.log(response.Body)
           return response.Body.toString();
         }
         return '';
