@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { S3 } from 'aws-sdk';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,13 +13,14 @@ export class S3Service {
     this.s3 = new S3();
   }
 
-  getObjectFromS3(bucket: string, key: string): Promise<any> {
-    return new Promise((resolve, reject) => {
+  getObjectFromS3(bucket: string, key: string): Observable<any> {
+    return new Observable(observer => {
       this.s3.getObject({ Bucket: bucket, Key: key }, (err, data) => {
         if (err) {
-          reject(err);
+          observer.error(err);
         } else {
-          resolve(data);
+          observer.next(data);
+          observer.complete();
         }
       });
     });
