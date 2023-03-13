@@ -88,7 +88,7 @@
           <ion-card style="height: 100%;">
             <ion-card-header class="text-center" style="height: 100%;">
               <div class="card-image-container">
-                <img [src]="getAdvicePhoto(advice.photo) ? getAdvicePhoto(advice.photo) : 'https://img.freepik.com/vecteurs-premium/vecteur-icone-image-par-defaut-page-image-manquante-pour-conception-site-web-application-mobile-aucune-photo-disponible_87543-11093.jpg'" alt="Image" class="card-image" />
+                <img [src]="getAdvicePhoto(advice.photo) || 'https://img.freepik.com/vecteurs-premium/vecteur-icone-image-par-defaut-page-image-manquante-pour-conception-site-web-application-mobile-aucune-photo-disponible_87543-11093.jpg'" alt="Image" class="card-image" />
               </div>
               <ion-card-title class="ion-padding">{{advice.title}}</ion-card-title>
               <ion-card-subtitle>{{ advice.content | slice:0:limiteCaracteres }}{{ advice.content.length > limiteCaracteres ? '...' : '' }}</ion-card-subtitle>
