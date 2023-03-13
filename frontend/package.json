@@ -38,7 +38,7 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@aws-sdk/client-s3": "^2.963.0",
+    "@aws-sdk/client-s3": "^3.290.0",
     "@angular-devkit/build-angular": "^15.0.0",
     "@angular-eslint/builder": "^14.0.0",
     "@angular-eslint/eslint-plugin": "^14.0.0",
