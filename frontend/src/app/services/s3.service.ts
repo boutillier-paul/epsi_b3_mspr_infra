@@ -1,29 +1,26 @@
 import { Injectable } from '@angular/core';
-import { S3 } from 'aws-sdk';
-import { Observable } from 'rxjs';
+import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 
 @Injectable({
   providedIn: 'root'
 })
 export class S3Service {
-
-  private s3: S3;
+  private client: S3Client;
 
   constructor() {
-    this.s3 = new S3();
+    this.client = new S3Client({region: "eu-west-3"});
   }
 
-  getObjectFromS3(key: string): Observable<any> {
-    return new Observable(observer => {
-      this.s3.getObject({ Bucket: "mspr-infra-bucket", Key: "images/" + key }, (err, data) => {
-        if (err) {
-          observer.error(err);
-          observer.complete();
-        } else {
-          observer.next(data);
-          observer.complete();
-        }
+  getObjectFromS3(key: string): Promise<string> {
+    const command = new GetObjectCommand({ Bucket: "mspr-infra-bucket", Key: "images/" + key });
+
+    return this.client.send(command)
+      .then((response: { Body: any; }) => {
+        return response.Body;
+      })
+      .catch((error: any) => {
+        console.error(error);
+        return null;
       });
-    });
   }
 }
