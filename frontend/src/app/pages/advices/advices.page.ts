@@ -76,11 +76,11 @@ export class AdvicesPage {
     s3.getObject(params, function(err, data) {
       if (err) {
         console.error(err); // an error occurre
-        return;
+        return false;
       } else {
-        const string = new TextDecoder('utf-8').decode(data.Body);
-        console.log(string);
-        return string
+        const photo = data.Body.toString('utf-8');
+        console.log(photo);
+        return photo
       }
     });
   }
