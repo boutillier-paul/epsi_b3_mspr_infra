@@ -63,27 +63,23 @@ export class AdvicesPage {
     this.router.navigate(['/advice-click']);
   }
 
-  getAdvicePhoto(photo: string) {
+  async getAdvicePhoto(photo: string) {
     const s3 = new AWS.S3({
       region: 'eu-west-3'
     });
-
+  
     const params = {
       Bucket: 'mspr-infra-bucket',
       Key: 'images/' + photo
     };
-    
-    s3.getObject(params, (err, data) => {
-      if (err) {
-        console.log(err, err.stack);
-      } else {
-        // Utilisez la variable data.Body pour accéder au contenu de l'image
-        console.log(data.Body);
-        return data.Body
-      }
-    });
-
-    return false;
+      
+    try {
+      const data = await s3.getObject(params).promise();
+      return data.Body;
+    } catch (err) {
+      console.log(err);
+      throw new Error('Error retrieving photo from S3');
+    }
   }
   
 }
