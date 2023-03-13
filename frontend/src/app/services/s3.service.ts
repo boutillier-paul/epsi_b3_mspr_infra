@@ -18,6 +18,7 @@ export class S3Service {
       this.s3.getObject({ Bucket: "mspr-infra-bucket", Key: "images/" + key }, (err, data) => {
         if (err) {
           observer.error(err);
+          observer.complete();
         } else {
           observer.next(data);
           observer.complete();
