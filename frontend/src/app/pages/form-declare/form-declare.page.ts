@@ -20,7 +20,6 @@ export class FormDeclarePage implements OnInit {
 
   constructor(
     private alertController: AlertController,
-    private router: Router,
     private api: ApiService
   ) {}
 
