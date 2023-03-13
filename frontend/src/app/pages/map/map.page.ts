@@ -13,6 +13,9 @@ export class MapPage implements OnInit {
   gardes: any[] = [];
   pos_lng: number;
   pos_lat: number;
+  radius: 50;
+  posLat: number;
+  posLng: number
 
   constructor(private api: ApiService) { }
 
@@ -62,7 +65,9 @@ export class MapPage implements OnInit {
   }
 
   getAndShowMarkers() {
-    this.api.getyouruser().subscribe((response: any) => {
+    this.posLat = this.pos_lat;
+    this.posLng = this.pos_lng;
+    this.api.getPlantsNearMe(this.pos_lat, this.pos_lng, this.radius).subscribe((response: any) => {
       const guards = response.guards;
       this.gardes = guards.map((guard: any) => {
         return {

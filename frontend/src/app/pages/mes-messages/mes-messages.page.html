@@ -74,39 +74,14 @@
       </ion-toolbar>
     </ion-header> 
 
-    <ion-item>
-      <ion-label>Utilisateur:</ion-label>
+    <ion-item lines="none" class="back2">
+      <ion-label>Utilisateur : </ion-label>
       <ion-select placeholder="Choisissez parmi les botanistes" [(ngModel)]="userSelected" (ionChange)="saveSelectedUserId()">
-        <ion-select-option *ngFor="let user of users" [value]="user.id" >
-          {{ user.name }}
-        </ion-select-option>
+        <ion-select-option *ngFor="let user of users" [value]="user.id">{{user.name}}</ion-select-option>
       </ion-select>
     </ion-item>
+    
 
-    <ion-item>
-      <ion-label>Utilisateur:</ion-label>
-      <ion-select placeholder="Choisissez parmi les botanistes" [(ngModel)]="userSelected" (ionChange)="getMessages()">
-        <ion-select-option *ngFor="let user of users" [value]="user.id">
-          {{ user.name }}
-        </ion-select-option>
-      </ion-select>
-    </ion-item>
-    
-    <ion-list>
-      <ion-item *ngFor="let message of messages" [class.ague2]="message.sender_id === selectedUser" [class.ague]="message.sender_id !== selectedUser">
-        <ion-card>
-          <ion-card-header>
-            <ion-card-subtitle>De {{ message.sender_id === selectedUser ? 'moi' : message.sender_id }}</ion-card-subtitle>
-            <ion-card-title>{{ message.created_at }}</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            {{ message.content }}
-          </ion-card-content>
-        </ion-card>
-      </ion-item>
-    </ion-list>
-    
-    <h6 style="text-align: center;">Voir plus de messages ...</h6>
     
     <ion-item class="ague3">
       <ion-input [(ngModel)]="credentials.content" placeholder="Insérez votre message"></ion-input>

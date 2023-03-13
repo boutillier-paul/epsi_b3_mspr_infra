@@ -63,11 +63,11 @@ export class AdviceClickPage implements OnInit {
     const windowHeight = window.innerHeight;
   
     if (this.imageOrientation === 'cover') {
-      this.imageHeight = '100%';
+      this.imageHeight = '80%';
       this.imageWidth = 'auto';
     } else {
       this.imageHeight = 'auto';
-      this.imageWidth = '100%';
+      this.imageWidth = '50%';
     }
   
     // apply max height and width based on screen dimensions

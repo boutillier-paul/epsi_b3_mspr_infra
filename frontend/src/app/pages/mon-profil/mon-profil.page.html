@@ -98,7 +98,7 @@
             <ion-card style="height: 100%;">
               <ion-card-header class="text-center" style="height: 100%;">
                 <div class="card-image-container">
-                  <img [src]="plant.photo" alt="Plant" class="card-image">
+                  <img [src]="plant.photo ? 'https://mspr-infra-bucket.s3.eu-west-3.amazonaws.com/images/' + plant.photo : 'https://img.freepik.com/vecteurs-premium/vecteur-icone-image-par-defaut-page-image-manquante-pour-conception-site-web-application-mobile-aucune-photo-disponible_87543-11093.jpg'" alt="Plant" class="card-image">
                 </div>
                 <ion-card-title>{{ plant.name }}</ion-card-title>
                 <ion-card-subtitle>Espèce : {{ plant.species }}</ion-card-subtitle>
@@ -145,7 +145,7 @@
           <ion-list>
             <ion-item *ngFor="let advice of advices">
               <ion-thumbnail slot="start">
-                <img [src]="advice.photo ? advice.photo : 'https://img.freepik.com/vecteurs-premium/vecteur-icone-image-par-defaut-page-image-manquante-pour-conception-site-web-application-mobile-aucune-photo-disponible_87543-11093.jpg'" alt="Advice">
+                <img [src]="advice.photo ? 'https://mspr-infra-bucket.s3.eu-west-3.amazonaws.com/images/' + advice.photo : 'https://img.freepik.com/vecteurs-premium/vecteur-icone-image-par-defaut-page-image-manquante-pour-conception-site-web-application-mobile-aucune-photo-disponible_87543-11093.jpg'" alt="Advice">
               </ion-thumbnail>
               <ion-label>
                 <h2>{{ advice.title }}</h2>

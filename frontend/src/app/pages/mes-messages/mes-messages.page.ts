@@ -9,19 +9,11 @@ import { ApiService } from '../../services/api/api.service';
 })
 export class MesMessagesPage implements OnInit {
   users: { id: number, name: string }[] = [];
-  selectedUser: number;
-  messages: any[] = [];
-  newMessages: any[] = [];
-  oldMessages: any[] = [];
-  showOldMessages: boolean = false;
-  oldMessageLimit: number = 10;
-  oldMessageOffset: number = 0;
-  oldMessagesLoaded: boolean = false;
-  newMessage: string = '';
   userSelected: number | undefined;
+  messages: any[] = [];
   credentials: {
     content: string,
-  }
+  } = { content: '' };
 
   @ViewChild(IonContent) content: IonContent;
 
@@ -31,15 +23,18 @@ export class MesMessagesPage implements OnInit {
     this.api.getAllBotanists().subscribe((response: any) => {
       this.users = response.map((user: any) => ({
         id: user.id,
-        name: `${user.last_name} ${user.first_name}`
+        name: `${user.first_name} ${user.last_name}`
       }));
+      console.log(this.users);
     });
   }
+  
 
   saveSelectedUserId() {
     const selectedUser = this.users.find(user => user.id === this.userSelected);
     if (selectedUser) {
       localStorage.setItem('selectedUserId', selectedUser.id.toString());
+
     }
   }
 
@@ -72,6 +67,10 @@ export class MesMessagesPage implements OnInit {
             this.messages[index].r_last_name = reciever.last_name;
             console.log('Tableau après get user par reciever ID', this.messages);
           });
+          this.api.getUserById().subscribe((user: any) => {
+            this.messages[index].user_id = user.id;
+            console.log('Tableau après get user par reciever ID', this.messages);
+          });
         });
       });
     }
@@ -80,6 +79,7 @@ export class MesMessagesPage implements OnInit {
   sendMessage() {
     if (this.credentials.content.trim() !== '') {
       const message = {
+        user_id: this.userSelected,
         content: this.credentials.content.trim()
       };
       this.api.postMessages(message).subscribe((response: any) => {
@@ -92,5 +92,4 @@ export class MesMessagesPage implements OnInit {
       });
     }
   }
-
 }
