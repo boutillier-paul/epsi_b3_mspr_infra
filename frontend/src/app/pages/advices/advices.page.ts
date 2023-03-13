@@ -63,27 +63,26 @@ export class AdvicesPage {
     this.router.navigate(['/advice-click']);
   }
 
-  getAdvicePhoto(photo: string) {
+  async getAdvicePhoto(photo: string) {
     const s3 = new AWS.S3({
       region: 'eu-west-3'
     });
-
+  
     const params = {
       Bucket: 'mspr-infra-bucket',
       Key: 'images/' + photo
     };
-    
-    s3.getObject(params, (err, data) => {
+      
+    s3.getObject(params, function(err, data) {
       if (err) {
-        console.log(err, err.stack);
+        console.error(err); // an error occurre
+        return;
       } else {
-        // Utilisez la variable data.Body pour accéder au contenu de l'image
-        console.log(data.Body);
-        return data.Body
+        const string = new TextDecoder('utf-8').decode(data.Body);
+        console.log(string);
+        return string
       }
     });
-
-    return false;
   }
   
 }
