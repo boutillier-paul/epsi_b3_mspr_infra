@@ -73,13 +73,16 @@ export class AdvicesPage {
       Key: 'images/' + photo
     };
       
-    try {
-      const data = await s3.getObject(params).promise();
-      return data.Body;
-    } catch (err) {
-      console.log(err);
-      throw new Error('Error retrieving photo from S3');
-    }
+    s3.getObject(params, function(err, data) {
+      if (err) {
+        console.error(err); // an error occurre
+        return;
+      } else {
+        const string = new TextDecoder('utf-8').decode(data.Body);
+        console.log(string);
+        return string
+      }
+    });
   }
   
 }
