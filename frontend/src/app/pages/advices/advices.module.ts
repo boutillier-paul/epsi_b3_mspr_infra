@@ -7,6 +7,7 @@ import { ChunkPipe } from 'src/app/pipes/chunk/chunk.pipe';
 import { AdvicesPageRoutingModule } from './advices-routing.module';
 import { FilterPipe } from 'src/app/pipes/filter/filter.pipe';
 import { AdvicesPage } from './advices.page';
+import { S3Service } from '../../services/s3.service';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import { AdvicesPage } from './advices.page';
     IonicModule,
     AdvicesPageRoutingModule
   ],
-  declarations: [AdvicesPage, ChunkPipe, FilterPipe]
+  declarations: [AdvicesPage, ChunkPipe, FilterPipe],
+  providers: [S3Service]
 })
 export class AdvicesPageModule {}
