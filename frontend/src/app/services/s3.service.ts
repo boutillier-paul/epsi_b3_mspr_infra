@@ -15,12 +15,15 @@ export class S3Service {
     const command = new GetObjectCommand({ Bucket: "mspr-infra-bucket", Key: "images/" + key });
 
     return this.client.send(command)
-      .then((response: { Body: any; }) => {
-        return response.Body;
+      .then(response => {
+        if(response.Body){
+          return response.Body.toString();
+        }
+        return '';
       })
-      .catch((error: any) => {
+      .catch(error => {
         console.error(error);
-        return null;
-      });
+        return '';
+      })
   }
 }
