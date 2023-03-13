@@ -27,15 +27,20 @@ export class AdvicesPage {
       this.advices = data;
       this.filteredAdvices = data;
       console.log(this.advices);
+      this.loadAdviceImages();
+    });
+  }
 
-      // Récupérer chaque image du bucket S3 pour chaque advice dont l'attribut photo n'est pas vide
-      this.advices.filter(advice => advice.photo).forEach(advice => {
-        this.s3Service.getObjectFromS3('mspr-infra-bucket', 'images/' + advice.photo)
-          .then(data => {
-            advice.photo = URL.createObjectURL(data.Body);
-          })
-          .catch(err => console.log(err));
-      });
+  loadAdviceImages() {
+    this.advices.forEach((advice, index) => {
+      if (advice.photo) {
+        this.s3Service.getObjectFromS3('mspr-infra-bucket', advice.photo).subscribe((data: any) => {
+          const base64Image = btoa(String.fromCharCode(...new Uint8Array(data.Body)));
+          this.advices[index].photo = `data:${data.ContentType};base64,${base64Image}`;
+        }, err => {
+          console.log(err);
+        });
+      }
     });
   }
 
