@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { ApiService } from 'src/app/services/api/api.service';
-import { IonInfiniteScroll } from '@ionic/angular';
 import { Router } from '@angular/router';
-import * as AWS from 'aws-sdk';
+import { S3Service } from '../../services/s3.service';
 
 @Component({
   selector: 'app-advices',
@@ -17,7 +16,7 @@ export class AdvicesPage {
   chunkSize = 15;
   loadedChunks = 1;
   limiteCaracteres = 75;
-  constructor(private router: Router, private api: ApiService) {}
+  constructor(private router: Router, private api: ApiService, private s3Service: S3Service) {}
 
   ngOnInit() {
     this.loadAdvices();
@@ -28,6 +27,15 @@ export class AdvicesPage {
       this.advices = data;
       this.filteredAdvices = data;
       console.log(this.advices);
+
+      // Récupérer chaque image du bucket S3 pour chaque advice dont l'attribut photo n'est pas vide
+      this.advices.filter(advice => advice.photo).forEach(advice => {
+        this.s3Service.getObjectFromS3('mspr-infra-bucket', 'images/' + advice.photo)
+          .then(data => {
+            advice.photo = URL.createObjectURL(data.Body);
+          })
+          .catch(err => console.log(err));
+      });
     });
   }
 
