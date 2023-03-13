@@ -63,7 +63,7 @@ export class AdvicesPage {
     this.router.navigate(['/advice-click']);
   }
 
-  getObjectUrl(photoName: string): Observable<string> {
+  getObjectPhoto(photoName: string): Observable<string> {
     return this.s3Service.getObjectFromS3(photoName);
   }
 }
