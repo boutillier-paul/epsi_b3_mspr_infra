@@ -13,6 +13,7 @@
   },
   "private": true,
   "dependencies": {
+    "aws-sdk": "^2.963.0",
     "@angular/common": "^15.0.0",
     "@angular/core": "^15.0.0",
     "@angular/fire": "^7.5.0",
