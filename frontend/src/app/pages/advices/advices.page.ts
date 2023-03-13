@@ -27,20 +27,6 @@ export class AdvicesPage {
       this.advices = data;
       this.filteredAdvices = data;
       console.log(this.advices);
-      this.loadAdviceImages();
-    });
-  }
-
-  loadAdviceImages() {
-    this.advices.forEach((advice, index) => {
-      if (advice.photo) {
-        this.s3Service.getObjectFromS3('mspr-infra-bucket', advice.photo).subscribe((data: any) => {
-          const base64Image = btoa(String.fromCharCode(...new Uint8Array(data.Body)));
-          this.advices[index].photo = `data:${data.ContentType};base64,${base64Image}`;
-        }, err => {
-          console.log(err);
-        });
-      }
     });
   }
 
