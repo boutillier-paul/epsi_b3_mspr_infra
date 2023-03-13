@@ -78,9 +78,11 @@ export class AdvicesPage {
         console.error(err); // an error occurre
         return false;
       } else {
-        const photo = data.Body.toString('utf-8');
-        console.log(photo);
-        return photo
+        if (data.Body) {
+          const photo = data.Body.toString('utf-8');
+          console.log(photo);
+          return photo
+        }
       }
     });
   }
