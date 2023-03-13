@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ApiService } from 'src/app/services/api/api.service';
 import { IonInfiniteScroll } from '@ionic/angular';
 import { Router } from '@angular/router';
-import AWS from 'aws-sdk';
+import * as AWS from 'aws-sdk';
 
 @Component({
   selector: 'app-advices',
