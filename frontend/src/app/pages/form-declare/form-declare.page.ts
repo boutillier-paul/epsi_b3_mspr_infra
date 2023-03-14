@@ -13,8 +13,8 @@ export class FormDeclarePage implements OnInit {
     species: '',
     name: '',
     photo: '',
-    pos_lat: 0.0,
-    pos_lng: 0.0
+    pos_lat: 0,
+    pos_lng: 0
   };
   selectedFile: {filename: string , data: string};
 
@@ -116,7 +116,7 @@ export class FormDeclarePage implements OnInit {
   
 
 
-        this.api.postPhoto(this.selectedFile).subscribe(async res => {
+    this.api.postPhoto(this.selectedFile).subscribe(async res => {
       if (res && res.hasOwnProperty('filename')) {
         this.credentials.photo = res.filename;
         this.credentials.pos_lat = parseFloat(localStorage.getItem('pos_lat') || '');
