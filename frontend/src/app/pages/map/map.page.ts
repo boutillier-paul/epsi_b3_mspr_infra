@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api/api.service';
-import { AlertController } from '@ionic/angular';
+import { AlertController, RangeCustomEvent } from '@ionic/angular';
 import { Router } from '@angular/router';
 import * as L from 'leaflet';
 
@@ -182,6 +182,7 @@ export class MapPage implements OnInit {
     if (newValue < this.previousValue) {
       setTimeout(() => {
         this.selectedValue = this.previousValue;
+        
       }, 0);
     } else {
       this.previousValue = newValue;

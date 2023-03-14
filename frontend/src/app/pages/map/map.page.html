@@ -6,15 +6,18 @@
   </ion-row>
   <ion-row class="ion-text-center"> 
     <ion-col size="3" class="ion-text-center">
-
+      <ion-label style="color:white">Rayon de garde en km : </ion-label>
+      <ion-chip style="color:white">{{selectedValue}}</ion-chip>
     </ion-col>
     <ion-col size="6" class="ion-text-center">
-      <ion-range min="50" max="1000" [(ngModel)]="selectedValue" value="50" (ngModelChange)="onRangeModelChange($event)" class="ion-range-small ion-text-center">
+      
+      <ion-range [pin]="true" [min]="50" [max]="1000" [(ngModel)]="selectedValue" [value]="500" (ngModelChange)="onRangeModelChange($event)" class="ion-range-small ion-text-center">
       </ion-range>
     </ion-col>
     <ion-col size="3" class="ion-text-center">
 
     </ion-col>
   </ion-row>
+  <br>
   <div id="mapid"></div>
 </ion-content>
