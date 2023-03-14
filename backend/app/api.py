@@ -160,7 +160,7 @@ async def upload_image(file: UploadFile = File(...), db: Session = Depends(get_d
     s3 = boto3.client('s3')
     bucket_name = "mspr-infra-bucket"
     s3_key = f"images/{file.filename}"
-    s3.upload_fileobj(file.file, bucket_name, s3_key)
+    s3.upload_fileobj(file.file, bucket_name, s3_key, ExtraArgs={'ACL': 'public-read'})
     return {"filename": file.filename}
 
 @router.delete("/plants/{plant_id}", tags=["Plants"], response_model=schemas.Plant, dependencies=[Depends(JWTBearer())])
