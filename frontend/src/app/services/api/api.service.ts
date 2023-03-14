@@ -1,12 +1,12 @@
 import { Injectable, forwardRef, Inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Platform, NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { BehaviorSubject, Observable, from, of, throwError, catchError } from 'rxjs';
 import { take, map, switchMap } from 'rxjs/operators';
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { Router } from '@angular/router';
-
+import { AlertController } from '@ionic/angular';
 
 const helper = new JwtHelperService();
 const TOKEN_KEY = 'jwt-token';
@@ -25,6 +25,8 @@ export class ApiService {
   private jeton = null;
 
   constructor(
+    private alertController: AlertController,
+    private router: Router,
     public navCtrl: NavController,
     private storage: Storage,
     @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
@@ -336,17 +338,14 @@ export class ApiService {
         const httpOptions = {
           headers: new HttpHeaders({
             'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Method': 'GET,HEAD,OPTIONS,POST,PUT',
+            'Access-Control-Allow-Method': 'GET,HEAD,OPTIONS,POST,PUT,DELETE',
             'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + jeton,
           })
         };
-        let postData = {
-          "guard_id": guardId
-        };
   
-        return this.http.delete(api_url + '/api/guards/' + postData, httpOptions).pipe(
+        return this.http.delete(api_url + '/api/guards/' + guardId, httpOptions).pipe(
           map(res => {
             console.log(res);
             return res;
@@ -358,7 +357,33 @@ export class ApiService {
       })
     );
   }
-  postSession(credentials: {photo: string, rapport: string}): Observable<any> {
+  getsessions(): Observable<any> {
+    return of(localStorage.getItem('access_token')).pipe(
+      switchMap(jeton => {
+        const httpOptions = {
+          headers: new HttpHeaders({
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Method': 'GET,HEAD,OPTIONS,POST,PUT',
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jeton,
+          })
+        };
+        const ague = localStorage.getItem('selectedGuardId');
+  
+        return this.http.get(api_url + '/api/sessions/guard/' + ague, httpOptions).pipe(
+          map(res => {
+            console.log(res);
+            return res;
+          }),
+          catchError(error => {
+            return of(error.error);
+          })
+        );
+      })
+    );
+  }
+  postSession(credentials: {photo: string, report: string}): Observable<any> {
     return of(localStorage.getItem('access_token')).pipe(
       switchMap(jeton => {
         const httpOptions = {
@@ -372,10 +397,12 @@ export class ApiService {
   
         let postData = {
           "photo": credentials.photo,
-          "rapport": credentials.rapport,
+          "report": credentials.report,
         };
 
-        return this.http.post(api_url + '/api/sessions/', postData, httpOptions).pipe(
+        const ague = localStorage.getItem('selectedGuardId');
+
+        return this.http.post(api_url + '/api/sessions/' + "?guard_id="+ ague, postData, httpOptions).pipe(
           map(res => {
             console.log(res);
             return res;
@@ -481,6 +508,8 @@ export class ApiService {
           "photo": credentials.photo
         };
 
+
+
         return this.http.post(api_url + `/api/advices/`, postData, httpOptions).pipe(
           map(res => {
             return res;
@@ -561,16 +590,47 @@ export class ApiService {
             'Authorization': 'Bearer ' + jeton,
           })
         };
-        
-        let getData = {
+  
+        let postData = {
           "pos_lat": posLat,
           "pos_lng": posLng,
           "radius": radius
         };
 
-        return this.http.get(api_url + '/api/guards/open/around'+ getData, httpOptions).pipe(
+        const params = new HttpParams()
+          .set('pos_lat', posLat.toString())
+          .set('pos_lng', posLng.toString())
+          .set('radius', radius.toString());
+  
+        return this.http.get(api_url + '/api/guards/open/around', { params, ...httpOptions }).pipe(
           map(res => {
             console.log(res);
+            return res;
+          }),
+          catchError(error => {
+            return of(error.error);
+          })
+        );
+      })
+    );
+  }
+  takeGuard(selectedGuardId: number): Observable<any> {
+    return of(localStorage.getItem('access_token')).pipe(
+      switchMap(jeton => {
+        const httpOptions = {
+          headers: new HttpHeaders({
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Method': 'GET,HEAD,OPTIONS,POST,PUT',
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jeton,
+          })
+        };
+  
+        const body = JSON.stringify({});
+  
+        return this.http.put(api_url + `/api/guards/${selectedGuardId}/take`, body, httpOptions).pipe(
+          map(res => {
             return res;
           }),
           catchError(error => {
@@ -717,6 +777,33 @@ export class ApiService {
         );
       })
     );
+  }
+  logout() {
+    localStorage.clear()
+    this.router.navigateByUrl('/');
+    this.userData.next(null);
+  }
+  checkToken() {
+    this.getyouruser().subscribe(response => {
+      if (response.created_at) {
+      } else if (response.detail || response.error) {
+        this.presentAlert();
+        this.router.navigate(['/home']);
+      }
+    }, error => {
+      this.presentAlert();
+      this.router.navigate(['/home']);
+    });
+  }
+  
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      header: 'Erreur de token',
+      message: 'Le token est invalide',
+      buttons: ['OK']
+    });
+  
+    await alert.present();
   }
   }
 

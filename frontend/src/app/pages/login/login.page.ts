@@ -27,7 +27,6 @@ export class LoginPage{
   async login(){
     this.api.login(this.credentials).subscribe(async res => {
       if (res && res.hasOwnProperty('access_token')) {
-        // Enregistrer le token dans le localstorage
         this.router.navigateByUrl('/advices');
       } else if (res && res.hasOwnProperty('detail')) {
         const alert = await this.alertController.create({

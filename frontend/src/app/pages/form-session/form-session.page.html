@@ -56,7 +56,7 @@
                 <ion-icon name="arrow-undo-circle"></ion-icon>
               </ion-col>
               <ion-col size="11">
-                <a href="/map">Se déconnecter</a>
+                <a href="/logout">Se déconnecter</a>
               </ion-col>
             </ion-row>
           </ion-col>
@@ -94,7 +94,7 @@
      
               <ion-item lines="none" class="back2">
                 <ion-label position="stacked">Rapport (Optionnel)</ion-label>
-                <ion-textarea rows="3" placeholder="Entrez le rapport si nécessaire" name="rapport"></ion-textarea>
+                <ion-textarea rows="3" placeholder="Entrez le rapport si nécessaire" name="report" [(ngModel)]="credentials.report"></ion-textarea>
               </ion-item>
 
               <ion-button expand="block" (click)="envoyer()">Envoyer</ion-button>

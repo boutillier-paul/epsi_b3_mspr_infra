@@ -33,6 +33,7 @@ export class MesGardesClickPage implements OnInit {
   ) { }
   
   ngOnInit(): void {
+    this.api.checkToken();
     this.api.getguard().subscribe((guardData: any) => {
       this.guard = guardData;
       this.enddate = this.guard.end_at;

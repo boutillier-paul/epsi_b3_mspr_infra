@@ -56,7 +56,7 @@
                 <ion-icon name="arrow-undo-circle"></ion-icon>
               </ion-col>
               <ion-col size="11">
-                <a href="/map">Se déconnecter</a>
+                <a href="/logout">Se déconnecter</a>
               </ion-col>
             </ion-row>
           </ion-col>
@@ -76,11 +76,11 @@
     <div class="container">
       <div class="img-page">
         <br>
-        <img [src]="sessionPicUrl  ? 'https://mspr-infra-bucket.s3.eu-west-3.amazonaws.com/images/' + sessionPicUrl  : 'https://img.freepik.com/vecteurs-premium/vecteur-icone-image-par-defaut-page-image-manquante-pour-conception-site-web-application-mobile-aucune-photo-disponible_87543-11093.jpg'" [style.width]="imageWidth" [style.height]="imageHeight" [style.object-fit]="imageOrientation" [style.max-width]="'100%'" [style.max-height]="'100%'">
+        <img [src]="sessionPicUrl ? 'https://mspr-infra-bucket.s3.eu-west-3.amazonaws.com/images/' + sessionPicUrl : 'https://img.freepik.com/vecteurs-premium/vecteur-icone-image-par-defaut-page-image-manquante-pour-conception-site-web-application-mobile-aucune-photo-disponible_87543-11093.jpg'" [style.width]="imageWidth" [style.height]="imageHeight" [style.object-fit]="imageOrientation" [style.max-width]="'100%'" [style.max-height]="'100%'">
         <br>
-        <h5>Date de la session : <ion-chip>{{created_at}}</ion-chip></h5>
+        <h5>Date de la session : <ion-chip>{{created_at |  date: 'dd/MM/YYYY'}}</ion-chip></h5>
         <h5>Rapport de la session (Optionnel) :</h5>
-        <h5>{{rapport}}</h5>
+        <h5>{{report}}</h5>
       </div>
     </div>
   </ion-content>

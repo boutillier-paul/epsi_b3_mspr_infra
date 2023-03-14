@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonContent } from '@ionic/angular';
 import { ApiService } from '../../services/api/api.service';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-mes-messages',
@@ -17,9 +18,12 @@ export class MesMessagesPage implements OnInit {
 
   @ViewChild(IonContent) content: IonContent;
 
-  constructor(private api: ApiService) { }
+  constructor(private alertController: AlertController , private api: ApiService) { }
+
+  intervalId: any;
 
   ngOnInit() {
+    this.api.checkToken();
     this.api.getAllBotanists().subscribe((response: any) => {
       this.users = response.map((user: any) => ({
         id: user.id,
@@ -27,14 +31,22 @@ export class MesMessagesPage implements OnInit {
       }));
       console.log(this.users);
     });
+
+    this.api.getyouruser().subscribe((response: any) => {
+      const yourUserId = response.id;
+      console.log('Your user id:', yourUserId);
+      this.users = this.users.filter((user) => user.id !== yourUserId);
+    });
   }
-  
 
   saveSelectedUserId() {
     const selectedUser = this.users.find(user => user.id === this.userSelected);
     if (selectedUser) {
       localStorage.setItem('selectedUserId', selectedUser.id.toString());
-
+      this.getMessages();
+      this.intervalId = setInterval(() => {
+        this.getMessages();
+      }, 5000);
     }
   }
 
@@ -52,8 +64,7 @@ export class MesMessagesPage implements OnInit {
           r_first_name: '',
           r_last_name: '',
           user_id: ''
-        }
-        ));
+        }));
         mess.forEach((message: any, index: number) => {
           const senderId = message.sender_id;
           this.api.getUserBySenderIdParams(senderId).subscribe((sender: any) => {
@@ -72,6 +83,8 @@ export class MesMessagesPage implements OnInit {
             console.log('Tableau après get user par reciever ID', this.messages);
           });
         });
+        this.messages = this.messages.slice(0, 5);
+        this.messages.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       });
     }
   }
@@ -83,13 +96,24 @@ export class MesMessagesPage implements OnInit {
         content: this.credentials.content.trim()
       };
       this.api.postMessages(message).subscribe((response: any) => {
-        if (response.success) {
+        if (response.created_at) {
           this.credentials.content = '';
-          alert('Message envoyé avec succès');
+          this.showAlert('Succès', 'Message envoyé avec succès');
+        } else if (response.detail) {
+          this.showAlert('Erreur', response.detail);
         } else {
-          alert('Erreur lors de l\'envoi du message');
+          this.showAlert('Erreur Inconnue', 'Une erreur inconnue est survenue.');
         }
       });
     }
+  }
+  
+  async showAlert(header: string, message: string) {
+    const alert = await this.alertController.create({
+      header,
+      message,
+      buttons: ['OK']
+    });
+    await alert.present();
   }
 }

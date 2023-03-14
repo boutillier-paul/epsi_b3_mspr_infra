@@ -24,6 +24,7 @@ export class FormDeclarePage implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.api.checkToken();
     if (navigator.geolocation) {
       if (
         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -73,9 +74,6 @@ export class FormDeclarePage implements OnInit {
       reader.readAsDataURL(file);
       const fileName = file.name;
       const fileExtension = fileName.split('.').pop();
-  
-      console.log('Nom du fichier:', fileName);
-      console.log('Extension du fichier:', fileExtension);
     }
   }
 
@@ -138,8 +136,6 @@ export class FormDeclarePage implements OnInit {
             });
             await alert.present();
           } else {
-            console.log('La réponse de l\'API ne contient ni le token ni le detail de l\'erreur');
-            console.log(res);
             const alert = await this.alertController.create({
               header: 'Erreur de type inconnu',
               message: res.detail,

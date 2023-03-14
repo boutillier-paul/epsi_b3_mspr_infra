@@ -31,6 +31,7 @@ export class MonProfilPage implements OnInit {
   ) { }
 
   async ngOnInit() {
+    this.api.checkToken();
     this.api.getyouruser().subscribe(
       (res: any) => {
         this.last_name = res.last_name;
