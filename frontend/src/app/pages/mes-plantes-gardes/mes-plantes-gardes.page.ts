@@ -33,13 +33,11 @@ export class MesPlantesGardesPage implements OnInit {
             last_name: '',
           };
         });
-        console.log("Mon tableau :" + this.gardes)
         guards.forEach((guard: any, index: number) => {
           const userId = guard.user_id;
           this.api.getUserByIdParams(userId).subscribe((user: any) => {
             this.gardes[index].first_name = user.first_name;
             this.gardes[index].last_name = user.last_name;
-            console.log('Tableau après get user par ID', this.gardes);
           });
         });
       },
@@ -52,7 +50,7 @@ export class MesPlantesGardesPage implements OnInit {
               {
                 text: 'OK',
                 handler: () => {
-                  // Naviguez vers la page de connexion
+                  this.router.navigateByUrl('/home');
                 }
               }
             ]

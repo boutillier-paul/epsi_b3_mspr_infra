@@ -36,14 +36,12 @@ export class MesGardesPage implements OnInit {
         this.api.getplantsbyid(plantId).subscribe((plant: any) => {
           this.gardes[index].name = plant.name;
           this.gardes[index].species = plant.species;
-          console.log(this.gardes);
         });
       });
     });
   }
 
   voirPlus(garde: any) {
-    // sauvegarde de l'id de la garde dans le localStorage
     localStorage.setItem('selectedGuardId', garde.id);
     this.router.navigateByUrl('/mes-gardes-click');
   }

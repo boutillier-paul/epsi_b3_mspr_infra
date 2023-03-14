@@ -29,12 +29,10 @@ export class MesMessagesPage implements OnInit {
         id: user.id,
         name: `${user.first_name} ${user.last_name}`
       }));
-      console.log(this.users);
     });
 
     this.api.getyouruser().subscribe((response: any) => {
       const yourUserId = response.id;
-      console.log('Your user id:', yourUserId);
       this.users = this.users.filter((user) => user.id !== yourUserId);
     });
   }
@@ -70,17 +68,14 @@ export class MesMessagesPage implements OnInit {
           this.api.getUserBySenderIdParams(senderId).subscribe((sender: any) => {
             this.messages[index].s_first_name = sender.first_name;
             this.messages[index].s_last_name = sender.last_name;
-            console.log('Tableau après get user par sender ID', this.messages);
           });
           const recieverId = message.reciever_id;
           this.api.getUserByRecieverIdParams(recieverId).subscribe((reciever: any) => {
             this.messages[index].r_first_name = reciever.first_name;
             this.messages[index].r_last_name = reciever.last_name;
-            console.log('Tableau après get user par reciever ID', this.messages);
           });
           this.api.getUserById().subscribe((user: any) => {
             this.messages[index].user_id = user.id;
-            console.log('Tableau après get user par reciever ID', this.messages);
           });
         });
         this.messages = this.messages.slice(0, 5);

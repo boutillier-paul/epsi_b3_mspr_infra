@@ -14,7 +14,7 @@ export class MapPage implements OnInit {
   gardes: any[] = [];
   pos_lng: number;
   pos_lat: number;
-  radius: number = 100;
+  radius: number = 10000000000;
   posLat: number;
   posLng: number;
   selectedGuardId: number;
@@ -108,13 +108,12 @@ export class MapPage implements OnInit {
           popupContent.style.textAlign = 'center';
           popupContent.innerHTML = `
             <b>${plant.name}</b><br>${plant.species}<br>
-            <img src="${this.gardes[index].photo}" alt="${plant.species}" width="200px"/><br>
+            <img src="${this.gardes[index].photo}" width="200px"/><br>
             <button style="margin-top: 10px;" id="save-guard-button-${guard.id}">Garder la plante</button>
           `;
           const button = popupContent.querySelector(`#save-guard-button-${guard.id}`);
           if (button) {
             button.addEventListener('click', async () => {
-              console.log('Garder la plante avec ID:', guard.id);
               this.selectedGuardId = guard.id;
               localStorage.setItem('selectedGuardId', this.selectedGuardId.toString());
               const alert = await this.alertController.create({
@@ -144,7 +143,6 @@ export class MapPage implements OnInit {
     });
   }
   guardPlant(){
-    console.log(localStorage.getItem('access_token'));
     this.api.takeGuard(this.selectedGuardId).subscribe(async res => {
         if (res && res.hasOwnProperty('created_at')) {
           const alert = await this.alertController.create({

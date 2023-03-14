@@ -65,7 +65,6 @@ export class ApiService {
   
     return this.http.post(api_url+'/api/signup', postData).pipe(
       map(res => {
-        console.log(res)
       
         return res;
       }),
@@ -81,10 +80,9 @@ export class ApiService {
     };
   
     return this.http.post(api_url+'/api/login', postData).pipe(
-      map((res: {access_token?: string}) => { // spécifiez le type de l'objet renvoyé
-        console.log(res);
+      map((res: {access_token?: string}) => { 
   
-        if (res && res.access_token) { // utilisez la notation pointée pour accéder à la propriété 'access_token'
+        if (res && res.access_token) { 
           localStorage.setItem('access_token', res.access_token);
         }
   
@@ -131,9 +129,9 @@ export class ApiService {
             'Authorization': 'Bearer ' + jeton,
           })
         };
-        const ague = localStorage.getItem('selectedUserId');
+        const id = localStorage.getItem('selectedUserId');
 
-        return this.http.get(api_url + `/api/users/`+ ague, httpOptions).pipe(
+        return this.http.get(api_url + `/api/users/`+ id, httpOptions).pipe(
           map(res => {
             return res;
           }),
@@ -204,11 +202,10 @@ export class ApiService {
             'Authorization': 'Bearer ' + jeton,
           })
         };
-        const ague = localStorage.getItem('selectedPlantId');
+        const id = localStorage.getItem('selectedPlantId');
   
-        return this.http.get(api_url + '/api/plants/' + ague, httpOptions).pipe(
+        return this.http.get(api_url + '/api/plants/' + id, httpOptions).pipe(
           map(res => {
-            console.log(res);
             return res;
           }),
           catchError(error => {
@@ -233,7 +230,6 @@ export class ApiService {
     
         return this.http.get(api_url + '/api/plants/' + plantId, httpOptions).pipe(
           map(res => {
-            console.log(res);
             return res;
           }),
           catchError(error => {
@@ -265,7 +261,6 @@ export class ApiService {
 
         return this.http.post(api_url + '/api/plants/', postData, httpOptions).pipe(
           map(res => {
-            console.log(res);
             return res;
           }),
           catchError(error => {
@@ -287,11 +282,10 @@ export class ApiService {
             'Authorization': 'Bearer ' + jeton,
           })
         };
-        const ague = localStorage.getItem('selectedGuardId');
+        const id = localStorage.getItem('selectedGuardId');
   
-        return this.http.get(api_url + '/api/guards/' + ague, httpOptions).pipe(
+        return this.http.get(api_url + '/api/guards/' + id, httpOptions).pipe(
           map(res => {
-            console.log(res);
             return res;
           }),
           catchError(error => {
@@ -319,9 +313,9 @@ export class ApiService {
           "end_at": end_at,
         };
 
-        const ague = localStorage.getItem('selectedPlantId');
+        const id = localStorage.getItem('selectedPlantId');
 
-        return this.http.post(api_url + `/api/guards/` + "?plant_id="+ ague, postData, httpOptions).pipe(
+        return this.http.post(api_url + `/api/guards/` + "?plant_id="+ id, postData, httpOptions).pipe(
           map(res => {
             return res;
           }),
@@ -347,7 +341,6 @@ export class ApiService {
   
         return this.http.delete(api_url + '/api/guards/' + guardId, httpOptions).pipe(
           map(res => {
-            console.log(res);
             return res;
           }),
           catchError(error => {
@@ -369,11 +362,10 @@ export class ApiService {
             'Authorization': 'Bearer ' + jeton,
           })
         };
-        const ague = localStorage.getItem('selectedGuardId');
+        const id = localStorage.getItem('selectedGuardId');
   
-        return this.http.get(api_url + '/api/sessions/guard/' + ague, httpOptions).pipe(
+        return this.http.get(api_url + '/api/sessions/guard/' + id, httpOptions).pipe(
           map(res => {
-            console.log(res);
             return res;
           }),
           catchError(error => {
@@ -400,11 +392,10 @@ export class ApiService {
           "report": credentials.report,
         };
 
-        const ague = localStorage.getItem('selectedGuardId');
+        const id = localStorage.getItem('selectedGuardId');
 
-        return this.http.post(api_url + '/api/sessions/' + "?guard_id="+ ague, postData, httpOptions).pipe(
+        return this.http.post(api_url + '/api/sessions/' + "?guard_id="+ id, postData, httpOptions).pipe(
           map(res => {
-            console.log(res);
             return res;
           }),
           catchError(error => {
@@ -451,9 +442,9 @@ export class ApiService {
           })
         };
         
-        const ague = localStorage.getItem('selectedAdviceName');
+        const id = localStorage.getItem('selectedAdviceName');
 
-        return this.http.get(api_url + `/api/advices/search/${ague}`, httpOptions).pipe(
+        return this.http.get(api_url + `/api/advices/search/${id}`, httpOptions).pipe(
           map(res => {
             return res;
           }),
@@ -476,9 +467,9 @@ export class ApiService {
             'Authorization': 'Bearer ' + jeton,
           })
         };
-        const ague = localStorage.getItem('selectedAdviceId');
+        const id = localStorage.getItem('selectedAdviceId');
 
-        return this.http.get(api_url + `/api/advices/`+ ague, httpOptions).pipe(
+        return this.http.get(api_url + `/api/advices/`+ id, httpOptions).pipe(
           map(res => {
             return res;
           }),
@@ -534,14 +525,14 @@ export class ApiService {
           })
         };
 
-        const ague = localStorage.getItem('selectedAdviceId');
+        const id = localStorage.getItem('selectedAdviceId');
 
         let postData = {
           "title": credentials.title,
           "content": credentials.content
         };
 
-        return this.http.put(api_url + `/api/advices/${ague}`, postData, httpOptions).pipe(
+        return this.http.put(api_url + `/api/advices/${id}`, postData, httpOptions).pipe(
           map(res => {
             return res;
           }),
@@ -564,11 +555,10 @@ export class ApiService {
             'Authorization': 'Bearer ' + jeton,
           })
         };
-        const ague = localStorage.getItem('selectedAdviceId');
+        const id = localStorage.getItem('selectedAdviceId');
   
-        return this.http.delete(api_url + '/api/advices/' + ague, httpOptions).pipe(
+        return this.http.delete(api_url + '/api/advices/' + id, httpOptions).pipe(
           map(res => {
-            console.log(res);
             return res;
           }),
           catchError(error => {
@@ -604,7 +594,6 @@ export class ApiService {
   
         return this.http.get(api_url + '/api/guards/open/around', { params, ...httpOptions }).pipe(
           map(res => {
-            console.log(res);
             return res;
           }),
           catchError(error => {
@@ -666,7 +655,6 @@ export class ApiService {
   
         return this.http.post(api_url + `/api/photo/`, postData, httpOptions).pipe(
           map(res => {
-            console.log(res)
             return res;
           }),
           catchError(error => {
@@ -717,9 +705,9 @@ export class ApiService {
           "content": message.content,
         };
 
-        const ague = localStorage.getItem('selectedUserId');
+        const id = localStorage.getItem('selectedUserId');
 
-        return this.http.post(api_url + `/api/messages/`+ ague, postData, httpOptions).pipe(
+        return this.http.post(api_url + `/api/messages/`+ id, postData, httpOptions).pipe(
           map(res => {
             return res;
           }),

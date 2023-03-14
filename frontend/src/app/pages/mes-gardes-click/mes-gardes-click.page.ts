@@ -126,8 +126,4 @@ export class MesGardesClickPage implements OnInit {
   {
     this.router.navigateByUrl('/historique-session');
   }
-  addsession()
-  {
-
-  }
 }
