@@ -20,7 +20,8 @@ export class FormDeclarePage implements OnInit {
 
   constructor(
     private alertController: AlertController,
-    private api: ApiService
+    private api: ApiService,
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -125,7 +126,14 @@ export class FormDeclarePage implements OnInit {
             const alert = await this.alertController.create({
               header: 'Plante déclarée',
               message: 'La plante a été déclarée avec succès.',
-              buttons: ['OK']
+              buttons: [
+                {
+                  text: 'OK',
+                  handler: () => {
+                    this.router.navigate(['/mon-profil']);
+                  }
+                }
+              ]
             });
             await alert.present();
           } else if (res && res.hasOwnProperty('detail')) {

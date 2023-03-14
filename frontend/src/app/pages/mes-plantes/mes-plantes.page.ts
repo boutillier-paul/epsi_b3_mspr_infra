@@ -49,6 +49,11 @@ export class MesPlantesPage implements OnInit {
     localStorage.setItem('selectedPlantId', planteId.toString());
     this.router.navigateByUrl('/mes-plantes-click');
   }
+
+  savePlantId(id: number) {
+    localStorage.setItem('selectedPlantId', String(id));
+    this.router.navigate(['/mes-plantes-click']);
+  }
 }
 
 
