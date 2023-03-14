@@ -30,7 +30,7 @@ export class MonProfilPage implements OnInit {
     @Inject(forwardRef(() => ApiService)) private api: ApiService
   ) { }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.api.checkToken();
     this.api.getyouruser().subscribe(
       (res: any) => {
@@ -44,8 +44,12 @@ export class MonProfilPage implements OnInit {
           this.guards = [];
           this.advices = [];
         } else {
-          this.guards = res.guards.slice(0, 3);
-          this.advices = res.advices.slice(0, 10);
+          this.guards = res.guards.sort((a: any, b: any) => {
+            return new Date(b.start_at).getTime() - new Date(a.start_at).getTime();
+          }).slice(0, 3);
+          this.advices = res.advices.sort((a: any, b: any) => {
+            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+          }).slice(0, 10);
         }
       },
       async (error: any) => {
