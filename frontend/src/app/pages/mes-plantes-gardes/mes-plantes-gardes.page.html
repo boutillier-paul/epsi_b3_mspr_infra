@@ -85,13 +85,13 @@
         </thead>
         <tbody>
           <tr *ngFor="let guard of gardes">
-            <td>{{ guard.start_at | date:'dd/MM/yyyy' }}</td>
-            <td>{{ guard.end_at | date:'dd/MM/yyyy' }}</td>
-            <td>{{ guard.first_name }} {{ guard.last_name }}</td>
+            <td style="color: white">{{ guard.start_at | date:'dd/MM/yyyy' }}</td>
+            <td style="color: white">{{ guard.end_at | date:'dd/MM/yyyy' }}</td>
+            <td style="color: white">{{ guard.first_name }} {{ guard.last_name }}</td>
             <td>
-              <button style="background-color: rgba(0,0,0,0); text-decoration: underline;"(click)="viewGuard(guard.id)">Consulter</button>
+              <button style="background-color: rgba(0,0,0,0); text-decoration: underline;"(click)="viewGuard(guard.id)" style="color: white">Consulter</button>
               <br>
-              <button style="background-color: rgba(0,0,0,0); text-decoration: underline;" (click)="deleteGuardAsk(guard.id)">Supprimer</button>
+              <button style="background-color: rgba(0,0,0,0); text-decoration: underline;" (click)="deleteGuardAsk(guard.id)" style="color: white">Supprimer</button>
             </td>
           </tr>
         </tbody>
