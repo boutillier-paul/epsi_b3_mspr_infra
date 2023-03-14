@@ -22,6 +22,7 @@ export class FormSessionPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.api.checkToken();
   }
   
 
@@ -41,8 +42,6 @@ export class FormSessionPage implements OnInit {
       const fileName = file.name;
       const fileExtension = fileName.split('.').pop();
   
-      console.log('Nom du fichier:', fileName);
-      console.log('Extension du fichier:', fileExtension);
     }
   }
 
@@ -56,8 +55,6 @@ export class FormSessionPage implements OnInit {
       await alert.present();
       return;
     }
-  
-    console.log(this.selectedFile);
 
     this.api.postPhoto(this.selectedFile).subscribe(async res => {
       if (res && res.hasOwnProperty('filename')) {

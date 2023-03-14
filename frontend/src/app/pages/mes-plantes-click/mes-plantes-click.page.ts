@@ -26,6 +26,7 @@ export class MesPlantesClickPage implements OnInit {
   ) { }
   
  async ngOnInit() {
+  this.api.checkToken();
   this.api.getplants().subscribe(
     (res: any) => {
       this.name = res.name;

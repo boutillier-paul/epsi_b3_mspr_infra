@@ -20,6 +20,7 @@ export class MesPlantesGardesPage implements OnInit {
   ) { }
   
   ngOnInit() {
+    this.api.checkToken();
     this.api.getplants().subscribe( (response: any) => {
         const guards = response.guards;
         this.gardes = guards.map((guard: any) => {

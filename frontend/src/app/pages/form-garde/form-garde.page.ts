@@ -76,6 +76,7 @@ export class FormGardePage implements OnInit {
   }
 
   ngOnInit() {
+    this.api.checkToken();
     this.api.getyouruser().subscribe((data) => {
       this.plants = data.plants;
     });

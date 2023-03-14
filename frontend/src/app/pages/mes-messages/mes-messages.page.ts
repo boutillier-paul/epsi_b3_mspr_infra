@@ -23,6 +23,7 @@ export class MesMessagesPage implements OnInit {
   intervalId: any;
 
   ngOnInit() {
+    this.api.checkToken();
     this.api.getAllBotanists().subscribe((response: any) => {
       this.users = response.map((user: any) => ({
         id: user.id,
@@ -82,9 +83,8 @@ export class MesMessagesPage implements OnInit {
             console.log('Tableau après get user par reciever ID', this.messages);
           });
         });
-        // this.sortMessages();
         this.messages = this.messages.slice(0, 5);
-        this.messages.sort((b, a) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        this.messages.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       });
     }
   }

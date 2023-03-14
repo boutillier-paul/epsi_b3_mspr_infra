@@ -18,6 +18,7 @@ export class HistoriqueSessionPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.api.checkToken();
     this.api.getsessions().subscribe(
       (response: any[]) => {
         this.sessions = response;

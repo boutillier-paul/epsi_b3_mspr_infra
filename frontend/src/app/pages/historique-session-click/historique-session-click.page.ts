@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, forwardRef, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-
+import { ApiService } from 'src/app/services/api/api.service';
 @Component({
   selector: 'app-historique-session-click',
   templateUrl: './historique-session-click.page.html',
@@ -16,9 +16,10 @@ export class HistoriqueSessionClickPage implements OnInit {
   created_at: string = '';
   report: string = '';
 
-  constructor(private alertController: AlertController, private router: Router) {}
+  constructor(private alertController: AlertController, private router: Router, @Inject(forwardRef(() => ApiService)) private api: ApiService) {}
 
   ngOnInit() {
+    this.api.checkToken();
     const SessionSelectionneeString = localStorage.getItem('SessionSelectionnee');
     if (SessionSelectionneeString) {
       const SessionSelectionnee = JSON.parse(SessionSelectionneeString);

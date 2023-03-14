@@ -15,11 +15,12 @@ export class MesGardesPage implements OnInit {
   constructor(
     private router: Router,
     private storage: Storage,
-    private apiService: ApiService
+    private api: ApiService
   ) {}
 
   ngOnInit() {
-    this.apiService.getyouruser().subscribe((response: any) => {
+    this.api.checkToken();
+    this.api.getyouruser().subscribe((response: any) => {
       const guards = response.guards;
       this.gardes = guards.map((guard: any) => {
         return {
@@ -32,7 +33,7 @@ export class MesGardesPage implements OnInit {
       });
       guards.forEach((guard: any, index: number) => {
         const plantId = guard.plant_id;
-        this.apiService.getplantsbyid(plantId).subscribe((plant: any) => {
+        this.api.getplantsbyid(plantId).subscribe((plant: any) => {
           this.gardes[index].name = plant.name;
           this.gardes[index].species = plant.species;
           console.log(this.gardes);

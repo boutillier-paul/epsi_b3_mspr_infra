@@ -23,6 +23,7 @@ export class FormAdvicePage implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.api.checkToken();
   }
 
   onFileSelected(event: any) {
@@ -40,9 +41,6 @@ export class FormAdvicePage implements OnInit {
       reader.readAsDataURL(file);
       const fileName = file.name;
       const fileExtension = fileName.split('.').pop();
-  
-      console.log('Nom du fichier:', fileName);
-      console.log('Extension du fichier:', fileExtension);
     }
   }
 
@@ -77,8 +75,6 @@ export class FormAdvicePage implements OnInit {
       await alert.present();
       return;
     }
-    
-    console.log(this.selectedFile);
 
     this.api.postPhoto(this.selectedFile).subscribe(async res => {
       if (res && res.hasOwnProperty('filename')) {
@@ -120,8 +116,12 @@ export class FormAdvicePage implements OnInit {
         });
         await alert.present();
       } else {
-        console.log('La réponse de l\'API ne contient ni le token ni l\'erreur');
-        console.log(res);
+        const alert = await this.alertController.create({
+          header: 'Erreur Inconnue',
+          message: 'Vous avez une erreur inconnue',
+          buttons: ['OK']
+        });
+        await alert.present();
       }
     })
 

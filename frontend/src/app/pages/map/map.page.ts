@@ -22,6 +22,7 @@ export class MapPage implements OnInit {
   constructor(private api: ApiService, private router: Router, public alertController: AlertController) {}
 
   ngOnInit() {
+    this.api.checkToken();
     if (navigator.geolocation) {
       if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         // L'utilisateur utilise un appareil mobile
@@ -31,9 +32,6 @@ export class MapPage implements OnInit {
           this.initMap();
           this.posLat = this.pos_lat;
           this.posLng = this.pos_lng
-          console.log(this.posLat);
-          console.log(this.posLng);
-          console.log(this.radius);
           this.getAndShowMarkers();
         });
       } else {
@@ -44,9 +42,6 @@ export class MapPage implements OnInit {
           this.initMap();
           this.posLat = this.pos_lat;
           this.posLng = this.pos_lng
-          console.log(this.posLat);
-          console.log(this.posLng);
-          console.log(this.radius);
           this.getAndShowMarkers();
         });
       }
@@ -81,7 +76,6 @@ export class MapPage implements OnInit {
   getAndShowMarkers() {
     this.api.getPlantsNearMe(this.posLat, this.posLng, this.radius).subscribe((response: any) => {
       const guards = response;
-      console.log(guards);
       this.gardes = guards.map((guard: any) => {
         return {
           id: guard.id,
@@ -97,8 +91,6 @@ export class MapPage implements OnInit {
         };
       });
   
-      console.log('Tableau de base', this.gardes);
-  
       guards.forEach((guard: any, index: number) => {
         const plantId = guard.plant_id;
         this.api.getplantsbyid(plantId).subscribe((plant: any) => {
@@ -107,7 +99,6 @@ export class MapPage implements OnInit {
           this.gardes[index].photo = 'https://mspr-infra-bucket.s3.eu-west-3.amazonaws.com/images/' + plant.photo;
           this.gardes[index].pos_lat = plant.pos_lat;
           this.gardes[index].pos_lng = plant.pos_lng;
-          console.log('Tableau après get plant par ID', this.gardes);
   
           const marker = L.marker([plant.pos_lat, plant.pos_lng]).addTo(this.map);
           const popupContent = document.createElement('div');

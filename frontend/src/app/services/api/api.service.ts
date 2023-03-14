@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable, from, of, throwError, catchError } from 'r
 import { take, map, switchMap } from 'rxjs/operators';
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { Router } from '@angular/router';
-
+import { AlertController } from '@ionic/angular';
 
 const helper = new JwtHelperService();
 const TOKEN_KEY = 'jwt-token';
@@ -25,6 +25,8 @@ export class ApiService {
   private jeton = null;
 
   constructor(
+    private alertController: AlertController,
+    private router: Router,
     public navCtrl: NavController,
     private storage: Storage,
     @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
@@ -612,7 +614,7 @@ export class ApiService {
       })
     );
   }
-  takeGuard(selectedGuardId : number): Observable<any> {
+  takeGuard(selectedGuardId: number): Observable<any> {
     return of(localStorage.getItem('access_token')).pipe(
       switchMap(jeton => {
         const httpOptions = {
@@ -624,8 +626,10 @@ export class ApiService {
             'Authorization': 'Bearer ' + jeton,
           })
         };
-
-        return this.http.put(api_url + `/api/guards/${selectedGuardId}/take`, httpOptions).pipe(
+  
+        const body = JSON.stringify({});
+  
+        return this.http.put(api_url + `/api/guards/${selectedGuardId}/take`, body, httpOptions).pipe(
           map(res => {
             return res;
           }),
@@ -773,6 +777,33 @@ export class ApiService {
         );
       })
     );
+  }
+  logout() {
+    localStorage.clear()
+    this.router.navigateByUrl('/');
+    this.userData.next(null);
+  }
+  checkToken() {
+    this.getyouruser().subscribe(response => {
+      if (response.created_at) {
+      } else if (response.detail || response.error) {
+        this.presentAlert();
+        this.router.navigate(['/home']);
+      }
+    }, error => {
+      this.presentAlert();
+      this.router.navigate(['/home']);
+    });
+  }
+  
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      header: 'Erreur de token',
+      message: 'Le token est invalide',
+      buttons: ['OK']
+    });
+  
+    await alert.present();
   }
   }
 
