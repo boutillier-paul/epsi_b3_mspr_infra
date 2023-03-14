@@ -43,8 +43,8 @@ export class MesMessagesPage implements OnInit {
       localStorage.setItem('selectedUserId', selectedUser.id.toString());
       this.getMessages();
       this.intervalId = setInterval(() => {
-        this.getMessages();
-      }, 5000);
+      this.getMessages();
+      }, 3000);
     }
   }
 
@@ -52,7 +52,7 @@ export class MesMessagesPage implements OnInit {
     if (this.userSelected) {
       this.api.getMessages(this.userSelected).subscribe((response: any) => {
         const mess = response;
-        this.messages = mess.map((message: any) => ({
+        let messages = mess.map((message: any) => ({
           content: message.content,
           created_at: message.created_at,
           sender_id: message.sender_id,
@@ -63,23 +63,28 @@ export class MesMessagesPage implements OnInit {
           r_last_name: '',
           user_id: ''
         }));
+        
         mess.forEach((message: any, index: number) => {
           const senderId = message.sender_id;
           this.api.getUserBySenderIdParams(senderId).subscribe((sender: any) => {
-            this.messages[index].s_first_name = sender.first_name;
-            this.messages[index].s_last_name = sender.last_name;
+            messages[index].s_first_name = sender.first_name;
+            messages[index].s_last_name = sender.last_name;
           });
+          
           const recieverId = message.reciever_id;
           this.api.getUserByRecieverIdParams(recieverId).subscribe((reciever: any) => {
-            this.messages[index].r_first_name = reciever.first_name;
-            this.messages[index].r_last_name = reciever.last_name;
+            messages[index].r_first_name = reciever.first_name;
+            messages[index].r_last_name = reciever.last_name;
           });
+          
           this.api.getUserById().subscribe((user: any) => {
-            this.messages[index].user_id = user.id;
+            messages[index].user_id = user.id;
           });
         });
-        this.messages = this.messages.slice(0, 5);
-        this.messages.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        
+        setTimeout(() => {
+          this.messages = messages.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        }, 500);
       });
     }
   }

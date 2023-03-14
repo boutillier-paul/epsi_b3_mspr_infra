@@ -111,8 +111,9 @@ export class MapPage implements OnInit {
           popupContent.innerHTML = `
             <b>${plant.name}</b><br>${plant.species}<br>
             <img src="${this.gardes[index].photo}" width="200px"/><br>
-            <button style="margin-top: 10px;" id="save-guard-button-${guard.id}">Garder la plante</button>
+            <ion-button style="margin-top: 10px;" id="save-guard-button-${guard.id}">Garder la plante</ion-button>
           `;
+          popupContent.style.width = 'max-content';
           const button = popupContent.querySelector(`#save-guard-button-${guard.id}`);
           if (button) {
             button.addEventListener('click', async () => {
