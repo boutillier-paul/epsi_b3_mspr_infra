@@ -336,7 +336,7 @@ export class ApiService {
         const httpOptions = {
           headers: new HttpHeaders({
             'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Method': 'GET,HEAD,OPTIONS,POST,PUT',
+            'Access-Control-Allow-Method': 'GET,HEAD,OPTIONS,POST,PUT,DELETE',
             'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + jeton,

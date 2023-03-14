@@ -77,13 +77,12 @@ export class MesPlantesGardesPage implements OnInit {
         },
       ],
     });
-
-    await alert.present();
   }
-  async delete_success() {
+
+  async delete_notsuccess() {
     const alert = await this.alertController.create({
-      header: 'Suppression réussie',
-      message: 'Cet historique de sessions a été effacée',
+      header: 'Suppression Échoué',
+      message: 'Cet historique de sessions n\'a pas pu être supprimé',
       buttons: [
         {
           text: 'Retourner à la page de ma plante',
@@ -96,6 +95,7 @@ export class MesPlantesGardesPage implements OnInit {
 
     await alert.present();
   }
+
   async deleteGuardAsk(guardId: number) {
     const alert = await this.alertController.create({
       header: 'Confirmation requise',
@@ -117,31 +117,39 @@ export class MesPlantesGardesPage implements OnInit {
     
     });
     await alert.present();
-    } 
-  deleteGuard(guardId: number) {
-    this.api.deleteGuard(guardId).subscribe(
-      (data) => {
+  } 
+
+    async deleteGuard(guardId: number) {
+      try {
+        const data = await this.api.deleteGuard(guardId).toPromise();
         if (data.created_at) {
-          this.alertController.create({
+          const alert = await this.alertController.create({
             header: 'Succès',
-            message: 'La suppression est validée !! ',
-            buttons: ['OK']
-          }).then(alert => alert.present());
-        } else {
-          this.delete_success();
+            message: 'La suppression a été réussie !',
+            buttons: ['OK'],
+          });
+          await alert.present();
+          this.router.navigate(['/mes-plantes']);
+        } else if (data.detail){
+          const alert = await this.alertController.create({
+            header: 'Suppression Échoué',
+            message: data.detail,
+            buttons: ['OK'],
+          });
+          await alert.present();
         }
-      },
-      (error) => {
-        this.alertController.create({
-          header: 'Erreur lors de la suppression',
-          message: error.detail,
-          buttons: ['OK']
-        }).then(alert => alert.present());
+      } catch (error) {
+        const alert = await this.alertController.create({
+          header: 'Erreur Inconnue',
+          message: 'Une erreur inconnue est survenue.',
+          buttons: ['OK'],
+        });
+        await alert.present();
       }
-    );
+    }
+    
+    viewGuard(guardId: number){
+      localStorage.setItem("selectedGuardId", guardId.toString());
+      this.router.navigateByUrl('/historique-session');
+    }
   }
-  viewGuard(guardId: number){
-    localStorage.setItem("selectedGuardId", guardId.toString());
-    this.router.navigateByUrl('/historique-session');
-  }
-}
