@@ -261,9 +261,10 @@ async def read_open_guards_aroud_me(pos_lat: float, pos_lng: float, radius: int,
         plant_distance = distance(center, plant_pos).km
         if plant_distance <= radius:
             guards_around.append(guard)
-    for guard in user.guards:
-        if guard in guards_around:
-            guards_around.remove(guard)
+    for plant in user.plants:
+        for guard in plant.guards:
+            if guard in guards_around:
+                guards_around.remove(guard)
     return guards_around
 
 @router.get("/guards/{guard_id}", tags=["Guards"], response_model=schemas.Guard, dependencies=[Depends(JWTBearer())])
