@@ -67,24 +67,45 @@ export class MesGardesClickPage implements OnInit {
   private setImageSize() {
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
-
-    if (this.imageOrientation === 'cover') {
-      this.imageHeight = '100%';
-      this.imageWidth = 'auto';
-    } else {
-      this.imageHeight = 'auto';
-      this.imageWidth = '100%';
-    }
-
-    // apply max height and width based on screen dimensions
+  
     const img = new Image();
     img.onload = () => {
-      if (img.width >= img.height) {
-        this.imageWidth = `${Math.round(windowWidth * 0.9)}px`;
-        this.imageHeight = 'auto';
-      } else {
+      const imgWidth = img.width;
+      const imgHeight = img.height;
+      const isSquare = imgWidth === imgHeight;
+  
+      if (this.imageOrientation === 'cover') {
+        this.imageHeight = '100%';
         this.imageWidth = 'auto';
-        this.imageHeight = `${Math.round(windowHeight * 0.4)}px`;
+      } else {
+        this.imageHeight = 'auto';
+        this.imageWidth = '100%';
+      }
+      const aspectRatio = imgWidth / imgHeight;
+      const maxWidth = windowWidth * 0.9;
+      const maxHeight = windowHeight * 0.6;
+  
+      if (aspectRatio >= 1) {
+        this.imageWidth = `${maxWidth}px`;
+        this.imageHeight = 'auto';
+      } else if (isSquare) {
+        const maxImageSize = Math.min(maxWidth, maxHeight);
+        this.imageWidth = `${maxImageSize}px`;
+        this.imageHeight = `${maxImageSize}px`;
+        this.imageOrientation = 'none';
+      } else {
+        this.imageHeight = `${maxHeight}px`;
+        this.imageWidth = 'auto';
+        this.imageOrientation = 'contain';
+      }
+      const imgEl = document.getElementById('my-img');
+      if (imgEl) {
+        const imgContainer = imgEl.parentElement;
+        if (imgContainer) {
+          imgContainer.style.display = 'flex';
+          imgContainer.style.alignItems = 'center';
+          imgContainer.style.justifyContent = 'center';
+        }
       }
     };
     img.src = this.imageUrl;

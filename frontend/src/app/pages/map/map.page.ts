@@ -14,10 +14,12 @@ export class MapPage implements OnInit {
   gardes: any[] = [];
   pos_lng: number;
   pos_lat: number;
-  radius: number = 10000000000;
+  radius: number = 0;
   posLat: number;
   posLng: number;
   selectedGuardId: number;
+  previousValue: number = 100;
+  selectedValue: number;
 
   constructor(private api: ApiService, private router: Router, public alertController: AlertController) {}
 
@@ -175,5 +177,16 @@ export class MapPage implements OnInit {
           await alert.present();
         }
       });
+  }
+  onRangeModelChange(newValue: number) {
+    if (newValue < this.previousValue) {
+      setTimeout(() => {
+        this.selectedValue = this.previousValue;
+      }, 0);
+    } else {
+      this.previousValue = newValue;
+      this.radius = newValue;
+      this.getAndShowMarkers();
+    }
   }
 }

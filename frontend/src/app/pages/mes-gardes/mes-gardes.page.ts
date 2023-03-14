@@ -38,6 +38,8 @@ export class MesGardesPage implements OnInit {
           this.gardes[index].species = plant.species;
         });
       });
+
+      this.gardes.sort((a, b) => new Date(b.start_at).getTime() - new Date(a.start_at).getTime());
     });
   }
 

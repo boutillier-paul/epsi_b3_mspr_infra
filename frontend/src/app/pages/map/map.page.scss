@@ -67,7 +67,7 @@ ion-menu {
     left: 50%;
     transform: translate(-50%, -50%);
     width: 90%;
-    height: 85%;
+    height: 75%;
   }
   ion-button {
     --background: RGB(52, 106, 74);
@@ -78,4 +78,17 @@ ion-menu {
     --border-style: solid;
     --border-width: 1px;
   
+  }
+  ion-range {
+    --bar-background: white;
+    --bar-background-active:  white;
+    --bar-height: 6px;
+    --bar-border-radius: 8px;
+    --knob-background: #33802d;
+    --knob-size: 35px;
+    --bar-width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
   }
