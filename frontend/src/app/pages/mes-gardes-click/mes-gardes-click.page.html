@@ -77,10 +77,10 @@
       <br>
       <img [src]="imageUrl ? 'https://mspr-infra-bucket.s3.eu-west-3.amazonaws.com/images/' + imageUrl : 'https://img.freepik.com/vecteurs-premium/vecteur-icone-image-par-defaut-page-image-manquante-pour-conception-site-web-application-mobile-aucune-photo-disponible_87543-11093.jpg'" [style.width]="imageWidth" [style.height]="imageHeight" [style.object-fit]="imageOrientation" [style.max-width]="'100%'" [style.max-height]="'100%'">
       <br>
-      <h5>Espèce de la plante : <ion-chip>{{species}}</ion-chip></h5>
-      <h5>Nom de la plante : <ion-chip>{{name}}</ion-chip></h5>
-      <h5>Date de garde :  Du <ion-chip>{{startdate | date}}</ion-chip> au <ion-chip>{{enddate | date}}</ion-chip></h5>
-      <h5>Nom du propriétaire : <ion-chip>{{first_name}} {{ last_name }}</ion-chip></h5>
+      <h5 style="color: white;" > Espèce de la plante : <ion-chip style="color: white;">{{species}}</ion-chip></h5>
+      <h5 style="color: white;">Nom de la plante : <ion-chip style="color: white;">{{name}}</ion-chip></h5>
+      <h5 style="color: white;">Date de garde :  Du <ion-chip style="color: white;">{{startdate | date}}</ion-chip> au <ion-chip>{{enddate | date}}</ion-chip></h5>
+      <h5 style="color: white;">Nom du propriétaire : <ion-chip style="color: white;">{{first_name}} {{ last_name }}</ion-chip></h5>
       <ion-item class="back">
         <ion-grid>
           <ion-row>

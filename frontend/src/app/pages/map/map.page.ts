@@ -14,11 +14,11 @@ export class MapPage implements OnInit {
   gardes: any[] = [];
   pos_lng: number;
   pos_lat: number;
-  radius: number = 0;
+  radius: number = 100;
   posLat: number;
   posLng: number;
   selectedGuardId: number;
-  previousValue: number = 100;
+  previousValue: number;
   selectedValue: number;
 
   constructor(private api: ApiService, private router: Router, public alertController: AlertController) {}
