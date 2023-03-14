@@ -84,10 +84,10 @@
         </thead>
         <tbody>
           <tr *ngFor="let session of sessions">
-            <td class="ion-text-center">{{ session.created_at |  date: 'dd/MM/YYYY' }}</td>
-            <td class="ion-text-center">{{ session.report | slice:0:limiteCaracteres }}{{ session.report.length > limiteCaracteres ? '...' : '' }}</td>
+            <td class="ion-text-center" style="color: white">{{ session.created_at |  date: 'dd/MM/YYYY' }}</td>
+            <td class="ion-text-center" style="color: white">{{ session.report | slice:0:limiteCaracteres }}{{ session.report.length > limiteCaracteres ? '...' : '' }}</td>
             <td class="ion-text-center">
-              <button (click)="voirPlus(session)" class="transbutton" id="open-modal">Cliquez pour plus de détails</button>
+              <button (click)="voirPlus(session)" class="transbutton" id="open-modal" style="color: white">Cliquez pour plus de détails</button>
             </td>
           </tr>
         </tbody>
