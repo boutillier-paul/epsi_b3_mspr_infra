@@ -250,16 +250,16 @@ async def read_open_guards(skip: int = 0, limit: int = 100, db: Session = Depend
     return db_guards
 
 @router.get("/guards/open/around", tags=["BOTANIST ROLE"], response_model=list[schemas.Guard], dependencies=[Depends(JWTBearer())])
-async def read_open_guards_aroud_me(location: schemas.Location, skip: int = 0, limit: int = 100, db: Session = Depends(get_db), Authorization: str = Header(None)):
+async def read_open_guards_aroud_me(pos_lat: int, pos_lng: int, radius: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db), Authorization: str = Header(None)):
     controllers.check_user_role(db, role_name="BOTANIST", Authorization=Authorization)
     user = controllers.get_current_user(db, Authorization=Authorization)
     db_guards = controllers.get_open_guards(db, skip=skip, limit=limit)
     guards_around = []
     for guard in db_guards:
         plant_pos = (guard.plant.pos_lat, guard.plant.pos_lng)
-        center = (location.pos_lat, location.pos_lng)
+        center = (pos_lat, pos_lng)
         plant_distance = distance(center, plant_pos).km
-        if plant_distance <= location.radius:
+        if plant_distance <= radius:
             guards_around.append(guard)
     for guard in user.guards:
         if guard in guards_around:
