@@ -250,7 +250,7 @@ async def read_open_guards(skip: int = 0, limit: int = 100, db: Session = Depend
     return db_guards
 
 @router.get("/guards/open/around", tags=["BOTANIST ROLE"], response_model=list[schemas.Guard], dependencies=[Depends(JWTBearer())])
-async def read_open_guards_aroud_me(pos_lat: int, pos_lng: int, radius: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db), Authorization: str = Header(None)):
+async def read_open_guards_aroud_me(pos_lat: float, pos_lng: float, radius: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db), Authorization: str = Header(None)):
     controllers.check_user_role(db, role_name="BOTANIST", Authorization=Authorization)
     user = controllers.get_current_user(db, Authorization=Authorization)
     db_guards = controllers.get_open_guards(db, skip=skip, limit=limit)
