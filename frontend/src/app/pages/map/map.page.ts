@@ -102,13 +102,13 @@ export class MapPage implements OnInit {
   
           const marker = L.marker([plant.pos_lat, plant.pos_lng]).addTo(this.map);
           const popupContent = document.createElement('div');
-          popupContent.style.backgroundColor = 'green';
+          popupContent.style.backgroundColor = 'white';
           popupContent.style.borderRadius = '75px';
           popupContent.style.padding = '10px';
           popupContent.style.textAlign = 'center';
           popupContent.innerHTML = `
             <b>${plant.name}</b><br>${plant.species}<br>
-            <img src="${plant.photo}" alt="${plant.species}" width="200px"/><br>
+            <img src="${this.gardes[index].photo}" alt="${plant.species}" width="200px"/><br>
             <button style="margin-top: 10px;" id="save-guard-button-${guard.id}">Garder la plante</button>
           `;
           const button = popupContent.querySelector(`#save-guard-button-${guard.id}`);
@@ -119,7 +119,7 @@ export class MapPage implements OnInit {
               localStorage.setItem('selectedGuardId', this.selectedGuardId.toString());
               const alert = await this.alertController.create({
               header: 'Confirmation requise',
-              message: 'Êtes-vous sûr de vouloir supprimer ce post ?',
+              message: 'Êtes-vous sûr de vouloir garder cette plante ?',
               buttons: [
                 {
                   text: 'Non',
