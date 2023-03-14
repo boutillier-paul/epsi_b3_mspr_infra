@@ -138,5 +138,4 @@ export class MesPlantesClickPage implements OnInit {
   {
     this.router.navigateByUrl('/mes-plantes-gardes');
   }
-  // Get /plants/details/idplante
 }

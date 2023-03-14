@@ -50,7 +50,6 @@ export class MonProfilPage implements OnInit {
       },
       async (error: any) => {
         if (error.status === 401) {
-          // Display error alert and redirect to home page on "OK" click
           const alert = await this.alertController.create({
             header: 'Non autorisé',
             message: 'Votre token a expiré ou vous n\'avez pas accès à cette page',
@@ -65,7 +64,6 @@ export class MonProfilPage implements OnInit {
           });
           await alert.present();
         } else {
-          // Handle other errors
         }
       }
     );
