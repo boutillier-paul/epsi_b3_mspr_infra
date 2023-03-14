@@ -1,5 +1,5 @@
 import { Injectable, forwardRef, Inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Platform, NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { BehaviorSubject, Observable, from, of, throwError, catchError } from 'rxjs';
@@ -588,16 +588,45 @@ export class ApiService {
             'Authorization': 'Bearer ' + jeton,
           })
         };
-        
-        let getData = {
+  
+        let postData = {
           "pos_lat": posLat,
           "pos_lng": posLng,
           "radius": radius
         };
 
-        return this.http.get(api_url + '/api/guards/open/around'+ getData, httpOptions).pipe(
+        const params = new HttpParams()
+          .set('pos_lat', posLat.toString())
+          .set('pos_lng', posLng.toString())
+          .set('radius', radius.toString());
+  
+        return this.http.get(api_url + '/api/guards/open/around', { params, ...httpOptions }).pipe(
           map(res => {
             console.log(res);
+            return res;
+          }),
+          catchError(error => {
+            return of(error.error);
+          })
+        );
+      })
+    );
+  }
+  takeGuard(selectedGuardId : number): Observable<any> {
+    return of(localStorage.getItem('access_token')).pipe(
+      switchMap(jeton => {
+        const httpOptions = {
+          headers: new HttpHeaders({
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Method': 'GET,HEAD,OPTIONS,POST,PUT',
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jeton,
+          })
+        };
+
+        return this.http.put(api_url + `/api/guards/${selectedGuardId}/take`, httpOptions).pipe(
+          map(res => {
             return res;
           }),
           catchError(error => {

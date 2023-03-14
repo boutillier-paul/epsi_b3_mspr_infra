@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api/api.service';
-
+import { AlertController } from '@ionic/angular';
+import { Router } from '@angular/router';
 import * as L from 'leaflet';
 
 @Component({
@@ -13,11 +14,12 @@ export class MapPage implements OnInit {
   gardes: any[] = [];
   pos_lng: number;
   pos_lat: number;
-  radius: 50;
+  radius: number = 100;
   posLat: number;
-  posLng: number
+  posLng: number;
+  selectedGuardId: number;
 
-  constructor(private api: ApiService) { }
+  constructor(private api: ApiService, private router: Router, public alertController: AlertController) {}
 
   ngOnInit() {
     if (navigator.geolocation) {
@@ -27,6 +29,11 @@ export class MapPage implements OnInit {
           this.pos_lat = position.coords.latitude;
           this.pos_lng = position.coords.longitude;
           this.initMap();
+          this.posLat = this.pos_lat;
+          this.posLng = this.pos_lng
+          console.log(this.posLat);
+          console.log(this.posLng);
+          console.log(this.radius);
           this.getAndShowMarkers();
         });
       } else {
@@ -35,6 +42,11 @@ export class MapPage implements OnInit {
           this.pos_lat = position.coords.latitude;
           this.pos_lng = position.coords.longitude;
           this.initMap();
+          this.posLat = this.pos_lat;
+          this.posLng = this.pos_lng
+          console.log(this.posLat);
+          console.log(this.posLng);
+          console.log(this.radius);
           this.getAndShowMarkers();
         });
       }
@@ -50,7 +62,8 @@ export class MapPage implements OnInit {
     });
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+      attribution:
+        'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
       maxZoom: 18,
     }).addTo(this.map);
 
@@ -64,11 +77,11 @@ export class MapPage implements OnInit {
     userMarker.bindPopup('Vous êtes ici');
   }
 
+
   getAndShowMarkers() {
-    this.posLat = this.pos_lat;
-    this.posLng = this.pos_lng;
-    this.api.getPlantsNearMe(this.pos_lat, this.pos_lng, this.radius).subscribe((response: any) => {
-      const guards = response.guards;
+    this.api.getPlantsNearMe(this.posLat, this.posLng, this.radius).subscribe((response: any) => {
+      const guards = response;
+      console.log(guards);
       this.gardes = guards.map((guard: any) => {
         return {
           id: guard.id,
@@ -78,34 +91,100 @@ export class MapPage implements OnInit {
           end_at: guard.end_at,
           name: '',
           species: '',
+          photo: '',
           pos_lat: '',
           pos_lng: '',
-          first_name: '',
-          last_name: '',
         };
       });
-
+  
       console.log('Tableau de base', this.gardes);
-
+  
       guards.forEach((guard: any, index: number) => {
         const plantId = guard.plant_id;
         this.api.getplantsbyid(plantId).subscribe((plant: any) => {
           this.gardes[index].name = plant.name;
           this.gardes[index].species = plant.species;
+          this.gardes[index].photo = 'https://mspr-infra-bucket.s3.eu-west-3.amazonaws.com/images/' + plant.photo;
           this.gardes[index].pos_lat = plant.pos_lat;
           this.gardes[index].pos_lng = plant.pos_lng;
           console.log('Tableau après get plant par ID', this.gardes);
-          L.marker([plant.pos_lat, plant.pos_lng]).addTo(this.map)
-            .bindPopup(`<b>${guard.name}</b><br>${plant.species}`)
-            .openPopup();
-        });
-        const userId = guard.user_id;
-        this.api.getUserByIdParams(userId).subscribe((user: any) => {
-          this.gardes[index].first_name = user.first_name;
-          this.gardes[index].last_name = user.last_name;
-          console.log('Tableau après get user par ID', this.gardes);
+  
+          const marker = L.marker([plant.pos_lat, plant.pos_lng]).addTo(this.map);
+          const popupContent = document.createElement('div');
+          popupContent.style.backgroundColor = 'green';
+          popupContent.style.borderRadius = '75px';
+          popupContent.style.padding = '10px';
+          popupContent.style.textAlign = 'center';
+          popupContent.innerHTML = `
+            <b>${plant.name}</b><br>${plant.species}<br>
+            <img src="${plant.photo}" alt="${plant.species}" width="200px"/><br>
+            <button style="margin-top: 10px;" id="save-guard-button-${guard.id}">Garder la plante</button>
+          `;
+          const button = popupContent.querySelector(`#save-guard-button-${guard.id}`);
+          if (button) {
+            button.addEventListener('click', async () => {
+              console.log('Garder la plante avec ID:', guard.id);
+              this.selectedGuardId = guard.id;
+              localStorage.setItem('selectedGuardId', this.selectedGuardId.toString());
+              const alert = await this.alertController.create({
+              header: 'Confirmation requise',
+              message: 'Êtes-vous sûr de vouloir supprimer ce post ?',
+              buttons: [
+                {
+                  text: 'Non',
+                  handler: () => {
+                    this.router.navigate(['/map']);
+                  }
+                },
+                {
+                  text: 'Oui',
+                  handler: () => {
+                    this.guardPlant();
+                  }
+                }
+              ]
+              });
+              await alert.present();
+            });
+          }
+          marker.bindPopup(popupContent);
         });
       });
     });
+  }
+  guardPlant(){
+    console.log(localStorage.getItem('access_token'));
+    this.api.takeGuard(this.selectedGuardId).subscribe(async res => {
+        if (res && res.hasOwnProperty('created_at')) {
+          const alert = await this.alertController.create({
+            header: 'Succès',
+            message: "Vous garderez actuellement cette plante désormais.",
+            buttons: [        {
+              text: 'Voir mon profil',
+              handler: () => {
+                this.router.navigate(['/mon-profil']);
+              }
+            }
+          ]
+          });
+          await alert.present();
+        } else if (res && res.hasOwnProperty('detail')) {
+          const alert = await this.alertController.create({
+            header: 'Erreur',
+            message: res.detail,
+            buttons: ['OK']
+          });
+          await alert.present();
+        } else {
+          console.log('La réponse de l\'API ne contient ni le token ni le detail de l\'erreur');
+          console.log(res);
+          const alert = await this.alertController.create({
+            header: 'Erreur de type inconnu',
+            message: res.detail,
+            buttons: ['OK']
+          });
+          await alert.present();
+        }
+      });
   }
 }
