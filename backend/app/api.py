@@ -529,7 +529,7 @@ async def create_session(session: schemas.CareSessionCreate, guard_id: int,
 
 @router.get("/sessions/guard/{guard_id}", tags=["Sessions"], response_model=list[schemas.CareSession], dependencies=[Depends(JWTBearer())])
 async def read_session_by_guard(guard_id: int, db: Session = Depends(get_db), Authorization: str = Header(None)):
-    user = controllers.get_current_user(db, Authorization=Authorization)
+    user = controllers.get_current_user(db, authorization=Authorization)
     db_session = controllers.get_care_sessions_by_guard(db, guard_id=guard_id)
 
     for plant in user.plants:
