@@ -280,7 +280,7 @@ def get_care_sessions(database: Session, skip: int = 0, limit: int = 100):
         .order_by(models.CareSession.created_at.desc()).offset(skip).limit(limit).all()
 
 def get_care_session_by_photo(db: Session, care_session_photo: str):
-    return db.query(models.CareSession).filter(models.Care_Session.photo == care_session_photo).first()
+    return db.query(models.CareSession).filter(models.CareSession.photo == care_session_photo).first()
 
 def create_care_session(database: Session, care_session: schemas.CareSessionCreate, guard_id: int):
     """
@@ -296,7 +296,7 @@ def create_care_session(database: Session, care_session: schemas.CareSessionCrea
     return database_care_session
 
 def get_care_sessions_by_guard(db: Session, guard_id: int):
-   return db.query(models.Care_Session).filter(models.Care_Session.guard_id == guard_id).order_by(models.Care_Session.created_at.desc()).all()
+   return db.query(models.CareSession).filter(models.CareSession.guard_id == guard_id).order_by(models.CareSession.created_at.desc()).all()
 
 # MESSAGE
 def get_message(database: Session, message_id: int):
