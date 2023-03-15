@@ -128,4 +128,11 @@ ion-menu {
     border: none;
     box-shadow: 0 2px 5px 0 rgba(0,0,0,0.26);
   }
-
+  ion-datetime {
+    --background: white;
+    border-radius: 16px;
+    box-shadow: rgba(var(--ion-color-rose-rgb), 0.3) 0px 10px 15px -3px;
+  }
+  ion-datetime{
+    --background: rgb(107, 174, 101, 0.185);
+  }

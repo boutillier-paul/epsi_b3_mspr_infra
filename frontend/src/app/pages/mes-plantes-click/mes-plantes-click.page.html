@@ -56,7 +56,7 @@
                 <ion-icon name="arrow-undo-circle"></ion-icon>
               </ion-col>
               <ion-col size="11">
-                <a href="/map">Se déconnecter</a>
+                <a href="/logout">Se déconnecter</a>
               </ion-col>
             </ion-row>
           </ion-col>
@@ -78,8 +78,8 @@
         <br>
         <img [src]="'https://mspr-infra-bucket.s3.eu-west-3.amazonaws.com/images/' + imageUrl" [style.width]="imageWidth" [style.height]="imageHeight" [style.object-fit]="imageOrientation" [style.max-width]="'100%'" [style.max-height]="'100%'">
         <br>
-        <h5>Espèce de la plante : <ion-chip>{{espece}}</ion-chip></h5>
-        <h5>Nom de la plante : <ion-chip>{{name}}</ion-chip></h5>
+        <h5 style="color: white;">Espèce de la plante : <ion-chip style="color: white;">{{espece}}</ion-chip></h5>
+        <h5 style="color: white;">Nom de la plante : <ion-chip style="color: white;">{{name}}</ion-chip></h5>
         <ng-container *ngIf="guards.length > 0">
           <ion-button expand="block"  [disabled]="vardisabled" (click)="gotoguards()">Voir vos gardes</ion-button>
         </ng-container>

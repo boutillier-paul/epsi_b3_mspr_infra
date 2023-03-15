@@ -56,7 +56,7 @@
                 <ion-icon name="arrow-undo-circle"></ion-icon>
               </ion-col>
               <ion-col size="11">
-                <a href="/map">Se déconnecter</a>
+                <a href="/logout">Se déconnecter</a>
               </ion-col>
             </ion-row>
           </ion-col>
@@ -73,25 +73,28 @@
         <ion-title>Mes plantes</ion-title>
       </ion-toolbar>
     </ion-header> 
-    <div class="table-container">
-      <table class="table">
-        <thead>
-          <tr>
-            <th class="ion-text-center">Espèce de la plante</th>
-            <th class="ion-text-center">Nom de la plante</th>
-            <th class="ion-text-center">Voir plus</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let plante of plantes">
-            <td class="ion-text-center">{{ plante.species }}</td>
-            <td class="ion-text-center">{{ plante.name }}</td>
-            <td class="ion-text-center">
-              <button (click)="voirPlus(plante.id)" class="transbutton">Cliquez pour plus de détails</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>    
-    </div>
+    
+    <ion-row style="display: flex; align-items: stretch; margin: 0 auto; max-width: 1250px;">
+      <ion-col size="12"class="ion-text-center">
+        <h2>Mes plantes</h2>
+      </ion-col>
+      <ion-col size="12"class="ion-text-center">
+        <ion-button [routerLink]="['/form-declare']" RouterLinkActive="active">Ajouter une plante</ion-button>
+      </ion-col>
+        <ng-container *ngFor="let plante of plantes">
+          <ion-col size="4">
+            <ion-card style="height: 40vh;">
+              <ion-card-header class="text-center" style="height: 100%; display: flex; align-items: center; justify-content: space-evenly; flex-direction: column;">
+                <div class="card-image-container" style="width: 50%; height: 50%;">
+                  <img [src]="'https://mspr-infra-bucket.s3.eu-west-3.amazonaws.com/images/' + plante.photo" alt="Plant" class="card-image">
+                </div>
+                <ion-card-title>{{ plante.name }}</ion-card-title>
+                <ion-card-subtitle>Espèce : {{ plante.species }}</ion-card-subtitle>
+                <ion-button class="button-center" (click)="savePlantId(plante.id)">Voir</ion-button>
+              </ion-card-header>
+            </ion-card>
+          </ion-col>
+        </ng-container>
+    </ion-row>
   </ion-content>
 </ion-split-pane>

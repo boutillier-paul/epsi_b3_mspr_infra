@@ -56,7 +56,7 @@
                 <ion-icon name="arrow-undo-circle"></ion-icon>
               </ion-col>
               <ion-col size="11">
-                <a href="/map">Se déconnecter</a>
+                <a href="/logout">Se déconnecter</a>
               </ion-col>
             </ion-row>
           </ion-col>
@@ -73,15 +73,15 @@
         <ion-title>Post de {{first_name}} {{ last_name }}</ion-title>
       </ion-toolbar>
     </ion-header> 
-    
+    <br>
     <div class="ion-text-center" (window:resize)="onResize()">
       <img [src]="post.photo ? 'https://mspr-infra-bucket.s3.eu-west-3.amazonaws.com/images/' + post.photo : 'https://img.freepik.com/vecteurs-premium/vecteur-icone-image-par-defaut-page-image-manquante-pour-conception-site-web-application-mobile-aucune-photo-disponible_87543-11093.jpg'" [style.width]="imageWidth" [style.height]="imageHeight" [style.object-fit]="imageOrientation" [style.max-width]="'100%'" [style.max-height]="'100%'" />
       <br>
-      <h4> <ion-chip>{{post.title}}</ion-chip></h4>
+      <h4 style="color: white"> <ion-chip style="color: white">{{post.title}}</ion-chip></h4>
       <br>
-      <h6>{{post.content}}</h6>
+      <h6 style="color: white">{{post.content}}</h6>
       <br>
-      <h6>Posté le <ion-chip>{{post.created_at |  date: 'dd/MM/YYYY - HH:MM:SS'}}</ion-chip> par <ion-chip>{{first_name}} {{ last_name }}</ion-chip></h6>
+      <h6 style="color: white">Posté le <ion-chip style="color: white">{{post.created_at |  date: 'dd/MM/YYYY - HH:MM:SS'}}</ion-chip> par <ion-chip style="color: white">{{first_name}} {{ last_name }}</ion-chip></h6>
     </div>
 
   </ion-content>

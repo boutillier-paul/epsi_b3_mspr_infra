@@ -87,6 +87,11 @@ const routes: Routes = [
     path: 'advice-click',
     loadChildren: () => import('../app/pages/advice-click/advice-click.module').then( m => m.AdviceClickPageModule)
   },
+  {
+    path: 'logout',
+    loadChildren: () => import('./pages/logout/logout.module').then( m => m.LogoutPageModule)
+  },
+
 
 ];
 

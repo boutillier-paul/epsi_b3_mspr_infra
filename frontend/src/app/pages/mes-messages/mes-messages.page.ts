@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonContent } from '@ionic/angular';
 import { ApiService } from '../../services/api/api.service';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-mes-messages',
@@ -17,24 +18,33 @@ export class MesMessagesPage implements OnInit {
 
   @ViewChild(IonContent) content: IonContent;
 
-  constructor(private api: ApiService) { }
+  constructor(private alertController: AlertController , private api: ApiService) { }
+
+  intervalId: any;
 
   ngOnInit() {
+    this.api.checkToken();
     this.api.getAllBotanists().subscribe((response: any) => {
       this.users = response.map((user: any) => ({
         id: user.id,
         name: `${user.first_name} ${user.last_name}`
       }));
-      console.log(this.users);
+    });
+
+    this.api.getyouruser().subscribe((response: any) => {
+      const yourUserId = response.id;
+      this.users = this.users.filter((user) => user.id !== yourUserId);
     });
   }
-  
 
   saveSelectedUserId() {
     const selectedUser = this.users.find(user => user.id === this.userSelected);
     if (selectedUser) {
       localStorage.setItem('selectedUserId', selectedUser.id.toString());
-
+      this.getMessages();
+      this.intervalId = setInterval(() => {
+      this.getMessages();
+      }, 3000);
     }
   }
 
@@ -42,7 +52,7 @@ export class MesMessagesPage implements OnInit {
     if (this.userSelected) {
       this.api.getMessages(this.userSelected).subscribe((response: any) => {
         const mess = response;
-        this.messages = mess.map((message: any) => ({
+        let messages = mess.map((message: any) => ({
           content: message.content,
           created_at: message.created_at,
           sender_id: message.sender_id,
@@ -52,26 +62,29 @@ export class MesMessagesPage implements OnInit {
           r_first_name: '',
           r_last_name: '',
           user_id: ''
-        }
-        ));
+        }));
+        
         mess.forEach((message: any, index: number) => {
           const senderId = message.sender_id;
           this.api.getUserBySenderIdParams(senderId).subscribe((sender: any) => {
-            this.messages[index].s_first_name = sender.first_name;
-            this.messages[index].s_last_name = sender.last_name;
-            console.log('Tableau après get user par sender ID', this.messages);
+            messages[index].s_first_name = sender.first_name;
+            messages[index].s_last_name = sender.last_name;
           });
+          
           const recieverId = message.reciever_id;
           this.api.getUserByRecieverIdParams(recieverId).subscribe((reciever: any) => {
-            this.messages[index].r_first_name = reciever.first_name;
-            this.messages[index].r_last_name = reciever.last_name;
-            console.log('Tableau après get user par reciever ID', this.messages);
+            messages[index].r_first_name = reciever.first_name;
+            messages[index].r_last_name = reciever.last_name;
           });
+          
           this.api.getUserById().subscribe((user: any) => {
-            this.messages[index].user_id = user.id;
-            console.log('Tableau après get user par reciever ID', this.messages);
+            messages[index].user_id = user.id;
           });
         });
+        
+        setTimeout(() => {
+          this.messages = messages.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        }, 500);
       });
     }
   }
@@ -83,13 +96,24 @@ export class MesMessagesPage implements OnInit {
         content: this.credentials.content.trim()
       };
       this.api.postMessages(message).subscribe((response: any) => {
-        if (response.success) {
+        if (response.created_at) {
           this.credentials.content = '';
-          alert('Message envoyé avec succès');
+          this.showAlert('Succès', 'Message envoyé avec succès');
+        } else if (response.detail) {
+          this.showAlert('Erreur', response.detail);
         } else {
-          alert('Erreur lors de l\'envoi du message');
+          this.showAlert('Erreur Inconnue', 'Une erreur inconnue est survenue.');
         }
       });
     }
+  }
+  
+  async showAlert(header: string, message: string) {
+    const alert = await this.alertController.create({
+      header,
+      message,
+      buttons: ['OK']
+    });
+    await alert.present();
   }
 }

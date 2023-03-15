@@ -56,7 +56,7 @@
                 <ion-icon name="arrow-undo-circle"></ion-icon>
               </ion-col>
               <ion-col size="11">
-                <a href="/map">Se déconnecter</a>
+                <a href="/logout">Se déconnecter</a>
               </ion-col>
             </ion-row>
           </ion-col>
@@ -109,7 +109,7 @@
                     *ngIf="showStartDatePickerFlag"
                     presentation="date"
                     [value]="dateDebut"
-                    class="custom-datetime"
+                    class="custom-datetime my-datetime"
                     displayFormat="DD/MM/YYYY"
                     pickerFormat="DD/MM/YYYY"
                     name="dateDebut"
@@ -121,7 +121,7 @@
                           <ion-icon name="close" class="icon"></ion-icon>
                         </ion-button>
                         <br>
-                        <h5 *ngIf="dateDebut" position="stacked" margin="auto">Date de début sélectionnée : {{dateDebut | date: 'dd/MM/yyyy'}}</h5>
+                        <h5 *ngIf="dateDebut" position="stacked" margin="auto" style="color:white">Date de début sélectionnée : {{dateDebut | date: 'dd/MM/yyyy'}}</h5>
                       </ion-col>
                     </ion-row>
                   </ion-col>
@@ -159,7 +159,7 @@
                           <ion-icon name="close" ></ion-icon>
                         </ion-button>
                         <br>
-                        <h5 *ngIf="dateFin" position="stacked" margin="auto">Date de fin sélectionnée : {{dateFin | date: 'dd/MM/yyyy'}}</h5>
+                        <h5 *ngIf="dateFin" position="stacked" margin="auto" style="color:white">Date de fin sélectionnée : {{dateFin | date: 'dd/MM/yyyy'}}</h5>
                       </ion-col>
                     </ion-row>
                   </ion-col>

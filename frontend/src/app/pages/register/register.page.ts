@@ -28,10 +28,6 @@ export class RegisterPage {
     private router: Router,
     @Inject(forwardRef(() => ApiService)) private api: ApiService
   ) { }
-
-
-  
-  // Méthode appelée lorsque vous cliquez sur le bouton Suivant dans la première carte
   saveName() {
     this.isNameCardVisible = false;
     setTimeout(() => {
@@ -40,11 +36,7 @@ export class RegisterPage {
     }, 500);
   }
 
-  // Méthode appelée lorsque vous cliquez sur le bouton Suivant dans la première carte
   async saveLogin() {
-    //                                              Route /signup/ 
-    // Encrypter le mdp 
-    // Vérifier que les mots de passe sont identiques
     if (this.credentials2.pass !== this.credentials2.passconf) {
       const alert = await this.alertController.create({
         header: 'Erreur',
@@ -55,7 +47,6 @@ export class RegisterPage {
       return;
     }
 
-    // Vérifier que le mot de passe a plus de 8 caractères
     if (this.credentials2.pass.length < 8) {
       const alert = await this.alertController.create({
         header: 'Erreur',
@@ -66,7 +57,6 @@ export class RegisterPage {
       return;
     }
 
-    // Vérifier que le mot de passe contient une majuscule, une minuscule, un chiffre et un caractère spécial
     const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
     if (!regex.test(this.credentials2.pass)) {
       const alert = await this.alertController.create({
@@ -78,8 +68,6 @@ export class RegisterPage {
       await alert.present();
       return;
     }
-
-    // Si toutes les conditions sont remplies, afficher un message de succès et enregistre le mdp et le login
     const alert = await this.alertController.create({
       header: 'Succès',
       message: 'Le mot de passe est valide !',

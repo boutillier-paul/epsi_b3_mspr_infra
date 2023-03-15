@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ApiService } from 'src/app/services/api/api.service';
 import { Router } from '@angular/router';
 
@@ -9,6 +9,8 @@ import { Router } from '@angular/router';
 })
 export class AdvicesPage {
 
+  @ViewChild('deconnexionLink', { static: true }) deconnexionLink: ElementRef;
+
   searchTerm: string = '';
   advices: any[] = [];
   filteredAdvices: any[] = [];
@@ -18,6 +20,7 @@ export class AdvicesPage {
   constructor(private router: Router, private api: ApiService) {}
 
   ngOnInit() {
+    this.api.checkToken();
     this.loadAdvices();
   }
 
@@ -25,7 +28,6 @@ export class AdvicesPage {
     this.api.getAllAdvices().subscribe((data) => {
       this.advices = data;
       this.filteredAdvices = data;
-      console.log(this.advices);
     });
   }
 

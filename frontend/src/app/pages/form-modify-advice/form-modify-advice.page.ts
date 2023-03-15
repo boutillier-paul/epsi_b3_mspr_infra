@@ -28,6 +28,7 @@ export class FormModifyAdvicePage implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.api.checkToken();
     this.api.getAdvicesById().subscribe((data) => {
       this.post = data;
       localStorage.setItem('selectedUserId', this.post.user_id);

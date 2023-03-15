@@ -56,7 +56,7 @@
                 <ion-icon name="arrow-undo-circle"></ion-icon>
               </ion-col>
               <ion-col size="11">
-                <a href="/map">Se déconnecter</a>
+                <a href="/logout">Se déconnecter</a>
               </ion-col>
             </ion-row>
           </ion-col>
@@ -84,14 +84,15 @@
         </thead>
         <tbody>
           <tr *ngFor="let garde of gardes">
-            <td class="ion-text-center">{{ garde.name }} / {{ garde.species }}</td>
-            <td class="ion-text-center">{{ garde.start_at |  date: 'dd/MM/YYYY' }} - {{ garde.end_at |  date: 'dd/MM/YYYY' }}</td>
-            <td class="ion-text-center">
-              <button (click)="voirPlus(garde)" class="transbutton" id="open-modal">Cliquez pour plus de détails</button>
+            <td class="ion-text-center" style="color: white">{{ garde.name }} / {{ garde.species }}</td>
+            <td class="ion-text-center" style="color: white">{{ garde.start_at |  date: 'dd/MM/YYYY' }} - {{ garde.end_at |  date: 'dd/MM/YYYY' }}</td>
+            <td class="ion-text-center" style="color: white">
+              <button (click)="voirPlus(garde)" class="transbutton" id="open-modal" style="color: white">Cliquez pour plus de détails</button>
             </td>
           </tr>
         </tbody>
       </table>    
     </div>
+    
   </ion-content>
 </ion-split-pane>

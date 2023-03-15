@@ -1,12 +1,12 @@
 import { Injectable, forwardRef, Inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Platform, NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { BehaviorSubject, Observable, from, of, throwError, catchError } from 'rxjs';
 import { take, map, switchMap } from 'rxjs/operators';
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { Router } from '@angular/router';
-
+import { AlertController } from '@ionic/angular';
 
 const helper = new JwtHelperService();
 const TOKEN_KEY = 'jwt-token';
@@ -25,6 +25,8 @@ export class ApiService {
   private jeton = null;
 
   constructor(
+    private alertController: AlertController,
+    private router: Router,
     public navCtrl: NavController,
     private storage: Storage,
     @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
@@ -63,7 +65,6 @@ export class ApiService {
   
     return this.http.post(api_url+'/api/signup', postData).pipe(
       map(res => {
-        console.log(res)
       
         return res;
       }),
@@ -79,10 +80,9 @@ export class ApiService {
     };
   
     return this.http.post(api_url+'/api/login', postData).pipe(
-      map((res: {access_token?: string}) => { // spécifiez le type de l'objet renvoyé
-        console.log(res);
+      map((res: {access_token?: string}) => { 
   
-        if (res && res.access_token) { // utilisez la notation pointée pour accéder à la propriété 'access_token'
+        if (res && res.access_token) { 
           localStorage.setItem('access_token', res.access_token);
         }
   
@@ -129,9 +129,9 @@ export class ApiService {
             'Authorization': 'Bearer ' + jeton,
           })
         };
-        const ague = localStorage.getItem('selectedUserId');
+        const id = localStorage.getItem('selectedUserId');
 
-        return this.http.get(api_url + `/api/users/`+ ague, httpOptions).pipe(
+        return this.http.get(api_url + `/api/users/`+ id, httpOptions).pipe(
           map(res => {
             return res;
           }),
@@ -202,11 +202,10 @@ export class ApiService {
             'Authorization': 'Bearer ' + jeton,
           })
         };
-        const ague = localStorage.getItem('selectedPlantId');
+        const id = localStorage.getItem('selectedPlantId');
   
-        return this.http.get(api_url + '/api/plants/' + ague, httpOptions).pipe(
+        return this.http.get(api_url + '/api/plants/' + id, httpOptions).pipe(
           map(res => {
-            console.log(res);
             return res;
           }),
           catchError(error => {
@@ -231,7 +230,6 @@ export class ApiService {
     
         return this.http.get(api_url + '/api/plants/' + plantId, httpOptions).pipe(
           map(res => {
-            console.log(res);
             return res;
           }),
           catchError(error => {
@@ -263,7 +261,6 @@ export class ApiService {
 
         return this.http.post(api_url + '/api/plants/', postData, httpOptions).pipe(
           map(res => {
-            console.log(res);
             return res;
           }),
           catchError(error => {
@@ -285,11 +282,10 @@ export class ApiService {
             'Authorization': 'Bearer ' + jeton,
           })
         };
-        const ague = localStorage.getItem('selectedGuardId');
+        const id = localStorage.getItem('selectedGuardId');
   
-        return this.http.get(api_url + '/api/guards/' + ague, httpOptions).pipe(
+        return this.http.get(api_url + '/api/guards/' + id, httpOptions).pipe(
           map(res => {
-            console.log(res);
             return res;
           }),
           catchError(error => {
@@ -317,9 +313,9 @@ export class ApiService {
           "end_at": end_at,
         };
 
-        const ague = localStorage.getItem('selectedPlantId');
+        const id = localStorage.getItem('selectedPlantId');
 
-        return this.http.post(api_url + `/api/guards/` + "?plant_id="+ ague, postData, httpOptions).pipe(
+        return this.http.post(api_url + `/api/guards/` + "?plant_id="+ id, postData, httpOptions).pipe(
           map(res => {
             return res;
           }),
@@ -336,19 +332,15 @@ export class ApiService {
         const httpOptions = {
           headers: new HttpHeaders({
             'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Method': 'GET,HEAD,OPTIONS,POST,PUT',
+            'Access-Control-Allow-Method': 'GET,HEAD,OPTIONS,POST,PUT,DELETE',
             'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + jeton,
           })
         };
-        let postData = {
-          "guard_id": guardId
-        };
   
-        return this.http.delete(api_url + '/api/guards/' + postData, httpOptions).pipe(
+        return this.http.delete(api_url + '/api/guards/' + guardId, httpOptions).pipe(
           map(res => {
-            console.log(res);
             return res;
           }),
           catchError(error => {
@@ -358,7 +350,32 @@ export class ApiService {
       })
     );
   }
-  postSession(credentials: {photo: string, rapport: string}): Observable<any> {
+  getsessions(): Observable<any> {
+    return of(localStorage.getItem('access_token')).pipe(
+      switchMap(jeton => {
+        const httpOptions = {
+          headers: new HttpHeaders({
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Method': 'GET,HEAD,OPTIONS,POST,PUT',
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jeton,
+          })
+        };
+        const id = localStorage.getItem('selectedGuardId');
+  
+        return this.http.get(api_url + '/api/sessions/guard/' + id, httpOptions).pipe(
+          map(res => {
+            return res;
+          }),
+          catchError(error => {
+            return of(error.error);
+          })
+        );
+      })
+    );
+  }
+  postSession(credentials: {photo: string, report: string}): Observable<any> {
     return of(localStorage.getItem('access_token')).pipe(
       switchMap(jeton => {
         const httpOptions = {
@@ -372,12 +389,13 @@ export class ApiService {
   
         let postData = {
           "photo": credentials.photo,
-          "rapport": credentials.rapport,
+          "report": credentials.report,
         };
 
-        return this.http.post(api_url + '/api/sessions/', postData, httpOptions).pipe(
+        const id = localStorage.getItem('selectedGuardId');
+
+        return this.http.post(api_url + '/api/sessions/' + "?guard_id="+ id, postData, httpOptions).pipe(
           map(res => {
-            console.log(res);
             return res;
           }),
           catchError(error => {
@@ -424,9 +442,9 @@ export class ApiService {
           })
         };
         
-        const ague = localStorage.getItem('selectedAdviceName');
+        const id = localStorage.getItem('selectedAdviceName');
 
-        return this.http.get(api_url + `/api/advices/search/${ague}`, httpOptions).pipe(
+        return this.http.get(api_url + `/api/advices/search/${id}`, httpOptions).pipe(
           map(res => {
             return res;
           }),
@@ -449,9 +467,9 @@ export class ApiService {
             'Authorization': 'Bearer ' + jeton,
           })
         };
-        const ague = localStorage.getItem('selectedAdviceId');
+        const id = localStorage.getItem('selectedAdviceId');
 
-        return this.http.get(api_url + `/api/advices/`+ ague, httpOptions).pipe(
+        return this.http.get(api_url + `/api/advices/`+ id, httpOptions).pipe(
           map(res => {
             return res;
           }),
@@ -481,6 +499,8 @@ export class ApiService {
           "photo": credentials.photo
         };
 
+
+
         return this.http.post(api_url + `/api/advices/`, postData, httpOptions).pipe(
           map(res => {
             return res;
@@ -505,14 +525,14 @@ export class ApiService {
           })
         };
 
-        const ague = localStorage.getItem('selectedAdviceId');
+        const id = localStorage.getItem('selectedAdviceId');
 
         let postData = {
           "title": credentials.title,
           "content": credentials.content
         };
 
-        return this.http.put(api_url + `/api/advices/${ague}`, postData, httpOptions).pipe(
+        return this.http.put(api_url + `/api/advices/${id}`, postData, httpOptions).pipe(
           map(res => {
             return res;
           }),
@@ -535,11 +555,10 @@ export class ApiService {
             'Authorization': 'Bearer ' + jeton,
           })
         };
-        const ague = localStorage.getItem('selectedAdviceId');
+        const id = localStorage.getItem('selectedAdviceId');
   
-        return this.http.delete(api_url + '/api/advices/' + ague, httpOptions).pipe(
+        return this.http.delete(api_url + '/api/advices/' + id, httpOptions).pipe(
           map(res => {
-            console.log(res);
             return res;
           }),
           catchError(error => {
@@ -561,16 +580,46 @@ export class ApiService {
             'Authorization': 'Bearer ' + jeton,
           })
         };
-        
-        let getData = {
+  
+        let postData = {
           "pos_lat": posLat,
           "pos_lng": posLng,
           "radius": radius
         };
 
-        return this.http.get(api_url + '/api/guards/open/around'+ getData, httpOptions).pipe(
+        const params = new HttpParams()
+          .set('pos_lat', posLat.toString())
+          .set('pos_lng', posLng.toString())
+          .set('radius', radius.toString());
+  
+        return this.http.get(api_url + '/api/guards/open/around', { params, ...httpOptions }).pipe(
           map(res => {
-            console.log(res);
+            return res;
+          }),
+          catchError(error => {
+            return of(error.error);
+          })
+        );
+      })
+    );
+  }
+  takeGuard(selectedGuardId: number): Observable<any> {
+    return of(localStorage.getItem('access_token')).pipe(
+      switchMap(jeton => {
+        const httpOptions = {
+          headers: new HttpHeaders({
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Method': 'GET,HEAD,OPTIONS,POST,PUT',
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jeton,
+          })
+        };
+  
+        const body = JSON.stringify({});
+  
+        return this.http.put(api_url + `/api/guards/${selectedGuardId}/take`, body, httpOptions).pipe(
+          map(res => {
             return res;
           }),
           catchError(error => {
@@ -606,7 +655,6 @@ export class ApiService {
   
         return this.http.post(api_url + `/api/photo/`, postData, httpOptions).pipe(
           map(res => {
-            console.log(res)
             return res;
           }),
           catchError(error => {
@@ -657,9 +705,9 @@ export class ApiService {
           "content": message.content,
         };
 
-        const ague = localStorage.getItem('selectedUserId');
+        const id = localStorage.getItem('selectedUserId');
 
-        return this.http.post(api_url + `/api/messages/`+ ague, postData, httpOptions).pipe(
+        return this.http.post(api_url + `/api/messages/`+ id, postData, httpOptions).pipe(
           map(res => {
             return res;
           }),
@@ -717,6 +765,33 @@ export class ApiService {
         );
       })
     );
+  }
+  logout() {
+    localStorage.clear()
+    this.router.navigateByUrl('/');
+    this.userData.next(null);
+  }
+  checkToken() {
+    this.getyouruser().subscribe(response => {
+      if (response.created_at) {
+      } else if (response.detail || response.error) {
+        this.presentAlert();
+        this.router.navigate(['/home']);
+      }
+    }, error => {
+      this.presentAlert();
+      this.router.navigate(['/home']);
+    });
+  }
+  
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      header: 'Erreur de token',
+      message: 'Le token est invalide',
+      buttons: ['OK']
+    });
+  
+    await alert.present();
   }
   }
 

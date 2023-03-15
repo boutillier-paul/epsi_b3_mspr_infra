@@ -1,3 +1,7 @@
+"""
+    MODELS
+"""
+
 from sqlalchemy import Column, ForeignKey, Integer, Float, String, DateTime, Text, func
 from sqlalchemy.orm import relationship
 
@@ -5,6 +9,9 @@ from .database import Base
 
 
 class User(Base):
+    """
+        User
+    """
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
@@ -23,12 +30,18 @@ class User(Base):
     advices = relationship("Advice", back_populates="user")
 
 class Role(Base):
+    """
+        Roles
+    """
     __tablename__ = "roles"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String, unique=True, nullable=False)
 
 class Plant(Base):
+    """
+        Plant
+    """
     __tablename__ = "plants"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
@@ -45,6 +58,9 @@ class Plant(Base):
     guards = relationship("Guard", back_populates="plant")
 
 class Guard(Base):
+    """
+        Guard
+    """
     __tablename__ = "guards"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True, nullable=False)
@@ -60,10 +76,13 @@ class Guard(Base):
 
     created_at = Column(DateTime, nullable=False, default=func.now())
 
-    care_sessions = relationship("Care_Session", back_populates="guard")
+    care_sessions = relationship("CareSession", back_populates="guard")
 
 
-class Care_Session(Base):
+class CareSession(Base):
+    """
+        CareSession
+    """
     __tablename__ = "care_sessions"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True, nullable=False)
@@ -78,6 +97,9 @@ class Care_Session(Base):
 
 
 class Message(Base):
+    """
+        Message
+    """
     __tablename__ = "messages"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True, nullable=False)
@@ -93,6 +115,9 @@ class Message(Base):
 
 
 class Advice(Base):
+    """
+        Advice
+    """
     __tablename__ = "advices"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True, nullable=False)
@@ -103,3 +128,4 @@ class Advice(Base):
 
     user_id = Column(Integer,  ForeignKey("users.id"), nullable=True)
     user = relationship("User", back_populates="advices")
+    
