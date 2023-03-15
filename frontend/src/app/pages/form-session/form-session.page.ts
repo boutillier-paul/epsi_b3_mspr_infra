@@ -67,7 +67,7 @@ export class FormSessionPage implements OnInit {
               message: 'Votre session a été envoyée !',
               buttons: [
                 {
-                  text: 'Aller à la page d\'accueil',
+                  text: 'Mes gardes',
                   handler: () => {
                     this.router.navigate(['/mes-gardes']);
                   }
