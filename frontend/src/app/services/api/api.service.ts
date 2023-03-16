@@ -394,7 +394,7 @@ export class ApiService {
 
         const id = localStorage.getItem('selectedGuardId');
 
-        return this.http.post(api_url + '/api/sessions/' + "?guard_id="+ id, postData, httpOptions).pipe(
+        return this.http.post(api_url + '/api/sessions' + "?guard_id="+ id, postData, httpOptions).pipe(
           map(res => {
             return res;
           }),

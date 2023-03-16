@@ -77,26 +77,29 @@ export class MesGardesClickPage implements OnInit {
       if (this.imageOrientation === 'cover') {
         this.imageHeight = '100%';
         this.imageWidth = 'auto';
-      } else {
-        this.imageHeight = 'auto';
-        this.imageWidth = '100%';
-      }
-      const aspectRatio = imgWidth / imgHeight;
-      const maxWidth = windowWidth * 0.9;
-      const maxHeight = windowHeight * 0.6;
-  
-      if (aspectRatio >= 1) {
-        this.imageWidth = `${maxWidth}px`;
-        this.imageHeight = 'auto';
       } else if (isSquare) {
-        const maxImageSize = Math.min(maxWidth, maxHeight);
+        const maxImageSize = Math.min(windowWidth * 0.9, windowHeight * 0.6) * 0.9;
         this.imageWidth = `${maxImageSize}px`;
         this.imageHeight = `${maxImageSize}px`;
         this.imageOrientation = 'none';
       } else {
-        this.imageHeight = `${maxHeight}px`;
-        this.imageWidth = 'auto';
-        this.imageOrientation = 'contain';
+        if (imgWidth > imgHeight) {
+          this.imageWidth = `${windowWidth * 0.9}px`;
+          this.imageHeight = 'auto';
+        } else {
+          this.imageHeight = `${windowHeight * 0.6}px`;
+          this.imageWidth = 'auto';
+        }
+        const aspectRatio = imgWidth / imgHeight;
+        const maxWidth = windowWidth * 0.9;
+        const maxHeight = windowHeight * 0.6;
+        if (aspectRatio >= 1) {
+          this.imageWidth = `${maxWidth}px`;
+          this.imageHeight = 'auto';
+        } else if (imgHeight > maxHeight) {
+          this.imageHeight = `${maxHeight}px`;
+          this.imageWidth = 'auto';
+        }
       }
       const imgEl = document.getElementById('my-img');
       if (imgEl) {

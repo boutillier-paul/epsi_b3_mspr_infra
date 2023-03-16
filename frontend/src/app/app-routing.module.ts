@@ -91,6 +91,11 @@ const routes: Routes = [
     path: 'logout',
     loadChildren: () => import('./pages/logout/logout.module').then( m => m.LogoutPageModule)
   },
+  {
+    path: 'mentions-legales',
+    loadChildren: () => import('../app/pages/mentions-legales/mentions-legales.module').then( m => m.MentionsLegalesPageModule)
+  },
+
 
 
 ];
