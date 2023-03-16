@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api/api.service';
 import { AlertController, RangeCustomEvent } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { DatePipe } from '@angular/common';
 import * as L from 'leaflet';
 
 @Component({
@@ -108,11 +109,17 @@ export class MapPage implements OnInit {
           popupContent.style.borderRadius = '75px';
           popupContent.style.padding = '10px';
           popupContent.style.textAlign = 'center';
+          const startDate = new Date(guard.start_at);
+          const endDate = new Date(guard.end_at);
+          const formattedStartDate = `${startDate.getDate().toString().padStart(2, '0')}/${(startDate.getMonth() + 1).toString().padStart(2, '0')}/${startDate.getFullYear().toString()}`;
+          const formattedEndDate = `${endDate.getDate().toString().padStart(2, '0')}/${(endDate.getMonth() + 1).toString().padStart(2, '0')}/${endDate.getFullYear().toString()}`;
+
           popupContent.innerHTML = `
-            <b>${plant.name}</b><br>${plant.species}<br>
+            <b>${plant.name}</b><br>${plant.species}<br>Du ${formattedStartDate} au ${formattedEndDate}<br>
             <img src="${this.gardes[index].photo}" width="200px"/><br>
-            <button style="margin-top: 10px;" id="save-guard-button-${guard.id}">Garder la plante</button>
+            <ion-button style="margin-top: 10px;" id="save-guard-button-${guard.id}">Garder la plante</ion-button>
           `;
+          popupContent.style.width = 'max-content';
           const button = popupContent.querySelector(`#save-guard-button-${guard.id}`);
           if (button) {
             button.addEventListener('click', async () => {
