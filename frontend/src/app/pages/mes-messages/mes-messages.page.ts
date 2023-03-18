@@ -57,24 +57,24 @@ export class MesMessagesPage implements OnInit {
           created_at: message.created_at,
           sender_id: message.sender_id,
           reciever_id: message.reciever_id,
-          s_first_name: '',
-          s_last_name: '',
-          r_first_name: '',
-          r_last_name: '',
+          sender_first_name: '',
+          sender_last_name: '',
+          reciever_first_name: '',
+          reciever_last_name: '',
           user_id: ''
         }));
         
         mess.forEach((message: any, index: number) => {
           const senderId = message.sender_id;
           this.api.getUserBySenderIdParams(senderId).subscribe((sender: any) => {
-            messages[index].s_first_name = sender.first_name;
-            messages[index].s_last_name = sender.last_name;
+            messages[index].sender_first_name = sender.first_name;
+            messages[index].sender_last_name = sender.last_name;
           });
           
           const recieverId = message.reciever_id;
           this.api.getUserByRecieverIdParams(recieverId).subscribe((reciever: any) => {
-            messages[index].r_first_name = reciever.first_name;
-            messages[index].r_last_name = reciever.last_name;
+            messages[index].reciever_first_name = reciever.first_name;
+            messages[index].reciever_last_name = reciever.last_name;
           });
           
           this.api.getUserById().subscribe((user: any) => {
@@ -89,7 +89,18 @@ export class MesMessagesPage implements OnInit {
     }
   }
 
-  sendMessage() {
+  async sendMessage() {
+
+    if (!/^[\w\s.;,()?!]+$/.test(this.credentials.content)) {
+      const alert = await this.alertController.create({
+        header: 'Erreur',
+        message: 'Caractères spéciaux non autorisés dans le champ',
+        buttons: ['OK']
+      });
+      await alert.present();
+      return;
+    }
+    
     if (this.credentials.content.trim() !== '') {
       const message = {
         user_id: this.userSelected,

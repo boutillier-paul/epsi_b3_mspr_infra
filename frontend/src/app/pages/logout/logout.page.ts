@@ -19,5 +19,4 @@ export class LogoutPage implements OnInit {
   ngOnInit() {
     this.api.logout();
   }
-
 }

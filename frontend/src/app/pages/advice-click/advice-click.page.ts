@@ -41,14 +41,10 @@ export class AdviceClickPage implements OnInit {
         this.setImageSize();
       });
     });
-
-    // Appelle la méthode onResize() lorsque la taille de l'écran change
     window.addEventListener('resize', () => {
       this.onResize();
     });
   }
-
-  // Met à jour la taille de l'image en fonction de la taille de l'écran
    onResize() {
     this.setImageSize();
   }
@@ -70,12 +66,10 @@ export class AdviceClickPage implements OnInit {
       this.imageHeight = 'auto';
       this.imageWidth = '50%';
     }
-  
-    // apply max height and width based on screen dimensions
     const img = new Image();
     img.onload = () => {
-      const maxWidth = windowWidth * 0.9; // 90% de la largeur de l'écran
-      const maxHeight = windowHeight * 0.4; // 40% de la hauteur de l'écran
+      const maxWidth = windowWidth * 0.9; 
+      const maxHeight = windowHeight * 0.4;
       const widthRatio = maxWidth / img.width;
       const heightRatio = maxHeight / img.height;
       const ratio = Math.min(widthRatio, heightRatio);
@@ -111,11 +105,9 @@ export class AdviceClickPage implements OnInit {
         });
         await alert.present();
       } else {
-        console.log('La réponse de l\'API ne contient ni le token ni le detail de l\'erreur');
-        console.log(res);
         const alert = await this.alertController.create({
           header: 'Erreur de type inconnu',
-          message: res.detail,
+          message: 'Une erreur de type inconnue s\'est produite',
           buttons: ['OK']
         });
         await alert.present();

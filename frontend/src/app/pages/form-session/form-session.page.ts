@@ -39,10 +39,8 @@ export class FormSessionPage implements OnInit {
       };
       reader.readAsDataURL(file);
       const fileName = file.name;
-      const fileExtension = fileName.split('.').pop();
 
     } else {
-      // si aucun fichier sélectionné, réinitialiser la variable
       this.selectedFile = null;
     }
   }
@@ -52,6 +50,16 @@ export class FormSessionPage implements OnInit {
       const alert = await this.alertController.create({
         header: 'Attention',
         message: 'Veuillez sélectionner une image pour envoyer votre session.',
+        buttons: ['OK']
+      });
+      await alert.present();
+      return;
+    }
+
+    if (!/^[\w\s.;,()?!]+$/.test(this.credentials.report)) {
+      const alert = await this.alertController.create({
+        header: 'Erreur',
+        message: 'Caractères spéciaux non autorisés dans le champ',
         buttons: ['OK']
       });
       await alert.present();
@@ -86,8 +94,8 @@ export class FormSessionPage implements OnInit {
             await alert.present();
           } else {
             const alert = await this.alertController.create({
-              header: 'Erreur',
-              message: 'Erreur inconnue',
+              header: 'Erreur de type inconnu',
+              message: 'Une erreur inconnue est survenue.',
               buttons: ['OK']
             });
             await alert.present();
@@ -102,8 +110,12 @@ export class FormSessionPage implements OnInit {
         });
         await alert.present();
       } else {
-        console.log('La réponse de l\'API ne contient ni le token ni l\'erreur');
-        console.log(res);
+        const alert = await this.alertController.create({
+          header: 'Erreur de type inconnu',
+          message: 'Une erreur inconnue est survenue.',
+          buttons: ['OK']
+        });
+        await alert.present();
       }
     })
 

@@ -24,11 +24,11 @@ export class MapPage implements OnInit {
 
   constructor(private api: ApiService, private router: Router, public alertController: AlertController) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.api.checkToken();
+    this.api.checkRole();
     if (navigator.geolocation) {
       if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        // L'utilisateur utilise un appareil mobile
         navigator.geolocation.watchPosition((position) => {
           this.pos_lat = position.coords.latitude;
           this.pos_lng = position.coords.longitude;
@@ -38,7 +38,6 @@ export class MapPage implements OnInit {
           this.getAndShowMarkers();
         });
       } else {
-        // L'utilisateur utilise un PC
         navigator.geolocation.getCurrentPosition((position) => {
           this.pos_lat = position.coords.latitude;
           this.pos_lng = position.coords.longitude;
@@ -49,7 +48,12 @@ export class MapPage implements OnInit {
         });
       }
     } else {
-      console.log('La géolocalisation n\'est pas supportée par ce navigateur.');
+      const alert = await this.alertController.create({
+        header: 'Avertissement',
+        message: 'La géolocalisation n\'est pas supporté sur cette plateforme !',
+        buttons: ['OK']
+      });
+      await alert.present();
     }
   }
 
@@ -174,11 +178,9 @@ export class MapPage implements OnInit {
           });
           await alert.present();
         } else {
-          console.log('La réponse de l\'API ne contient ni le token ni le detail de l\'erreur');
-          console.log(res);
           const alert = await this.alertController.create({
             header: 'Erreur de type inconnu',
-            message: res.detail,
+            message: 'Une erreur de type inconnue s\'est produite',
             buttons: ['OK']
           });
           await alert.present();

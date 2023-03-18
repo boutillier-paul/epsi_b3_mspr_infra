@@ -3,7 +3,6 @@
   <div id="container">
     <img src="assets/icon/Arosaje.png" height="200 px" width="350 px">
     <h3><strong style="color: white;">Des plantes en pleine santé, sans aucun souci.</strong></h3><br>
-    <!-- Formulaire pour saisir le nom, prénom, email et N° de tel -->
     <ion-row  >
       <ion-col size="12" size-sm="10" offset-sm="1" size-md="8" offset-md="2" size-lg="6" offset-lg="3" size-xl="4"
         offset-xl="4">
@@ -42,13 +41,14 @@
    
       </ion-col>
     </ion-row>
-    <!-- Fin 1er formulaire  -->
-<!-- Formulaire pour saisir MDP + confirmation MDP -->
+
 <ion-row>
-  <ion-col size="12" size-sm="10" offset-sm="1" size-md="8" offset-md="2" size-lg="6" offset-lg="3" size-xl="4"
-    offset-xl="4">
+  <ion-col size="12" size-sm="10" offset-sm="1" size-md="8" offset-md="2" size-lg="6" offset-lg="3" size-xl="4" offset-xl="4">
 
     <ion-card *ngIf="showSecondCard">
+      <ion-button class="cancel-button" color="dark" (click)="returnName()">
+        Annuler
+      </ion-button>
       <ion-card-header>
         <ion-card-title class="ion-text-center"><strong>Informations de connexion</strong></ion-card-title>
         <h6>Votre mot de passe doit contenir : 8 caractères minimum, 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial ("_" et "-" non acceptés)</h6>
@@ -70,17 +70,21 @@
             <ion-item lines="none" class="back2">
               <ion-label position="stacked">Confirmer le mot de passe :</ion-label>
               <ion-input type="password" placeholder="Entrez à nouveau le mot de passe" name="passconf" required [(ngModel)]="credentials2.passconf"></ion-input>
+            </ion-item>           
+
+            <ion-item class="back2" lines="none">
+              <ion-checkbox slot="start" required class="custom-checkbox"></ion-checkbox>
+              <ion-label for="mentions-legales">J'accepte les <a href="/mentions-legales">Conditions Générales d'Utilisation</a></ion-label>
             </ion-item>
 
-            <ion-item class="back2">
-              <ion-checkbox slot="start" required class="custom-checkbox"></ion-checkbox>
-              <ion-label>Consentement RGPD</ion-label>
+            <ion-item class="back2" lines="none">
+              <h6>Veuilez accepter les termes d'utilisation pour continuer la procédure d'inscription.</h6>
             </ion-item>
 
             <ion-button expand="block" type="submit" [disabled]="!monFormulaire.valid" (click)="saveLogin()">Valider</ion-button>
         </form>
           <ion-item lines="none" class="back">
-            <h3>Vous avez déjà un compte ? <a href="/login"><strong>Connectez-vous !!</strong></a></h3>
+            <h3>Vous avez déjà un compte ? <a href="/login"><strong style="color:blueze">Connectez-vous !!</strong></a></h3>
           </ion-item>
 
       </ion-card-content>
@@ -88,6 +92,5 @@
 
   </ion-col>
 </ion-row>
-<!-- Fin dernier formulaire  -->
   </div>
 </ion-content>

@@ -83,15 +83,24 @@
       </ion-col>
         <ng-container *ngFor="let plante of plantes">
           <ion-col size="4">
-            <ion-card style="height: 40vh;">
-              <ion-card-header class="text-center" style="height: 100%; display: flex; align-items: center; justify-content: space-evenly; flex-direction: column;">
-                <div class="card-image-container" style="width: 50%; height: 50%;">
+            <ion-card style="height: 100%;">
+              <ion-card-header class="text-center">
+                <div class="card-image-container">
                   <img [src]="'https://mspr-infra-bucket.s3.eu-west-3.amazonaws.com/images/' + plante.photo" alt="Plant" class="card-image">
                 </div>
                 <ion-card-title>{{ plante.name }}</ion-card-title>
                 <ion-card-subtitle>Espèce : {{ plante.species }}</ion-card-subtitle>
-                <ion-button class="button-center" (click)="savePlantId(plante.id)">Voir</ion-button>
               </ion-card-header>
+              <ion-card-content>
+                <ion-row>
+                <ion-col size="6" class="button-container">
+                  <ion-button class="button-center backbutton1" (click)="savePlantId(plante.id)" expand="block">Voir</ion-button>
+                </ion-col> 
+                <ion-col size="6" class="button-container">
+                  <ion-button class="button-center backbutton2" (click)="deletePlantId(plante.id)" expand="block">Supprimer</ion-button>
+                </ion-col> 
+              </ion-row>
+              </ion-card-content>
             </ion-card>
           </ion-col>
         </ng-container>

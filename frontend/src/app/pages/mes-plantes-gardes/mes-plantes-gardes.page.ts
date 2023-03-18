@@ -57,7 +57,12 @@ export class MesPlantesGardesPage implements OnInit {
           });
           await alert.present();
         } else {
-          console.log('Une erreur s\'est produite :', error);
+          const alert = await this.alertController.create({
+            header: 'Erreur Inconnue',
+            message: 'Une erreur inconnue est survenue.',
+            buttons: ['OK'],
+          });
+          await alert.present();
         }
       }
     );

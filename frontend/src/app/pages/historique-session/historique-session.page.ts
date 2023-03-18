@@ -23,8 +23,13 @@ export class HistoriqueSessionPage implements OnInit {
       (response: any[]) => {
         this.sessions = response;
       },
-      (error) => {
-        console.log('Une erreur s\'est produite :', error);
+      async (error) => {
+        const alert = await this.alertController.create({
+          header: 'Erreur',
+          message: error,
+          buttons: ['OK']
+        });
+        await alert.present();
       }
     );
   }
@@ -38,7 +43,6 @@ export class HistoriqueSessionPage implements OnInit {
     localStorage.setItem('SessionSelectionnee', JSON.stringify(SessionSelectionnee));
     this.router.navigateByUrl('/historique-session-click');
   }
-  // //
 }
 
 

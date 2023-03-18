@@ -36,6 +36,14 @@ export class RegisterPage {
     }, 500);
   }
 
+  returnName() {
+    this.isNameCardVisible = true;
+    setTimeout(() => {
+      this.showSecondCard = false;
+      this.showFirstCard = true;      
+    }, 500);
+  }
+
   async saveLogin() {
     if (this.credentials2.pass !== this.credentials2.passconf) {
       const alert = await this.alertController.create({
@@ -57,12 +65,32 @@ export class RegisterPage {
       return;
     }
 
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+    if (!/^[a-zA-Z0-9]+$/.test(this.credentials1.nom) || !/^[a-zA-Z0-9]+$/.test(this.credentials1.prenom) || !/^[a-zA-Z0-9]+$/.test(this.credentials2.login)) {
+      const alert = await this.alertController.create({
+        header: 'Erreur',
+        message: 'Caractères spéciaux non autorisés dans ces champs ( Nom, Prenom ou Identifiant)',
+        buttons: ['OK']
+      });
+      await alert.present();
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.credentials1.email)) {
+      const alert = await this.alertController.create({
+        header: 'Erreur',
+        message: 'Caractères spéciaux non autorisés dans ces champs (Email)',
+        buttons: ['OK']
+      });
+      await alert.present();
+      return;
+    }
+
+    const regex = /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%?&]{8,}$/;
     if (!regex.test(this.credentials2.pass)) {
       const alert = await this.alertController.create({
         header: 'Erreur',
         message:
-          'Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (!@#$%^&*()_+-=[]{};:\'",./<>?).',
+          'Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial.',
         buttons: ['OK'],
       });
       await alert.present();
@@ -109,8 +137,12 @@ export class RegisterPage {
         });
         await alert.present();
       } else {
-        console.log('La réponse de l\'API ne contient ni le token ni l\'erreur');
-        console.log(res);
+        const alert = await this.alertController.create({
+          header: 'Erreur de type inconnu',
+          message: 'Une erreur inconnue est survenue.',
+          buttons: ['OK']
+        });
+        await alert.present();
       }
     });
   }

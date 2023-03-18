@@ -87,26 +87,119 @@ export class MonProfilPage implements OnInit {
     localStorage.setItem('selectedAdviceId', String(id));
     this.router.navigate(['/form-modify-advice']);
   }
-  async checkToken() {
-    const accessToken = localStorage.getItem('access_token');
-    if (accessToken) {
-      await this.router.navigate(['/mon-profil']);
-    } else {
-      const alert = await this.alertController.create({
-        header: 'Erreur',
-        message: 'Vous devez être connecté pour accéder à cette page.',
-        buttons: [
-          {
-            text: 'OK',
-            handler: () => {
-              this.router.navigate(['/home']);
-            }
+
+  async deletePlantId(id: number) {
+    localStorage.setItem('selectedPlantId', String(id));
+    const alert = await this.alertController.create({
+      header: 'Confirmation requise',
+      message: 'Êtes-vous sûr de vouloir supprimer cette plante ?',
+      buttons: [
+        {
+          text: 'Non',
+          handler: () => {
+            this.router.navigate(['/mon-profil']);
           }
-        ]
-      });
-      await alert.present();
+        },
+        {
+          text: 'Oui',
+          handler: () => {
+            this.deletePlantconf();
+          }
+        }
+      ]
+    
+    });
+    await alert.present();
     }
-  }
+    async deletePlantconf(){
+      this.api.deletePlant().subscribe(async res => {
+        if (res && res.hasOwnProperty('created_at')) {
+          const alert = await this.alertController.create({
+            header: 'Succès',
+            message: "Votre plante a été supprimé.",
+            buttons: [        {
+              text: 'Ok',
+              handler: () => {
+                this.router.navigate(['/mon-profil']);
+              }
+            }
+          ]
+          });
+          await alert.present();
+        } else if (res && res.hasOwnProperty('detail')) {
+          const alert = await this.alertController.create({
+            header: 'Erreur',
+            message: res.detail,
+            buttons: ['OK']
+          });
+          await alert.present();
+        } else {
+          const alert = await this.alertController.create({
+            header: 'Erreur de type inconnu',
+            message: 'Une erreur inconnue est survenue.',
+            buttons: ['OK']
+          });
+          await alert.present();
+        }
+      });
+    } 
+
+  async cancelGuardId(id: number) {
+    localStorage.setItem('selectedGuardId', String(id));
+    const alert = await this.alertController.create({
+      header: 'Confirmation requise',
+      message: 'Êtes-vous sûr de vouloir annuler cette garde ?',
+      buttons: [
+        {
+          text: 'Non',
+          handler: () => {
+            this.router.navigate(['/mon-profil']);
+          }
+        },
+        {
+          text: 'Oui',
+          handler: () => {
+            this.cancelGuardconf();
+          }
+        }
+      ]
+    
+    });
+    await alert.present();
+    }
+    async cancelGuardconf(){
+      this.api.cancelGuard().subscribe(async res => {
+        if (res && res.hasOwnProperty('created_at')) {
+          const alert = await this.alertController.create({
+            header: 'Succès',
+            message: "Votre garde a été annulée.",
+            buttons: [        {
+              text: 'Ok',
+              handler: () => {
+                this.router.navigate(['/mon-profil']);
+              }
+            }
+          ]
+          });
+          await alert.present();
+        } else if (res && res.hasOwnProperty('detail')) {
+          const alert = await this.alertController.create({
+            header: 'Erreur',
+            message: res.detail,
+            buttons: ['OK']
+          });
+          await alert.present();
+        } else {
+          const alert = await this.alertController.create({
+            header: 'Erreur de type inconnu',
+            message: 'Une erreur inconnue est survenue.',
+            buttons: ['OK']
+          });
+          await alert.present();
+        }
+      });
+    } 
+
  async deleteAdviceId(id: number) {
     localStorage.setItem('selectedAdviceId', String(id));
     const alert = await this.alertController.create({
@@ -153,11 +246,9 @@ export class MonProfilPage implements OnInit {
           });
           await alert.present();
         } else {
-          console.log('La réponse de l\'API ne contient ni le token ni le detail de l\'erreur');
-          console.log(res);
           const alert = await this.alertController.create({
             header: 'Erreur de type inconnu',
-            message: res.detail,
+            message: 'Une erreur inconnue est survenue.',
             buttons: ['OK']
           });
           await alert.present();
