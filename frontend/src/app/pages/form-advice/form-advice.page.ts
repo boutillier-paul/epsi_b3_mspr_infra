@@ -24,6 +24,7 @@ export class FormAdvicePage implements OnInit {
 
   ngOnInit() {
     this.api.checkToken();
+    this.api.checkRole();
   }
 
   onFileSelected(event: any) {
