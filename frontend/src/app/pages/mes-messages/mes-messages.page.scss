@@ -102,3 +102,11 @@ ion-menu {
     align-items: center;
     --border-radius: 15px;
   }
+
+  .centered-chip {
+    text-align: center;
+  }
+  ion-footer {
+    bottom: 0px;
+    width: 100%;
+  }

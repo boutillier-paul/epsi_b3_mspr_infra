@@ -1,6 +1,6 @@
 import { Component, forwardRef, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController} from '@ionic/angular';
 import { ApiService } from 'src/app/services/api/api.service';
 
 interface Plant {
@@ -19,6 +19,7 @@ interface Plant {
 export class MonProfilPage implements OnInit {
   last_name: string;
   first_name: string;
+  email: string;
   plants: Plant[];
   guards: any[];
   advices: any[];
@@ -36,6 +37,7 @@ export class MonProfilPage implements OnInit {
       (res: any) => {
         this.last_name = res.last_name;
         this.first_name = res.first_name;
+        this.email = res.email;
         this.plants = res.plants.sort((a: Plant, b: Plant) => {
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
         }).slice(0, 3);
@@ -256,4 +258,3 @@ export class MonProfilPage implements OnInit {
       });
     }
 }
-

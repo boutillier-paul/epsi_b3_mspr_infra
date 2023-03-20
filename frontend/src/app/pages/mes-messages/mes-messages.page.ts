@@ -9,7 +9,7 @@ import { AlertController } from '@ionic/angular';
   styleUrls: ['./mes-messages.page.scss'],
 })
 export class MesMessagesPage implements OnInit {
-  users: { id: number, name: string }[] = [];
+  users: { id: number, name: string, email: string }[] = [];
   userSelected: number | undefined;
   messages: any[] = [];
   credentials: {
@@ -27,7 +27,8 @@ export class MesMessagesPage implements OnInit {
     this.api.getAllBotanists().subscribe((response: any) => {
       this.users = response.map((user: any) => ({
         id: user.id,
-        name: `${user.first_name} ${user.last_name}`
+        name: `${user.first_name} ${user.last_name}`,
+        email: user.email
       }));
     });
 
@@ -38,7 +39,7 @@ export class MesMessagesPage implements OnInit {
   }
 
   saveSelectedUserId() {
-    const selectedUser = this.users.find(user => user.id === this.userSelected);
+    const selectedUser = this.userSelected ? this.users.find(user => user.id === this.userSelected) : undefined;
     if (selectedUser) {
       localStorage.setItem('selectedUserId', selectedUser.id.toString());
       this.getMessages();
@@ -46,6 +47,11 @@ export class MesMessagesPage implements OnInit {
       this.getMessages();
       }, 3000);
     }
+  }
+
+  getSelectedUserEmail() {
+    const user = this.users.find(user => user.id === this.userSelected);
+    return user ? user.email : 'Email du destinataire';
   }
 
   getMessages() {

@@ -104,3 +104,8 @@ ion-menu {
   ion-input[type="file"] {
     --color: #fff;
   }
+  ion-footer {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+  }

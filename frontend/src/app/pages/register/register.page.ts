@@ -1,7 +1,9 @@
-import { Component, forwardRef, Inject} from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { Component } from '@angular/core';
+import { AlertController, ModalController } from '@ionic/angular';
 import { ApiService } from 'src/app/services/api/api.service';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { TermsPage } from '../terms/terms.page';
 
 @Component({
   selector: 'app-register',
@@ -9,6 +11,11 @@ import { Router } from '@angular/router';
   styleUrls: ['./register.page.scss'],
 })
 export class RegisterPage {
+
+  articles: any[] = [];
+  selectedArticle: any = null;
+  selectedArticleModal: any = null;
+
   credentials1 = {
     nom: '',
     prenom: '',
@@ -23,11 +30,21 @@ export class RegisterPage {
   showFirstCard = true;
   showSecondCard = false;
   isNameCardVisible = true;
+
   constructor(
     public alertController: AlertController,
+    private modalController: ModalController,
     private router: Router,
-    @Inject(forwardRef(() => ApiService)) private api: ApiService
-  ) { }
+    private http: HttpClient,
+    private api: ApiService
+  ) {
+  }
+
+  ngOnInit() {
+    this.selectedArticleModal = document.getElementById('my-modal');
+  }
+
+
   saveName() {
     this.isNameCardVisible = false;
     setTimeout(() => {
@@ -111,6 +128,7 @@ export class RegisterPage {
     });
     await alert.present();
   }
+
   
   async signup(){
     this.api.signup(this.credentials1, this.credentials2).subscribe(async res => {
@@ -147,4 +165,16 @@ export class RegisterPage {
     });
   }
 
+  async presentModal() {
+    const modal = await this.modalController.create({
+      component: TermsPage,
+      cssClass: 'terms-css',
+    });
+    return await modal.present();
+  }
+    
+  async dismissModal() {
+    return await this.modalController.dismiss();
+  }
 }
+

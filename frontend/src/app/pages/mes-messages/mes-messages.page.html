@@ -79,6 +79,9 @@
       <ion-select placeholder="Choisissez parmi les botanistes" [(ngModel)]="userSelected" (ionChange)="saveSelectedUserId()">
         <ion-select-option *ngFor="let user of users" [value]="user.id">{{user.name}}</ion-select-option>
       </ion-select>
+      <ion-chip class="centered-chip">
+        <ion-label>{{ getSelectedUserEmail() }}</ion-label>
+      </ion-chip>
     </ion-item>
     <div class="container3" #messageContainer style="overflow-y: scroll; height: 80%;">
       <ion-card *ngFor="let message of messages" [class.notme]="message.sender_id === message.user_id" [class.me]="message.sender_id !== message.user_id">
@@ -96,6 +99,12 @@
       <ion-input [(ngModel)]="credentials.content" placeholder="Insérez votre message"></ion-input>
       <ion-button expand="block" (click)="sendMessage()">Envoyer</ion-button>
     </ion-item>
-
+    
+    <br>
+    <ion-footer >
+      <ion-toolbar>
+        <ion-title style="text-align: center;">© Copyright 2023 Arosa-je - <a href="mentions-legales">mentions légales & politique de confidentialité</a></ion-title>
+      </ion-toolbar>
+    </ion-footer> 
   </ion-content>
 </ion-split-pane>

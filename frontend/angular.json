@@ -20,6 +20,13 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              {
+                "glob": "**/*.pdf",
+                "input": "src/assets/docs",
+                "output": "/assets/docs"
+              },
               {
                 "glob": "**/*",
                 "input": "src/assets",
@@ -145,7 +152,7 @@
     "analytics": "14a26c9d-e95d-4e3d-b5da-49099d0759b5"
   },
   "schematics": {
-    "@ionic/angular-toolkit:component": {
+    "@ionic/angular-toolkit:componFent": {
       "styleext": "scss"
     },
     "@ionic/angular-toolkit:page": {

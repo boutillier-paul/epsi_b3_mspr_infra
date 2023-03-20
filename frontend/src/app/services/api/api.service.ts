@@ -810,6 +810,36 @@ export class ApiService {
       })
     );
   }
+  updateUser(credentials: {first_name: string, last_name: string, email: string}): Observable<any> {
+    return of(localStorage.getItem('access_token')).pipe(
+      switchMap(jeton => {
+        const httpOptions = {
+          headers: new HttpHeaders({
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Method': 'GET,HEAD,OPTIONS,POST,PUT',
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jeton,
+          })
+        };
+
+        let postData = {
+          "last_name": credentials.last_name,
+          "first_name": credentials.first_name,
+          "email": credentials.email
+        };
+
+        return this.http.put(api_url + `/api/users/me`, postData, httpOptions).pipe(
+          map(res => {
+            return res;
+          }),
+          catchError(error => {
+            return of(error.error);
+          })
+        );
+      })
+    );
+  }
 
   logout() {
     localStorage.clear()

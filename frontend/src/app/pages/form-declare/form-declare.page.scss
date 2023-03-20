@@ -107,3 +107,8 @@ ion-menu {
   .custom-checkbox {
     --background: RGB(52, 106, 74);
   }
+  ion-footer {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+  }

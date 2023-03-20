@@ -1,0 +1,13 @@
+ion-modal {
+  max-height: 85%;
+  max-width: 85%;
+
+  ion-content {
+    overflow: auto;
+  }
+}
+
+iframe {
+  width: 100%;
+  height: 100%;
+}
