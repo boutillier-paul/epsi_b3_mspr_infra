@@ -83,7 +83,7 @@ export class MesMessagesPage implements OnInit {
         });
         
         setTimeout(() => {
-          this.messages = messages.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+          this.messages = messages.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).reverse();
         }, 500);
       });
     }

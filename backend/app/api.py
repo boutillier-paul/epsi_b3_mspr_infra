@@ -127,14 +127,13 @@ async def update_user(userUpdate: schemas.UserUpdate,
     db_user = controllers.update_user(database, user=userUpdate, user_id=current_user.id)
     return db_user
 
-@router.get("/users", tags=["ADMIN ROLE"],
+@router.get("/users", tags=["Users"],
     response_model=list[schemas.User], dependencies=[Depends(JWTBearer())])
 async def read_users(skip: int = 0, limit: int = 100,
     database: Session = Depends(get_db), authorization: str = Header(None)):
     """
         read_users
     """
-    controllers.check_user_role(database, role_name="ADMIN", authorization=authorization)
     db_users = controllers.get_users(database, skip=skip, limit=limit)
     return db_users
 

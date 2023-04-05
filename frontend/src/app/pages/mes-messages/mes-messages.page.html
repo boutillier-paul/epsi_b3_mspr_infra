@@ -81,7 +81,7 @@
       </ion-select>
     </ion-item>
     <div class="container3" #messageContainer style="overflow-y: scroll; height: 80%;">
-      <ion-card *ngFor="let message of messages.reverse()" [class.notme]="message.sender_id === message.user_id" [class.me]="message.sender_id !== message.user_id">
+      <ion-card *ngFor="let message of messages" [class.notme]="message.sender_id === message.user_id" [class.me]="message.sender_id !== message.user_id">
         <ion-card-header>
           <ion-card-title>{{message.s_first_name}} {{message.s_last_name}}<ion-chip>{{message.created_at |  date: 'dd/MM/YYYY - HH:MM:SS'}}</ion-chip></ion-card-title>
           <ion-card-subtitle></ion-card-subtitle>
