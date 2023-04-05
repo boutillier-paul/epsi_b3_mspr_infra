@@ -13,7 +13,7 @@
             </ion-row>
             <ion-row class="ion-border-bottom ">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="leaf-outline"></ion-icon>
+                <ion-icon name="leaf-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11" class="ion-border-right">
                 <a href="/map">Garder une plante</a>
@@ -21,7 +21,7 @@
             </ion-row>
             <ion-row class="ion-border-top ion-border-bottom">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="clipboard-outline"></ion-icon>
+                <ion-icon name="clipboard-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11" class="ion-border-right">
                 <a href="/form-declare">Déclarer sa plante</a>
@@ -29,7 +29,7 @@
             </ion-row>
             <ion-row class="ion-border-top ion-border-bottom">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="add-circle-outline"></ion-icon>
+                <ion-icon name="add-circle-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11" class="ion-border-right">
                 <a href="/form-garde">Faire une demande de garde</a>
@@ -37,7 +37,7 @@
             </ion-row>
             <ion-row class="ion-border-top ion-border-bottom">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="mail-outline"></ion-icon>
+                <ion-icon name="mail-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11" class="ion-border-right">
                 <a href="/mes-messages">Mes messages</a>
@@ -45,7 +45,7 @@
             </ion-row>
             <ion-row class="ion-border-top">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="person-outline"></ion-icon>
+                <ion-icon name="person-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11">
                 <a href="/mon-profil">Mon espace</a>
@@ -53,7 +53,7 @@
             </ion-row>
             <ion-row class="ion-border-top">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="arrow-undo-circle"></ion-icon>
+                <ion-icon name="arrow-undo-circle" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11">
                 <a href="/logout">Se déconnecter</a>
@@ -61,7 +61,7 @@
             </ion-row>
           </ion-col>
         </ion-row>
-      </ion-grid>
+      </ion-grid> 
     </ion-content>
   </ion-menu>
   
@@ -71,12 +71,12 @@
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
-        <ion-title>Votre espace utilisateur </ion-title>
-        <ion-chip slot="end" (click)="checkToken()">
+        <ion-title>Mon espace </ion-title>
+        <ion-chip slot="end" [routerLink]="['/form-modify-user']" RouterLinkActive="active">
           <ion-avatar>
             <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
           </ion-avatar>
-          <ion-label>{{ first_name }} {{ last_name }}</ion-label>
+          <ion-label>Modifier mon profil</ion-label>
         </ion-chip>
       </ion-toolbar>
     </ion-header> 
@@ -85,26 +85,35 @@
     <ion-grid>
     
       <ion-row style="display: flex; align-items: stretch; margin: 0 auto; max-width: 1250px;">
-        <ion-col size="12"class="ion-text-center">
+        <ion-col size="12" class="ion-text-center">
           <h2 style="color: white">Mes plantes</h2>
         </ion-col>
-        <ion-col size="6"class="ion-text-center">
-          <ion-button [routerLink]="['/form-declare']" RouterLinkActive="active">Ajouter une plante</ion-button>
+        <ion-col size="12" size-sm="6" size-md="6" class="ion-text-center">
+          <ion-button [routerLink]="['/form-declare']" RouterLinkActive="active" class="backbutton1">Ajouter une plante</ion-button>
         </ion-col>
-        <ion-col size="6"class="ion-text-center">
-          <ion-button [routerLink]="['/mes-plantes']" RouterLinkActive="active">Voir toutes mes plantes</ion-button>
+        <ion-col size="12" size-sm="6" size-md="6" class="ion-text-center">
+          <ion-button [routerLink]="['/mes-plantes']" RouterLinkActive="active" class="backbutton1">Voir toutes mes plantes</ion-button>
         </ion-col>
         <ng-container *ngFor="let plant of plants">
-          <ion-col size="4">
+          <ion-col size="12" size-sm="6" size-md="4">
             <ion-card style="height: 100%;">
-              <ion-card-header class="text-center" style="height: 100%;">
+              <ion-card-header class="text-center">
                 <div class="card-image-container">
                   <img [src]="'https://mspr-infra-bucket.s3.eu-west-3.amazonaws.com/images/' + plant.photo" alt="Plant" class="card-image">
                 </div>
                 <ion-card-title>{{ plant.name }}</ion-card-title>
                 <ion-card-subtitle>Espèce : {{ plant.species }}</ion-card-subtitle>
-                <ion-button class="button-center" (click)="savePlantId(plant.id)">Voir</ion-button>
               </ion-card-header>
+              <ion-card-content>
+                <ion-row>
+                <ion-col size="6" class="button-container">
+                  <ion-button class="button-center backbutton1" (click)="savePlantId(plant.id)" expand="block">Voir</ion-button>
+                </ion-col> 
+                <ion-col size="6" class="button-container">
+                  <ion-button class="button-center backbutton2" (click)="deletePlantId(plant.id)" expand="block">Supprimer</ion-button>
+                </ion-col> 
+              </ion-row>
+              </ion-card-content>
             </ion-card>
           </ion-col>
         </ng-container>
@@ -114,22 +123,35 @@
         <ion-col size="12"class="ion-text-center">
           <h2 style="color: white">Mes gardes</h2>
         </ion-col>
-        <ion-col size="6"class="ion-text-center">
-          <ion-button [routerLink]="['/form-garde']" RouterLinkActive="active">Ajouter une garde</ion-button>
+        <ion-col size="12" size-sm="6" size-md="6" class="ion-text-center">
+          <ion-button [routerLink]="['/map']" RouterLinkActive="active" class="backbutton1">Garder une plante</ion-button>
         </ion-col>
-        <ion-col size="6"class="ion-text-center">
-          <ion-button [routerLink]="['/mes-gardes']" RouterLinkActive="active">Voir toutes mes gardes</ion-button>
+        <ion-col size="12" size-sm="6" size-md="6" class="ion-text-center">
+          <ion-button [routerLink]="['/mes-gardes']" RouterLinkActive="active" class="backbutton1">Voir toutes mes gardes</ion-button>
         </ion-col>
       </ion-row>
       <ion-row *ngIf="role_id != 1" style="display: flex; align-items: stretch; margin: 0 auto; max-width: 1250px;">
-        <ng-container *ngFor="let guard of guards">
-          <ion-col size="4">
-            <ion-card>
-              <ion-card-header class="text-center" style="height: 100%;">
-                <ion-card-title> Du {{ guard.start_at |  date: 'dd/MM/YYYY'}}</ion-card-title>
-                <ion-card-subtitle> Au {{ guard.end_at |  date: 'dd/MM/YYYY' }}</ion-card-subtitle>
-                <ion-button class="button-center" (click)="saveGuardId(guard.id)">Voir</ion-button>
+        <ng-container *ngFor="let guard of gardes">
+          <ion-col size="12" size-sm="6" size-md="4">
+            <ion-card style="height: 100%;">
+              <ion-card-header class="text-center">
+                <div class="card-image-container">
+                  <img [src]="'https://mspr-infra-bucket.s3.eu-west-3.amazonaws.com/images/' + guard.photo" alt="Plant" class="card-image">
+                </div>
+                <ion-card-title>Nom de la plante : {{guard.name}}</ion-card-title>
+                <ion-card-subtitle>Propriétaire : <ion-chip>{{guard.first_name}} {{guard.last_name}}</ion-chip></ion-card-subtitle>
+                <ion-card-subtitle>Du <ion-chip>{{ guard.start_at | date: 'dd/MM/YYYY' }}</ion-chip> au <ion-chip>{{ guard.end_at | date: 'dd/MM/YYYY' }}</ion-chip></ion-card-subtitle>
               </ion-card-header>
+              <ion-card-content>
+                <ion-row>
+                  <ion-col size="6" class="button-container">
+                    <ion-button class="button-center backbutton1" (click)="saveGuardId(guard.id)" expand="block">Voir</ion-button>
+                  </ion-col>
+                  <ion-col size="6" class="button-container">
+                    <ion-button class="button-center backbutton2" (click)="cancelGuardId(guard.id)" expand="block">Annuler</ion-button>
+                  </ion-col>
+                </ion-row>
+              </ion-card-content>
             </ion-card>
           </ion-col>
         </ng-container>
@@ -138,7 +160,7 @@
       <ion-row *ngIf="role_id != 1">
         <ion-col class="ion-text-center">
           <h2 style="color: white">Mes posts</h2>
-          <ion-button [routerLink]="['/form-advice']" RouterLinkActive="active">Ajouter un post</ion-button>
+          <ion-button [routerLink]="['/form-advice']" RouterLinkActive="active" class="backbutton1">Ajouter un post</ion-button>
         </ion-col>
       </ion-row>
       <ion-row *ngIf="role_id != 1">
@@ -152,8 +174,8 @@
                 <h2>{{ advice.title }}</h2>
                 <p>{{ advice.content }}</p>
                 <p>{{ advice.created_at | date }}</p>
-                <ion-button (click)="saveAdviceId(advice.id)">Modifier</ion-button>
-                <ion-button (click)="deleteAdviceId(advice.id)">Supprimer</ion-button>
+                <ion-button (click)="saveAdviceId(advice.id)" class="backbutton1">Modifier</ion-button>
+                <ion-button (click)="deleteAdviceId(advice.id)" class="backbutton2">Supprimer</ion-button>
               </ion-label>
             </ion-item>
           </ion-list>
@@ -161,5 +183,13 @@
       </ion-row>
     </ion-grid>
 
+    <br>
+    <ion-footer>
+      <ion-toolbar>
+        <ion-title style="text-align: center; font-size: 18px;">© Copyright 2023 Arosa-je -
+          <a href="mentions-legales">Mentions légales & Politique de confidentialité</a>
+        </ion-title>
+      </ion-toolbar>
+    </ion-footer>
   </ion-content>
 </ion-split-pane>

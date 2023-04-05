@@ -1,7 +1,9 @@
-import { Component, forwardRef, Inject} from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { Component } from '@angular/core';
+import { AlertController, ModalController } from '@ionic/angular';
 import { ApiService } from 'src/app/services/api/api.service';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { TermsPage } from '../terms/terms.page';
 
 @Component({
   selector: 'app-register',
@@ -9,6 +11,11 @@ import { Router } from '@angular/router';
   styleUrls: ['./register.page.scss'],
 })
 export class RegisterPage {
+
+  articles: any[] = [];
+  selectedArticle: any = null;
+  selectedArticleModal: any = null;
+
   credentials1 = {
     nom: '',
     prenom: '',
@@ -23,16 +30,34 @@ export class RegisterPage {
   showFirstCard = true;
   showSecondCard = false;
   isNameCardVisible = true;
+
   constructor(
     public alertController: AlertController,
+    private modalController: ModalController,
     private router: Router,
-    @Inject(forwardRef(() => ApiService)) private api: ApiService
-  ) { }
+    private http: HttpClient,
+    private api: ApiService
+  ) {
+  }
+
+  ngOnInit() {
+    this.selectedArticleModal = document.getElementById('my-modal');
+  }
+
+
   saveName() {
     this.isNameCardVisible = false;
     setTimeout(() => {
       this.showFirstCard = false;
       this.showSecondCard = true;
+    }, 500);
+  }
+
+  returnName() {
+    this.isNameCardVisible = true;
+    setTimeout(() => {
+      this.showSecondCard = false;
+      this.showFirstCard = true;      
     }, 500);
   }
 
@@ -57,12 +82,32 @@ export class RegisterPage {
       return;
     }
 
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+    if (!/^[a-zA-Z0-9]+$/.test(this.credentials1.nom) || !/^[a-zA-Z0-9]+$/.test(this.credentials1.prenom) || !/^[a-zA-Z0-9]+$/.test(this.credentials2.login)) {
+      const alert = await this.alertController.create({
+        header: 'Erreur',
+        message: 'Caractères spéciaux non autorisés dans ces champs ( Nom, Prenom ou Identifiant)',
+        buttons: ['OK']
+      });
+      await alert.present();
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.credentials1.email)) {
+      const alert = await this.alertController.create({
+        header: 'Erreur',
+        message: 'Caractères spéciaux non autorisés dans ces champs (Email)',
+        buttons: ['OK']
+      });
+      await alert.present();
+      return;
+    }
+
+    const regex = /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%?&]{8,}$/;
     if (!regex.test(this.credentials2.pass)) {
       const alert = await this.alertController.create({
         header: 'Erreur',
         message:
-          'Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (!@#$%^&*()_+-=[]{};:\'",./<>?).',
+          'Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial.',
         buttons: ['OK'],
       });
       await alert.present();
@@ -83,6 +128,7 @@ export class RegisterPage {
     });
     await alert.present();
   }
+
   
   async signup(){
     this.api.signup(this.credentials1, this.credentials2).subscribe(async res => {
@@ -109,10 +155,26 @@ export class RegisterPage {
         });
         await alert.present();
       } else {
-        console.log('La réponse de l\'API ne contient ni le token ni l\'erreur');
-        console.log(res);
+        const alert = await this.alertController.create({
+          header: 'Erreur de type inconnu',
+          message: 'Une erreur inconnue est survenue.',
+          buttons: ['OK']
+        });
+        await alert.present();
       }
     });
   }
 
+  async presentModal() {
+    const modal = await this.modalController.create({
+      component: TermsPage,
+      cssClass: 'terms-css',
+    });
+    return await modal.present();
+  }
+    
+  async dismissModal() {
+    return await this.modalController.dismiss();
+  }
 }
+

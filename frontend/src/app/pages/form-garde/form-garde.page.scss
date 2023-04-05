@@ -136,3 +136,12 @@ ion-menu {
   ion-datetime{
     --background: rgb(107, 174, 101, 0.185);
   }
+  ion-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    z-index: 9999;
+  }
+  

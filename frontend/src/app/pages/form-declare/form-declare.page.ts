@@ -24,7 +24,7 @@ export class FormDeclarePage implements OnInit {
     private router: Router,
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.api.checkToken();
     if (navigator.geolocation) {
       if (
@@ -38,25 +38,23 @@ export class FormDeclarePage implements OnInit {
             localStorage.setItem('pos_lat', String(latitude));
             localStorage.setItem('pos_lng', String(longitude));
           },
-          (error) => {
-            console.log('Erreur de géolocalisation : ', error);
-          }
         );
       } else {
-        // L'utilisateur utilise un PC
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const { latitude, longitude } = position.coords;
             localStorage.setItem('pos_lat', String(latitude));
             localStorage.setItem('pos_lng', String(longitude));
           },
-          (error) => {
-            console.log('Erreur de géolocalisation : ', error);
-          }
         );
       }
     } else {
-      console.log("La géolocalisation n'est pas supportée par ce navigateur.");
+      const alert = await this.alertController.create({
+        header: 'Avertissement',
+        message: 'La géolocalisation n\'est pas supporté sur cette plateforme !',
+        buttons: ['OK']
+      });
+      await alert.present();
     }
   }
 
@@ -82,7 +80,7 @@ export class FormDeclarePage implements OnInit {
     if (!this.selectedFile) {
       const alert = await this.alertController.create({
         header: 'Attention',
-        message: 'Veuillez sélectionner une image de déclarer votre plante.',
+        message: 'Veuillez sélectionner une image avant de déclarer votre plante.',
         buttons: ['OK']
       });
       await alert.present();
@@ -113,6 +111,15 @@ export class FormDeclarePage implements OnInit {
       return;
     }
   
+    if (!/^[a-zA-Z0-9 ]+$/.test(this.credentials.species) || !/^[a-zA-Z0-9 ]+$/.test(this.credentials.name)) {
+      const alert = await this.alertController.create({
+        header: 'Erreur',
+        message: 'Caractères spéciaux non autorisés dans ces champs ',
+        buttons: ['OK']
+      });
+      await alert.present();
+      return;
+    }
 
 
     this.api.postPhoto(this.selectedFile).subscribe(async res => {
@@ -146,7 +153,7 @@ export class FormDeclarePage implements OnInit {
           } else {
             const alert = await this.alertController.create({
               header: 'Erreur de type inconnu',
-              message: res.detail,
+              message: 'Une erreur inconnue est survenue.',
               buttons: ['OK']
             });
             await alert.present();
@@ -161,8 +168,12 @@ export class FormDeclarePage implements OnInit {
         });
         await alert.present();
       } else {
-        console.log('La réponse de l\'API ne contient ni le token ni l\'erreur');
-        console.log(res);
+        const alert = await this.alertController.create({
+          header: 'Erreur de type inconnu',
+          message: 'Une erreur inconnue est survenue.',
+          buttons: ['OK']
+        });
+        await alert.present();
       }
     })
     

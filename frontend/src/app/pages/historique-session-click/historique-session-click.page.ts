@@ -50,7 +50,6 @@ export class HistoriqueSessionClickPage implements OnInit {
       this.imageWidth = '100%';
     }
 
-    // apply max height and width based on screen dimensions
     const img = new Image();
     img.onload = () => {
       if (img.width >= img.height) {

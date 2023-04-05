@@ -24,6 +24,7 @@ export class FormAdvicePage implements OnInit {
 
   ngOnInit() {
     this.api.checkToken();
+    this.api.checkRole();
   }
 
   onFileSelected(event: any) {
@@ -40,7 +41,6 @@ export class FormAdvicePage implements OnInit {
       };
       reader.readAsDataURL(file);
       const fileName = file.name;
-      const fileExtension = fileName.split('.').pop();
     }
   }
 
@@ -76,6 +76,16 @@ export class FormAdvicePage implements OnInit {
       return;
     }
 
+    if (!/^[\w\s.;,()?!]+$/.test(this.credentials.title) || !/^[\w\s.;,()?!]+$/.test(this.credentials.content)) {
+      const alert = await this.alertController.create({
+        header: 'Erreur',
+        message: 'Caractères spéciaux non autorisés dans le champ',
+        buttons: ['OK']
+      });
+      await alert.present();
+      return;
+    }
+
     this.api.postPhoto(this.selectedFile).subscribe(async res => {
       if (res && res.hasOwnProperty('filename')) {
         this.credentials.photo = res.filename;
@@ -103,8 +113,12 @@ export class FormAdvicePage implements OnInit {
             });
             await alert.present();
           } else {
-            console.log('La réponse de l\'API ne contient ni le token ni l\'erreur');
-            console.log(res);
+            const alert = await this.alertController.create({
+              header: 'Erreur Inconnue',
+              message: 'Vous avez une erreur inconnue',
+              buttons: ['OK']
+            });
+            await alert.present();
           }
         });
 

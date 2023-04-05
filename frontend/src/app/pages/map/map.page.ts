@@ -24,11 +24,11 @@ export class MapPage implements OnInit {
 
   constructor(private api: ApiService, private router: Router, public alertController: AlertController) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.api.checkToken();
+    this.api.checkRole();
     if (navigator.geolocation) {
       if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        // L'utilisateur utilise un appareil mobile
         navigator.geolocation.watchPosition((position) => {
           this.pos_lat = position.coords.latitude;
           this.pos_lng = position.coords.longitude;
@@ -38,7 +38,6 @@ export class MapPage implements OnInit {
           this.getAndShowMarkers();
         });
       } else {
-        // L'utilisateur utilise un PC
         navigator.geolocation.getCurrentPosition((position) => {
           this.pos_lat = position.coords.latitude;
           this.pos_lng = position.coords.longitude;
@@ -49,7 +48,12 @@ export class MapPage implements OnInit {
         });
       }
     } else {
-      console.log('La géolocalisation n\'est pas supportée par ce navigateur.');
+      const alert = await this.alertController.create({
+        header: 'Avertissement',
+        message: 'La géolocalisation n\'est pas supporté sur cette plateforme !',
+        buttons: ['OK']
+      });
+      await alert.present();
     }
   }
 
@@ -103,7 +107,13 @@ export class MapPage implements OnInit {
           this.gardes[index].pos_lat = plant.pos_lat;
           this.gardes[index].pos_lng = plant.pos_lng;
   
-          const marker = L.marker([plant.pos_lat, plant.pos_lng]).addTo(this.map);
+          const plantIcon = L.icon({
+            iconUrl: '../../../assets/icon/marker-plant.png',
+            iconSize: [40, 50],
+            iconAnchor: [19, 38],
+          });
+          
+          const marker = L.marker([plant.pos_lat, plant.pos_lng], { icon: plantIcon }).addTo(this.map);
           const popupContent = document.createElement('div');
           popupContent.style.backgroundColor = 'white';
           popupContent.style.borderRadius = '75px';
@@ -113,9 +123,10 @@ export class MapPage implements OnInit {
           const endDate = new Date(guard.end_at);
           const formattedStartDate = `${startDate.getDate().toString().padStart(2, '0')}/${(startDate.getMonth() + 1).toString().padStart(2, '0')}/${startDate.getFullYear().toString()}`;
           const formattedEndDate = `${endDate.getDate().toString().padStart(2, '0')}/${(endDate.getMonth() + 1).toString().padStart(2, '0')}/${endDate.getFullYear().toString()}`;
-
+          popupContent.style.maxWidth = '300px';
+          popupContent.style.maxHeight = '350px';
           popupContent.innerHTML = `
-            <b>${plant.name}</b><br>${plant.species}<br>Du ${formattedStartDate} au ${formattedEndDate}<br>
+            <b>Nom : ${plant.name}</b><br>Espèce : ${plant.species}<br>Du ${formattedStartDate} au ${formattedEndDate}<br>
             <img src="${this.gardes[index].photo}" width="200px"/><br>
             <ion-button style="margin-top: 10px;" id="save-guard-button-${guard.id}">Garder la plante</ion-button>
           `;
@@ -174,11 +185,9 @@ export class MapPage implements OnInit {
           });
           await alert.present();
         } else {
-          console.log('La réponse de l\'API ne contient ni le token ni le detail de l\'erreur');
-          console.log(res);
           const alert = await this.alertController.create({
             header: 'Erreur de type inconnu',
-            message: res.detail,
+            message: 'Une erreur de type inconnue s\'est produite',
             buttons: ['OK']
           });
           await alert.present();

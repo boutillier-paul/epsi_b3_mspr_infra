@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Modifier vos informations</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bg-class">
+<div class="ion-text-center" id="container">
+  <ion-button shape="round" [routerLink]="['/mon-profil']" RouterLinkActive="active">Retourner sur mon profil</ion-button>
+  <ion-row>
+    <ion-col size="12" size-sm="10" offset-sm="1" size-md="8" offset-md="2" size-lg="6" offset-lg="3" size-xl="4"
+      offset-xl="4">
+ 
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title class="ion-text-center"><strong>Modifiez vos identifiants</strong></ion-card-title>
+        </ion-card-header>
+ 
+        <ion-card-content>
+ 
+          <ion-item lines="none" class="back2">
+            <ion-label position="stacked">Votre nom</ion-label>
+            <ion-input type="text" name="last_name" value="{{ last_name }}" [(ngModel)]="credentials.last_name"> </ion-input>
+          </ion-item>
+ 
+          <ion-item lines="none" class="back2">
+            <ion-label position="stacked">Votre prénom</ion-label>
+            <ion-input type="text" name="first_name" value="{{ first_name }}" [(ngModel)]="credentials.first_name"></ion-input>
+          </ion-item>
+
+          <ion-item lines="none" class="back2">
+            <ion-label position="stacked">Votre adresse-mail</ion-label>
+            <ion-input type="email" name="email" value="{{ email }}" [(ngModel)]="credentials.email"></ion-input>
+          </ion-item>
+ 
+          <ion-button expand="block" (click)="updateUser()">Modifier mon post</ion-button>
+
+        </ion-card-content>
+      </ion-card>
+ 
+    </ion-col>
+  </ion-row>
+</div>
+<br>
+<ion-footer>
+  <ion-toolbar>
+    <ion-title style="text-align: center; font-size: 18px;">© Copyright 2023 Arosa-je -
+      <a href="mentions-legales">Mentions légales & Politique de confidentialité</a>
+    </ion-title>
+  </ion-toolbar>
+</ion-footer>
+
+</ion-content>

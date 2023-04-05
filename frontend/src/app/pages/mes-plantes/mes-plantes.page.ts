@@ -54,6 +54,63 @@ export class MesPlantesPage implements OnInit {
     localStorage.setItem('selectedPlantId', String(id));
     this.router.navigate(['/mes-plantes-click']);
   }
+
+  
+  async deletePlantId(id: number) {
+    localStorage.setItem('selectedPlantId', String(id));
+    const alert = await this.alertController.create({
+      header: 'Confirmation requise',
+      message: 'Êtes-vous sûr de vouloir supprimer cette plante ?',
+      buttons: [
+        {
+          text: 'Non',
+          handler: () => {
+            this.router.navigate(['/mon-profil']);
+          }
+        },
+        {
+          text: 'Oui',
+          handler: () => {
+            this.deletePlantconf();
+          }
+        }
+      ]
+    
+    });
+    await alert.present();
+    }
+    async deletePlantconf(){
+      this.api.deletePlant().subscribe(async res => {
+        if (res && res.hasOwnProperty('created_at')) {
+          const alert = await this.alertController.create({
+            header: 'Succès',
+            message: "Votre plante a été supprimé.",
+            buttons: [        {
+              text: 'Ok',
+              handler: () => {
+                this.router.navigate(['/mon-profil']);
+              }
+            }
+          ]
+          });
+          await alert.present();
+        } else if (res && res.hasOwnProperty('detail')) {
+          const alert = await this.alertController.create({
+            header: 'Erreur',
+            message: res.detail,
+            buttons: ['OK']
+          });
+          await alert.present();
+        } else {
+          const alert = await this.alertController.create({
+            header: 'Erreur de type inconnu',
+            message: 'Une erreur inconnue est survenue.',
+            buttons: ['OK']
+          });
+          await alert.present();
+        }
+      });
+    }
 }
 
 

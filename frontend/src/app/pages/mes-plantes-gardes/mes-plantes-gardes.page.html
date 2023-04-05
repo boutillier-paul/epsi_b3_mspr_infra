@@ -13,7 +13,7 @@
             </ion-row>
             <ion-row class="ion-border-bottom ">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="leaf-outline"></ion-icon>
+                <ion-icon name="leaf-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11" class="ion-border-right">
                 <a href="/map">Garder une plante</a>
@@ -21,7 +21,7 @@
             </ion-row>
             <ion-row class="ion-border-top ion-border-bottom">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="clipboard-outline"></ion-icon>
+                <ion-icon name="clipboard-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11" class="ion-border-right">
                 <a href="/form-declare">Déclarer sa plante</a>
@@ -29,7 +29,7 @@
             </ion-row>
             <ion-row class="ion-border-top ion-border-bottom">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="add-circle-outline"></ion-icon>
+                <ion-icon name="add-circle-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11" class="ion-border-right">
                 <a href="/form-garde">Faire une demande de garde</a>
@@ -37,7 +37,7 @@
             </ion-row>
             <ion-row class="ion-border-top ion-border-bottom">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="mail-outline"></ion-icon>
+                <ion-icon name="mail-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11" class="ion-border-right">
                 <a href="/mes-messages">Mes messages</a>
@@ -45,7 +45,7 @@
             </ion-row>
             <ion-row class="ion-border-top">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="person-outline"></ion-icon>
+                <ion-icon name="person-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11">
                 <a href="/mon-profil">Mon espace</a>
@@ -53,7 +53,7 @@
             </ion-row>
             <ion-row class="ion-border-top">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="arrow-undo-circle"></ion-icon>
+                <ion-icon name="arrow-undo-circle" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11">
                 <a href="/logout">Se déconnecter</a>
@@ -61,7 +61,7 @@
             </ion-row>
           </ion-col>
         </ion-row>
-      </ion-grid>
+      </ion-grid> 
     </ion-content>
   </ion-menu>
   <ion-content class="bg-class" id="my-content">
@@ -73,30 +73,38 @@
         <ion-title>Les gardes de ma plante</ion-title>
       </ion-toolbar>
     </ion-header> 
-    <div class="table-container" *ngIf="gardes.length > 0">
-      <table>
-        <thead>
-          <tr>
-            <th>Date de début</th>
-            <th>Date de fin</th>
-            <th>Nom</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let guard of gardes">
-            <td style="color: white">{{ guard.start_at | date:'dd/MM/yyyy' }}</td>
-            <td style="color: white">{{ guard.end_at | date:'dd/MM/yyyy' }}</td>
-            <td style="color: white">{{ guard.first_name }} {{ guard.last_name }}</td>
-            <td>
-              <button style="background-color: rgba(0,0,0,0); text-decoration: underline;"(click)="viewGuard(guard.id)" style="color: white">Consulter</button>
-              <br>
-              <button style="background-color: rgba(0,0,0,0); text-decoration: underline;" (click)="deleteGuardAsk(guard.id)" style="color: white">Supprimer</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-  </div>
+  <ion-row style="display: flex; align-items: stretch; margin: 0 auto; max-width: 1250px;">
+    <ion-col size="12"class="ion-text-center">
+      <ion-button style="text-align: center; " [routerLink]="['/mes-plantes']" RouterLinkActive="active">Consulter une autre plante ?</ion-button>
+    </ion-col>
+    <ng-container *ngFor="let guard of gardes">
+      <ion-col size="12" size-sm="6" size-md="4">
+        <ion-card style="height: 100%;">
+          <ion-card-header class="text-center">
+            <ion-card-title>Gardien : {{ guard.first_name }} {{ guard.last_name }}</ion-card-title>
+            <ion-card-subtitle>Du {{ guard.start_at | date:'dd/MM/yyyy' }} au {{ guard.end_at | date:'dd/MM/yyyy' }}</ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-row>
+            <ion-col size="6" class="button-container">
+              <ion-button class="button-center backbutton1" (click)="viewGuard(guard.id)" expand="block" style="color: white">Consulter</ion-button>
+            </ion-col> 
+            <ion-col size="6" class="button-container">
+              <ion-button class="button-center backbutton2" (click)="deleteGuardAsk(guard.id)" expand="block" style="color: white">Supprimer</ion-button>
+            </ion-col> 
+          </ion-row>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ng-container>
+  </ion-row>
+  <br>
+  <ion-footer>
+    <ion-toolbar>
+      <ion-title style="text-align: center; font-size: 18px;">© Copyright 2023 Arosa-je -
+        <a href="mentions-legales">Mentions légales & Politique de confidentialité</a>
+      </ion-title>
+    </ion-toolbar>
+  </ion-footer>
   </ion-content>
 </ion-split-pane>

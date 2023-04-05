@@ -13,8 +13,8 @@ export class FormSessionPage implements OnInit {
     photo: '',
     report: '',
   };
-  selectedFile: {filename: string , data: string};
-  
+  selectedFile: { filename: string, data: string } | null = null;
+
   constructor(
     public alertController: AlertController,
     private router: Router,
@@ -24,7 +24,6 @@ export class FormSessionPage implements OnInit {
   ngOnInit() {
     this.api.checkToken();
   }
-  
 
   onFileSelected(event: any) {
     if (event.target.files.length > 0) {
@@ -40,8 +39,9 @@ export class FormSessionPage implements OnInit {
       };
       reader.readAsDataURL(file);
       const fileName = file.name;
-      const fileExtension = fileName.split('.').pop();
-  
+
+    } else {
+      this.selectedFile = null;
     }
   }
 
@@ -49,7 +49,17 @@ export class FormSessionPage implements OnInit {
     if (!this.selectedFile) {
       const alert = await this.alertController.create({
         header: 'Attention',
-        message: 'Veuillez sélectionner une image d\'envoyer votre session.',
+        message: 'Veuillez sélectionner une image pour envoyer votre session.',
+        buttons: ['OK']
+      });
+      await alert.present();
+      return;
+    }
+
+    if (!/^[\w\s.;,()?!]+$/.test(this.credentials.report)) {
+      const alert = await this.alertController.create({
+        header: 'Erreur',
+        message: 'Caractères spéciaux non autorisés dans le champ',
         buttons: ['OK']
       });
       await alert.present();
@@ -59,7 +69,7 @@ export class FormSessionPage implements OnInit {
     this.api.postPhoto(this.selectedFile).subscribe(async res => {
       if (res && res.hasOwnProperty('filename')) {
         this.credentials.photo = res.filename;
-  
+
         this.api.postSession(this.credentials).subscribe(async res => {
           if (res && res.hasOwnProperty('created_at')) {
             const alert = await this.alertController.create({
@@ -83,8 +93,12 @@ export class FormSessionPage implements OnInit {
             });
             await alert.present();
           } else {
-            console.log('La réponse de l\'API ne contient ni le token ni l\'erreur');
-            console.log(res);
+            const alert = await this.alertController.create({
+              header: 'Erreur de type inconnu',
+              message: 'Une erreur inconnue est survenue.',
+              buttons: ['OK']
+            });
+            await alert.present();
           }
         });
 
@@ -96,18 +110,14 @@ export class FormSessionPage implements OnInit {
         });
         await alert.present();
       } else {
-        console.log('La réponse de l\'API ne contient ni le token ni l\'erreur');
-        console.log(res);
+        const alert = await this.alertController.create({
+          header: 'Erreur de type inconnu',
+          message: 'Une erreur inconnue est survenue.',
+          buttons: ['OK']
+        });
+        await alert.present();
       }
     })
-  
-    const alert = await this.alertController.create({
-      header: 'Session envoyée',
-      message: 'Votre session a été envoyée.',
-      buttons: ['OK']
-    });
-    await alert.present();
-  
-    
+
   }
 }

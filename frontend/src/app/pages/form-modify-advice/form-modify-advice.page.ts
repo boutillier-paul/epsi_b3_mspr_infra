@@ -41,14 +41,10 @@ export class FormModifyAdvicePage implements OnInit {
         this.setImageSize();
       });
     });
-
-    // Appelle la méthode onResize() lorsque la taille de l'écran change
     window.addEventListener('resize', () => {
       this.onResize();
     });
   }
-
-  // Met à jour la taille de l'image en fonction de la taille de l'écran
   onResize() {
     this.setImageSize();
   }
@@ -70,12 +66,11 @@ export class FormModifyAdvicePage implements OnInit {
       this.imageHeight = 'auto';
       this.imageWidth = '50%';
     }
-  
-    // apply max height and width based on screen dimensions
+
     const img = new Image();
     img.onload = () => {
-      const maxWidth = windowWidth * 0.9; // 90% de la largeur de l'écran
-      const maxHeight = windowHeight * 0.4; // 40% de la hauteur de l'écran
+      const maxWidth = windowWidth * 0.9;
+      const maxHeight = windowHeight * 0.4; 
       const widthRatio = maxWidth / img.width;
       const heightRatio = maxHeight / img.height;
       const ratio = Math.min(widthRatio, heightRatio);
@@ -85,8 +80,19 @@ export class FormModifyAdvicePage implements OnInit {
     img.src = this.imageUrl;
   }
 
-  updatePost()
+  async updatePost()
   {
+
+    if (!/^[\w\s.;,()?!]+$/.test(this.credentials.title) || !/^[\w\s.;,()?!]+$/.test(this.credentials.content)) {
+      const alert = await this.alertController.create({
+        header: 'Erreur',
+        message: 'Caractères spéciaux non autorisés dans le champ',
+        buttons: ['OK']
+      });
+      await alert.present();
+      return;
+    }
+    
     this.api.updateAdvices(this.credentials).subscribe(async res => {
       if (res && res.hasOwnProperty('id')) {
         const alert = await this.alertController.create({
@@ -111,11 +117,9 @@ export class FormModifyAdvicePage implements OnInit {
         });
         await alert.present();
       } else {
-        console.log('La réponse de l\'API ne contient ni le token ni le detail de l\'erreur');
-        console.log(res);
         const alert = await this.alertController.create({
           header: 'Erreur de type inconnu',
-          message: res.detail,
+          message: 'Une erreur inconnue est survenue.',
           buttons: ['OK']
         });
         await alert.present();

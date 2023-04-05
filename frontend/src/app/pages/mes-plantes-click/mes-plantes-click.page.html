@@ -13,7 +13,7 @@
             </ion-row>
             <ion-row class="ion-border-bottom ">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="leaf-outline"></ion-icon>
+                <ion-icon name="leaf-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11" class="ion-border-right">
                 <a href="/map">Garder une plante</a>
@@ -21,7 +21,7 @@
             </ion-row>
             <ion-row class="ion-border-top ion-border-bottom">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="clipboard-outline"></ion-icon>
+                <ion-icon name="clipboard-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11" class="ion-border-right">
                 <a href="/form-declare">Déclarer sa plante</a>
@@ -29,7 +29,7 @@
             </ion-row>
             <ion-row class="ion-border-top ion-border-bottom">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="add-circle-outline"></ion-icon>
+                <ion-icon name="add-circle-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11" class="ion-border-right">
                 <a href="/form-garde">Faire une demande de garde</a>
@@ -37,7 +37,7 @@
             </ion-row>
             <ion-row class="ion-border-top ion-border-bottom">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="mail-outline"></ion-icon>
+                <ion-icon name="mail-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11" class="ion-border-right">
                 <a href="/mes-messages">Mes messages</a>
@@ -45,7 +45,7 @@
             </ion-row>
             <ion-row class="ion-border-top">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="person-outline"></ion-icon>
+                <ion-icon name="person-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11">
                 <a href="/mon-profil">Mon espace</a>
@@ -53,7 +53,7 @@
             </ion-row>
             <ion-row class="ion-border-top">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="arrow-undo-circle"></ion-icon>
+                <ion-icon name="arrow-undo-circle" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11">
                 <a href="/logout">Se déconnecter</a>
@@ -61,7 +61,7 @@
             </ion-row>
           </ion-col>
         </ion-row>
-      </ion-grid>
+      </ion-grid> 
     </ion-content>
   </ion-menu>
   <ion-content class="bg-class" id="my-content">
@@ -81,9 +81,18 @@
         <h5 style="color: white;">Espèce de la plante : <ion-chip style="color: white;">{{espece}}</ion-chip></h5>
         <h5 style="color: white;">Nom de la plante : <ion-chip style="color: white;">{{name}}</ion-chip></h5>
         <ng-container *ngIf="guards.length > 0">
-          <ion-button expand="block"  [disabled]="vardisabled" (click)="gotoguards()">Voir vos gardes</ion-button>
+          <ion-button style="width: 50%; white-space: normal;" expand="block" [disabled]="vardisabled" (click)="gotoguards()">Voir</ion-button>
         </ng-container>
       </div>
     </div>
+    <br><br><br>
+    <br>
+    <ion-footer>
+      <ion-toolbar>
+        <ion-title style="text-align: center; font-size: 18px;">© Copyright 2023 Arosa-je -
+          <a href="mentions-legales">Mentions légales & Politique de confidentialité</a>
+        </ion-title>
+      </ion-toolbar>
+    </ion-footer>
   </ion-content>
 </ion-split-pane>
