@@ -40,7 +40,6 @@ export class FormAdvicePage implements OnInit {
         }
       };
       reader.readAsDataURL(file);
-      const fileName = file.name;
     }
   }
 
