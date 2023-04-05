@@ -1,97 +1,147 @@
 ion-menu {
-    max-width: 300px;
-    --ion-background-color: rgb(43, 43, 43);
-  }
+  max-width: 300px;
+  --ion-background-color: rgb(43, 43, 43);
+}
 
-  @media only screen and (max-width: 768px) {
-    ion-menu {
-      max-width: 100%;
-    }
+@media only screen and (max-width: 768px) {
+  ion-menu {
+    max-width: 100%;
   }
+}
 
-  #container {
-    text-align: center;
-  
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  
-  #container strong {
-    font-size: 20px;
-    line-height: 26px;
-  }
-  
-  #container p {
-    font-size: 16px;
-    line-height: 22px;
-  
-    color: #8c8c8c;
-  
-    margin: 0;
-  }
-  
-  #container a {
-    text-decoration: none;
-  }
-  .bg-class{
-    --background: linear-gradient(180deg, RGB(64, 144, 107)  0%, RGB(31, 75, 56) 100%) !important;
-  }
+#container {
+  text-align: center;
 
-  .ion-border-top {
-    border-top: 1px solid white;
-  }
-  
-  .ion-border-bottom {
-    border-bottom: 1px solid white;
-  }
-  
-  .image-container {
-    text-align: center;
-    margin: 0 auto;
-  }
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
 
-  a{
-    color: white !important;
-    text-decoration: none;
-  }
+#container strong {
+  font-size: 20px;
+  line-height: 26px;
+}
 
-  .row-spacing {
-    margin-bottom: 20px;
-  }
-  .table-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 80vh;
-  }
-  
-  table {
-    width: 80%;
-    border-collapse: collapse;
-    margin: 0 auto;
-  }
-  
-  th, td {
-    padding: 10px;
-    text-align: center;
-    border: 1px solid #ddd;
-  }
-  
-  th {
-    background-color: #f2f2f2;
-    color: #000;
-    border: 1px solid #000;
-  }
-  .transbutton {
-    background-color: transparent;
-    font-size: 15px;
-    text-decoration: underline;
-  }
-  ion-footer {
-    position: absolute;
-    bottom: 0px;
-    width: 100%;
-  }
+#container p {
+  font-size: 16px;
+  line-height: 22px;
+
+  color: #8c8c8c;
+
+  margin: 0;
+}
+
+#container a {
+  text-decoration: none;
+}
+.bg-class{
+  --background: linear-gradient(180deg, RGB(64, 144, 107)  0%, RGB(31, 75, 56) 100%) !important;
+}
+
+.ion-border-top {
+  border-top: 1px solid white;
+}
+
+.ion-border-bottom {
+  border-bottom: 1px solid white;
+}
+
+.image-container {
+  text-align: center;
+  margin: 0 auto;
+}
+
+a{
+  color: white !important;
+  text-decoration: none;
+}
+
+.row-spacing {
+  margin-bottom: 20px;
+}
+.table-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+}
+
+table {
+  width: 80%;
+  border-collapse: collapse;
+  margin: 0 auto;
+}
+
+th, td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #f2f2f2;
+  color: #000;
+  border: 1px solid #000;
+}
+.transbutton {
+  background-color: transparent;
+  font-size: 15px;
+  text-decoration: underline;
+}
+
+.card-image-container {
+  position: relative;
+  height: 0;
+  padding-bottom: 75%; 
+}
+
+.card-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  max-height: 100%;
+}
+
+ion-button {
+  --background: RGB(52, 106, 74);
+  --color: #ffff;
+
+  --border-radius: 30px;
+  --border-color: #fff;
+  --border-style: solid;
+  --border-width: 1px;
+
+}
+.text-center {
+  text-align: center;
+}
+ion-footer {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+}
+.backbutton1 {
+  --background: RGB(52, 106, 74);
+  --color: #ffff;
+
+  --border-radius: 30px;
+  --border-color: #fff;
+  --border-style: solid;
+  --border-width: 1px;
+
+}
+.backbutton2 {
+  --background: #980606;
+  --color: #ffff;
+
+  --border-radius: 30px;
+  --border-color: #fff;
+  --border-style: solid;
+  --border-width: 1px;
+
+}

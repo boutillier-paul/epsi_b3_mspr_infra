@@ -9,6 +9,6 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content mode="ios">
-  <iframe src="../../assets/docs/Mentions-legales.pdf" frameborder="0" width="100%" height="100%"></iframe>
+<ion-content>
+  <ngx-extended-pdf-viewer *ngIf="pdfSrc" [src]="pdfSrc" height="100%" width="100%"></ngx-extended-pdf-viewer>
 </ion-content>

@@ -80,7 +80,7 @@ export class FormDeclarePage implements OnInit {
     if (!this.selectedFile) {
       const alert = await this.alertController.create({
         header: 'Attention',
-        message: 'Veuillez sélectionner une image de déclarer votre plante.',
+        message: 'Veuillez sélectionner une image avant de déclarer votre plante.',
         buttons: ['OK']
       });
       await alert.present();
@@ -111,7 +111,7 @@ export class FormDeclarePage implements OnInit {
       return;
     }
   
-    if (!/^[a-zA-Z0-9]+$/.test(this.credentials.species) || !/^[a-zA-Z0-9]+$/.test(this.credentials.name)) {
+    if (!/^[a-zA-Z0-9 ]+$/.test(this.credentials.species) || !/^[a-zA-Z0-9 ]+$/.test(this.credentials.name)) {
       const alert = await this.alertController.create({
         header: 'Erreur',
         message: 'Caractères spéciaux non autorisés dans ces champs ',

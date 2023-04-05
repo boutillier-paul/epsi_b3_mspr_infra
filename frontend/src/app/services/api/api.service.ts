@@ -847,17 +847,31 @@ export class ApiService {
     this.userData.next(null);
   }
 
-  checkToken() {
-    this.getyouruser().subscribe(response => {
-      if (response.created_at) {
-      } else if (response.detail || response.error) {
-        this.tokenAlert();
-        this.router.navigate(['/home']);
-      }
-    }, error => {
+  checkToken(): Observable<any> {
+    const access_token = localStorage.getItem('access_token');
+  
+    if (!access_token) {
       this.tokenAlert();
       this.router.navigate(['/home']);
-    });
+      return from(Promise.reject('Token not found'));
+    }
+  
+    return this.getyouruser().pipe(
+      map((response) => {
+        if (response.created_at) {
+          return response;
+        } else if (response.detail || response.error) {
+          this.tokenAlert();
+          this.router.navigate(['/home']);
+          throw new Error('Token is invalid');
+        }
+      }),
+      catchError((error) => {
+        this.tokenAlert();
+        this.router.navigate(['/home']);
+        return from(Promise.reject(error));
+      })
+    );
   }
   
   async tokenAlert() {
@@ -870,18 +884,26 @@ export class ApiService {
     await alert.present();
   }
   
-  checkRole() {
-    this.getyouruser().subscribe(response => {
-      if (response.role_id === 1) {
+  checkRole(): Observable<any> {
+    return new Observable((observer) => {
+      this.getyouruser().subscribe((response) => {
+        if (response.role_id === 1) {
+          this.roleAlert();
+          this.router.navigate(['/advices']);
+          observer.error();
+        } else if (response.detail || response.error) {
+          this.roleAlert();
+          this.router.navigate(['/advices']);
+          observer.error();
+        } else {
+          observer.next();
+          observer.complete();
+        }
+      }, (error) => {
         this.roleAlert();
         this.router.navigate(['/advices']);
-      } else if (response.detail || response.error) {
-        this.roleAlert();
-        this.router.navigate(['/advices']);
-      }
-    }, error => {
-      this.roleAlert();
-      this.router.navigate(['/advices']);
+        observer.error();
+      });
     });
   }
   

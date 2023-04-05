@@ -13,7 +13,7 @@
             </ion-row>
             <ion-row class="ion-border-bottom ">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="leaf-outline"></ion-icon>
+                <ion-icon name="leaf-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11" class="ion-border-right">
                 <a href="/map">Garder une plante</a>
@@ -21,7 +21,7 @@
             </ion-row>
             <ion-row class="ion-border-top ion-border-bottom">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="clipboard-outline"></ion-icon>
+                <ion-icon name="clipboard-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11" class="ion-border-right">
                 <a href="/form-declare">Déclarer sa plante</a>
@@ -29,7 +29,7 @@
             </ion-row>
             <ion-row class="ion-border-top ion-border-bottom">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="add-circle-outline"></ion-icon>
+                <ion-icon name="add-circle-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11" class="ion-border-right">
                 <a href="/form-garde">Faire une demande de garde</a>
@@ -37,7 +37,7 @@
             </ion-row>
             <ion-row class="ion-border-top ion-border-bottom">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="mail-outline"></ion-icon>
+                <ion-icon name="mail-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11" class="ion-border-right">
                 <a href="/mes-messages">Mes messages</a>
@@ -45,7 +45,7 @@
             </ion-row>
             <ion-row class="ion-border-top">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="person-outline"></ion-icon>
+                <ion-icon name="person-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11">
                 <a href="/mon-profil">Mon espace</a>
@@ -53,7 +53,7 @@
             </ion-row>
             <ion-row class="ion-border-top">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="arrow-undo-circle"></ion-icon>
+                <ion-icon name="arrow-undo-circle" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11">
                 <a href="/logout">Se déconnecter</a>
@@ -61,7 +61,7 @@
             </ion-row>
           </ion-col>
         </ion-row>
-      </ion-grid>
+      </ion-grid> 
     </ion-content>
   </ion-menu>
   <ion-content class="bg-class" id="my-content">
@@ -74,19 +74,27 @@
       </ion-toolbar>
     </ion-header> 
 
-    <ion-item lines="none" class="back2">
-      <ion-label>Utilisateur :</ion-label>
-      <ion-select placeholder="Choisissez parmi les botanistes" [(ngModel)]="userSelected" (ionChange)="saveSelectedUserId()">
-        <ion-select-option *ngFor="let user of users" [value]="user.id">{{user.name}}</ion-select-option>
-      </ion-select>
-      <ion-chip class="centered-chip">
-        <ion-label>{{ getSelectedUserEmail() }}</ion-label>
-      </ion-chip>
-    </ion-item>
+    <ion-grid style="background-color: rgb(65, 65, 65);">
+      <ion-row class="ion-align-items-center" >
+        <ion-col size="12" size-md="2" class="ion-text-center ion-text-md-right">
+          <ion-label style="color: white;">Utilisateur :</ion-label>
+        </ion-col>
+        <ion-col size="12" size-md="7">
+          <ion-select style="color:white" placeholder="Choisissez parmi les botanistes" [(ngModel)]="userSelected" (ionChange)="saveSelectedUserId()" class="select-placeholder">
+            <ion-select-option *ngFor="let user of users" [value]="user.id">{{user.name}}</ion-select-option>
+          </ion-select>
+        </ion-col>
+        <ion-col size="12" size-md="3" class="ion-text-center ion-text-md-left">
+          <ion-chip class="centered-chip">
+            <ion-label style="color: white;">{{ getSelectedUserEmail() }}</ion-label>
+          </ion-chip>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
     <div class="container3" #messageContainer style="overflow-y: scroll; height: 80%;">
       <ion-card *ngFor="let message of messages" [class.notme]="message.sender_id === message.user_id" [class.me]="message.sender_id !== message.user_id">
         <ion-card-header>
-          <ion-card-title>{{message.sender_first_name}} {{message.sender_last_name}}<ion-chip>{{message.created_at |  date: 'dd/MM/YYYY - HH:MM:SS'}}</ion-chip></ion-card-title>
+          <ion-card-title style="color:white">{{message.sender_first_name}} {{message.sender_last_name}}<ion-chip style="color:white">{{message.created_at |  date: 'dd/MM/YYYY - HH:MM:SS'}}</ion-chip></ion-card-title>
           <ion-card-subtitle></ion-card-subtitle>
         </ion-card-header>
         <ion-card-content>
@@ -101,10 +109,12 @@
     </ion-item>
     
     <br>
-    <ion-footer >
+    <ion-footer>
       <ion-toolbar>
-        <ion-title style="text-align: center;">© Copyright 2023 Arosa-je - <a href="mentions-legales">mentions légales & politique de confidentialité</a></ion-title>
+        <ion-title style="text-align: center; font-size: 18px;">© Copyright 2023 Arosa-je -
+          <a href="mentions-legales">Mentions légales & Politique de confidentialité</a>
+        </ion-title>
       </ion-toolbar>
-    </ion-footer> 
+    </ion-footer>
   </ion-content>
 </ion-split-pane>

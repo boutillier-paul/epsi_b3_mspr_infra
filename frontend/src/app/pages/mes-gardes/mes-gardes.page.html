@@ -1,5 +1,5 @@
 <ion-split-pane contentId="my-content">
-  <ion-menu side="start" type="overlay" contentId="my-content">
+ <ion-menu side="start" type="overlay" contentId="my-content">
     <ion-content>
       <ion-grid>
         <ion-row>
@@ -13,7 +13,7 @@
             </ion-row>
             <ion-row class="ion-border-bottom ">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="leaf-outline"></ion-icon>
+                <ion-icon name="leaf-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11" class="ion-border-right">
                 <a href="/map">Garder une plante</a>
@@ -21,7 +21,7 @@
             </ion-row>
             <ion-row class="ion-border-top ion-border-bottom">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="clipboard-outline"></ion-icon>
+                <ion-icon name="clipboard-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11" class="ion-border-right">
                 <a href="/form-declare">Déclarer sa plante</a>
@@ -29,7 +29,7 @@
             </ion-row>
             <ion-row class="ion-border-top ion-border-bottom">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="add-circle-outline"></ion-icon>
+                <ion-icon name="add-circle-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11" class="ion-border-right">
                 <a href="/form-garde">Faire une demande de garde</a>
@@ -37,7 +37,7 @@
             </ion-row>
             <ion-row class="ion-border-top ion-border-bottom">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="mail-outline"></ion-icon>
+                <ion-icon name="mail-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11" class="ion-border-right">
                 <a href="/mes-messages">Mes messages</a>
@@ -45,7 +45,7 @@
             </ion-row>
             <ion-row class="ion-border-top">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="person-outline"></ion-icon>
+                <ion-icon name="person-outline" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11">
                 <a href="/mon-profil">Mon espace</a>
@@ -53,7 +53,7 @@
             </ion-row>
             <ion-row class="ion-border-top">
               <ion-col size="1" class="ion-border-right">
-                <ion-icon name="arrow-undo-circle"></ion-icon>
+                <ion-icon name="arrow-undo-circle" style="color: white;"></ion-icon>
               </ion-col>
               <ion-col size="11">
                 <a href="/logout">Se déconnecter</a>
@@ -73,32 +73,45 @@
         <ion-title>Mes gardes</ion-title>
       </ion-toolbar>
     </ion-header> 
-    <div class="table-container" *ngIf="gardes.length > 0">
-      <table class="table">
-        <thead>
-          <tr>
-            <th class="ion-text-center">Plante</th>
-            <th class="ion-text-center">Date de garde</th>
-            <th class="ion-text-center">Voir plus</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let garde of gardes">
-            <td class="ion-text-center" style="color: white">{{ garde.name }} / {{ garde.species }}</td>
-            <td class="ion-text-center" style="color: white">{{ garde.start_at |  date: 'dd/MM/YYYY' }} - {{ garde.end_at |  date: 'dd/MM/YYYY' }}</td>
-            <td class="ion-text-center" style="color: white">
-              <button (click)="voirPlus(garde)" class="transbutton" id="open-modal" style="color: white">Cliquez pour plus de détails</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>    
-    </div>
+    <ion-row style="display: flex; align-items: stretch; margin: 0 auto; max-width: 1250px;">
+      <ion-col size="12"class="ion-text-center">
+        <ion-button [routerLink]="['/map']" RouterLinkActive="active">Garder une plante</ion-button>
+      </ion-col>
+        <ng-container *ngFor="let guard of gardes">
+          <ion-col size="12" size-sm="6" size-md="4">
+            <ion-card style="height: 100%;">
+              <ion-card-header class="text-center">
+                <div class="card-image-container">
+                  <img [src]="'https://mspr-infra-bucket.s3.eu-west-3.amazonaws.com/images/' + guard.photo" alt="Plant" class="card-image">
+                </div>
+                <ion-card-title>Nom de la plante : {{guard.name}}</ion-card-title>
+                <ion-card-subtitle>Propriétaire : <ion-chip>{{guard.first_name}} {{guard.last_name}}</ion-chip></ion-card-subtitle>
+                <ion-card-subtitle>Du <ion-chip>{{ guard.start_at | date: 'dd/MM/YYYY' }}</ion-chip> au <ion-chip>{{ guard.end_at | date: 'dd/MM/YYYY' }}</ion-chip></ion-card-subtitle>
+              </ion-card-header>
+              <ion-card-content>
+                <ion-row>
+                  <ion-col size="6" class="button-container">
+                    <ion-button class="button-center backbutton1" (click)="saveGuardId(guard.id)" expand="block">Voir</ion-button>
+                  </ion-col>
+                  <ion-col size="6" class="button-container">
+                    <ion-button class="button-center backbutton2" (click)="cancelGuardId(guard.id)" expand="block">Annuler</ion-button>
+                  </ion-col>
+                </ion-row>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ng-container>
+    </ion-row>
+
+    <br><br><br>
     
-    <br>
-    <ion-footer >
+    <br><br><br>
+    <ion-footer>
       <ion-toolbar>
-        <ion-title style="text-align: center;">© Copyright 2023 Arosa-je - <a href="mentions-legales">mentions légales & politique de confidentialité</a></ion-title>
+        <ion-title style="text-align: center; font-size: 18px;">© Copyright 2023 Arosa-je -
+          <a href="mentions-legales">Mentions légales & Politique de confidentialité</a>
+        </ion-title>
       </ion-toolbar>
-    </ion-footer> 
+    </ion-footer>
   </ion-content>
 </ion-split-pane>

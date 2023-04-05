@@ -110,3 +110,15 @@ ion-menu {
     bottom: 0px;
     width: 100%;
   }
+  @media (max-width: 767px) {
+    .notme {
+      margin-right: 30%;
+    }
+    
+    .me {
+      margin-left: 30%;
+    }
+  }
+  ion-select::part(input)::placeholder {
+    color: white;
+  }

@@ -21,7 +21,7 @@ export class MonProfilPage implements OnInit {
   first_name: string;
   email: string;
   plants: Plant[];
-  guards: any[];
+  gardes: any[];
   advices: any[];
   role_id: number;
 
@@ -43,12 +43,10 @@ export class MonProfilPage implements OnInit {
         }).slice(0, 3);
         this.role_id = res.role_id;
         if (this.role_id === 1) {
-          this.guards = [];
+          this.gardes = [];
           this.advices = [];
         } else {
-          this.guards = res.guards.sort((a: any, b: any) => {
-            return new Date(b.start_at).getTime() - new Date(a.start_at).getTime();
-          }).slice(0, 3);
+          this.loadGuards(res.guards);
           this.advices = res.advices.sort((a: any, b: any) => {
             return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
           }).slice(0, 10);
@@ -74,6 +72,37 @@ export class MonProfilPage implements OnInit {
       }
     );
   }
+
+  loadGuards(guards: any[]) {
+    this.gardes = guards.slice(0, 3).map((guard: any) => {
+      return {
+        id: guard.id,
+        start_at: guard.start_at,
+        end_at: guard.end_at,
+        plant_id: guard.plant_id,
+        user_id: '',
+        photo: '',
+        name: '',
+        last_name: '',
+        first_name: ''
+      };
+    });
+    guards.slice(0, 3).forEach((guard: any, index: number) => {
+      const plantId = guard.plant_id;
+      this.api.getplantsbyid(plantId).subscribe((plant: any) => {
+        this.gardes[index].name = plant.name;
+        this.gardes[index].photo = plant.photo;
+        this.gardes[index].user_id = plant.user_id;
+  
+        const userId = plant.user_id;
+        this.api.getUserByIdParams(userId).subscribe((user: any) => {
+          this.gardes[index].first_name = user.first_name;
+          this.gardes[index].last_name = user.last_name;
+        });
+      });
+    });
+  }
+
 
   savePlantId(id: number) {
     localStorage.setItem('selectedPlantId', String(id));

@@ -47,7 +47,7 @@ export class FormModifyUserPage implements OnInit {
 
   async updateUser() {
 
-    if (!/^[a-zA-Z]+$/.test(this.credentials.last_name) || !/^[a-zA-Z]+$/.test(this.credentials.first_name)) {
+    if (!/^[a-zA-Z0-9]+$/.test(this.credentials.last_name) || !/^[a-zA-Z0-9]+$/.test(this.credentials.first_name)) {
       const alert = await this.alertController.create({
         header: 'Erreur',
         message: 'Caractères spéciaux et nombres non autorisés dans ces champs ',
