@@ -102,7 +102,7 @@ export class RegisterPage {
       return;
     }
 
-    const regex = /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%?&]{8,}$/;
+    const regex = /^[A-Za-z\d@$!%?&]{8,}$/;
     if (!regex.test(this.credentials2.pass)) {
       const alert = await this.alertController.create({
         header: 'Erreur',
@@ -146,6 +146,7 @@ export class RegisterPage {
           ]
     
         });
+        this.router.navigate(['/login']);
         await alert.present();
       } else if (res && res.hasOwnProperty('detail')) {
         const alert = await this.alertController.create({
