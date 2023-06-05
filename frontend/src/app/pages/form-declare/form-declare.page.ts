@@ -71,8 +71,6 @@ export class FormDeclarePage implements OnInit {
         }
       };
       reader.readAsDataURL(file);
-      const fileName = file.name;
-      const fileExtension = fileName.split('.').pop();
     }
   }
 
