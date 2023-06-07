@@ -119,7 +119,7 @@
         </ng-container>
       </ion-row>
     
-      <ion-row *ngIf="role_id != 1" style="display: flex; align-items: stretch; margin: 0 auto; max-width: 1250px;">
+      <ion-row *ngIf="role_id !== 1" style="display: flex; align-items: stretch; margin: 0 auto; max-width: 1250px;">
         <ion-col size="12"class="ion-text-center">
           <h2 style="color: white">Mes gardes</h2>
         </ion-col>
@@ -130,7 +130,7 @@
           <ion-button [routerLink]="['/mes-gardes']" RouterLinkActive="active" class="backbutton1">Voir toutes mes gardes</ion-button>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="role_id != 1" style="display: flex; align-items: stretch; margin: 0 auto; max-width: 1250px;">
+      <ion-row *ngIf="role_id !== 1" style="display: flex; align-items: stretch; margin: 0 auto; max-width: 1250px;">
         <ng-container *ngFor="let guard of gardes">
           <ion-col size="12" size-sm="6" size-md="4">
             <ion-card style="height: 100%;">
@@ -157,13 +157,13 @@
         </ng-container>
       </ion-row>
     
-      <ion-row *ngIf="role_id != 1">
+      <ion-row *ngIf="role_id !== 1">
         <ion-col class="ion-text-center">
           <h2 style="color: white">Mes posts</h2>
           <ion-button [routerLink]="['/form-advice']" RouterLinkActive="active" class="backbutton1">Ajouter un post</ion-button>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="role_id != 1">
+      <ion-row *ngIf="role_id !== 1">
         <ion-col>
           <ion-list>
             <ion-item *ngFor="let advice of advices">
