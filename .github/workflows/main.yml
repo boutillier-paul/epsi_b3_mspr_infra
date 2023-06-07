@@ -50,10 +50,15 @@ jobs:
         coverage run -m pytest --color=yes
         coverage report
 
-    - name: Run locust
-      working-directory: ./backend
-      run: |
-        locust --config=.locust.conf
+    - name: Create Release Tag
+      id: create_release_tag
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          ./backend/*
+          ./frontend/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Install dependencies frontend
       working-directory: ./frontend
