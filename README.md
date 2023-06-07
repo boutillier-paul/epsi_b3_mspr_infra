@@ -1,36 +1,128 @@
 
-# epsi_b3_mspr_infra
+# Arosa-je API
 
-Backend du projet MSPR infra.
+The Arosa-je API is intended for particle-to-particle plant management.
+
+## Badges
+
+![](https://img.shields.io/badge/release-v2.0.5-blue)
+![](https://img.shields.io/badge/Swagger-valid-green)
+![](https://img.shields.io/badge/Tests-31%20passed%2C%202%20failed-orange)
+![](https://img.shields.io/badge/Coverage-81%20%25-green)
+## API Reference
+
+#### Signup
+
+```http
+  POST /api/signup
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `user` | `schemas.UserCreate` | **Required**. Your user object |
+
+#### Login
+
+```http
+  POST /api/login/
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `user`      | `schemas.UserLogin` | **Required**. Your user object. |
+
+#### Get a specific user
+
+```http
+  GET /api/users/${user_id}/
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `user_id`      | `integer` | **Required**. The user id. |
+
+#### Update my profile
+
+```http
+  PUT /api/users/me
+```
+
+#### Get a specific plant
+
+```http
+  GET /api/plants/${plant_id}
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `plant_id`      | `integer` | **Required**. The plant id. |
+
+#### Search a plant by name
+
+```http
+  GET /api/plants/search/{plant_name}
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `plant_name`      | `string` | **Required**. The plant name. |
+
+## Environment Variables
+
+To run this project, you will need to add the following environment variables to your .env file
+
+`DATABASE_URL`
+
+`SECRET_KEY`
+`ALGORITHM`
+
+`POSTGRES_USER`
+`POSTGRES_PASSWORD`
+`POSTGRES_DB`
+
+## Running Tests
+
+To run tests in local, run the following commands
+
+#### Pytest
+
+```bash
+  python -m pytest
+```
+
+#### Coverage
+
+```bash
+  coverage run -m pytest --profile
+```
+
+```bash
+  coverage html
+```
+Execute at folder root
+
+#### Locust
+
+```bash
+  locust
+```
+requires to have a locustfile.py file
+
+```bash
+  locust --config=.locust.conf
+```
+## Tech Stack
+
+**Client:** Python, Angular
+
+**Server:** AWS, EC2
 
 
 ## Authors
 
-- [@Boutillier-paul](https://github.com/Boutillier-paul)
 - [@Alexis-Looten](https://github.com/Alexis-Looten)
-- [@Zita-Eliane](https://github.com/Zita-Eliane)
-- [@Kanesho1924](https://github.com/Kanesho1924)
+- [@boutillier-paul](https://github.com/boutillier-paul)
+- [@McLouffy](https://github.com/McLouffy) (MAKHLOUFI Kévin)
+- [@ViTj4](https://github.com/ViTj4) (RYCKEBUSCH Remi)
+- [@JRedxs](https://github.com/JRedxs) (VANDEVELDE Enzo)
 
-
-## Installation
-
-add .env file in the current file and add this for a local environnement
-
-`SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"`
-`ALGORITHM = "HS256"`
-
-
-`POSTGRES_USER="postgres"`
-`POSTGRES_PASSWORD="admin123"`
-`POSTGRES_DB="arosaje"`
-
-and run 
-
-`docker compose up --build`
-
-docker kill $(docker ps -q)
-docker rm $(docker ps -a -q)
-
-to lanch the app with db
-
-go to https://localhost:8000/docs/
