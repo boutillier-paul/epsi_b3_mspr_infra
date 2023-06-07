@@ -17,4 +17,5 @@ httpx
 requests
 coverage
 locust
+pylint==2.17.4
 pytest-order
