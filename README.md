@@ -8,6 +8,8 @@ Backend du projet MSPR infra.
 
 - [@Boutillier-paul](https://github.com/Boutillier-paul)
 - [@Alexis-Looten](https://github.com/Alexis-Looten)
+- [@Zita-Eliane](https://github.com/Zita-Eliane)
+- [@Kanesho1924](https://github.com/Kanesho1924)
 
 
 ## Installation
@@ -25,6 +27,9 @@ add .env file in the current file and add this for a local environnement
 and run 
 
 `docker compose up --build`
+
+docker kill $(docker ps -q)
+docker rm $(docker ps -a -q)
 
 to lanch the app with db
 

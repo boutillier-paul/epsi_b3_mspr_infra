@@ -1,0 +1,14 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="" (click)="goBack()"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Mentions légales
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ngx-extended-pdf-viewer *ngIf="pdfSrc" [src]="pdfSrc" height="100%" width="100%"></ngx-extended-pdf-viewer>
+</ion-content>

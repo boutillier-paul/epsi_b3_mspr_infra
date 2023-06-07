@@ -8,6 +8,10 @@ ENV DATABASE_URL ${DATABASE_URL}
 
 WORKDIR /backend
 
+RUN pip install --upgrade pip
+
+RUN apk add gcc musl-dev linux-headers python3-dev
+
 # install dependencies
 COPY ./requirements.txt /backend/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /backend/requirements.txt
