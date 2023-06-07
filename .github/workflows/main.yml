@@ -36,12 +36,17 @@ jobs:
     - name: Linter backend
       working-directory: ./backend
       run: |
-        python -m pylint app/ tests/
+        python -m pylint app/ tests/ --exit-zero --output-format=colorized
 
     - name: Run Pytest
       working-directory: ./backend
       run: |
-        python -m pytest
+        python -m pytest --color=yes
+
+    - name: Run coverage
+      run: |
+        coverage run -m pytest --color=yes
+        coverage report
 
     - name: Install dependencies frontend
       working-directory: ./frontend
