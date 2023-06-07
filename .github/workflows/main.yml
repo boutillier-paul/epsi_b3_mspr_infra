@@ -13,9 +13,6 @@ jobs:
       matrix:
         python-version: ["3.10", "3.11"]
 
-    permissions:
-      contents: write
-
     env:
       DATABASE_URL: "postgresql+psycopg2://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.HOST }}:5432/arosaje"
       ALGORITHM: ${{ secrets.ALGORITHM }}
@@ -67,6 +64,9 @@ jobs:
   release-tag:
     runs-on: ubuntu-latest
     needs: tests
+
+    permissions:
+      contents: write
 
     steps:
     - name: Bump version and push tag
